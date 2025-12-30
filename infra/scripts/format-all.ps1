@@ -10,7 +10,7 @@ Pop-Location
 
 Write-Host "🎨 Formatting backend..." -ForegroundColor Cyan
 Push-Location backend
-black .
+python -m black .
 Pop-Location
 
 Write-Host "✅ Formatting complete!" -ForegroundColor Green

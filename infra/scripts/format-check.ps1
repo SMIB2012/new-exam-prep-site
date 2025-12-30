@@ -10,8 +10,8 @@ Pop-Location
 
 Write-Host "🔍 Checking backend formatting..." -ForegroundColor Cyan
 Push-Location backend
-black --check .
-ruff check .
+python -m black --check .
+python -m ruff check .
 Pop-Location
 
 Write-Host "✅ All formatting checks passed!" -ForegroundColor Green
