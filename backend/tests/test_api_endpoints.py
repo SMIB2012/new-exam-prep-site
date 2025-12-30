@@ -16,11 +16,11 @@ def client():
     original_db_url = os.environ.get("DATABASE_URL")
     original_env = os.environ.get("ENV")
     original_skip_seed = os.environ.get("SKIP_SEED")
-    
+
     os.environ["DATABASE_URL"] = f"sqlite:///{db_path}"
     os.environ["ENV"] = "test"
     os.environ["SKIP_SEED"] = "true"
-    
+
     try:
         # Import here to ensure environment variable is set before app initialization
         # Clear any cached imports
@@ -29,11 +29,11 @@ def client():
         for mod in modules_to_clear:
             if mod in sys.modules:
                 del sys.modules[mod]
-        
+
         from database import Base, engine
         # Ensure tables are created
         Base.metadata.create_all(bind=engine)
-        
+
         from main import app
         yield TestClient(app)
     finally:
@@ -46,12 +46,12 @@ def client():
             os.environ["DATABASE_URL"] = original_db_url
         elif "DATABASE_URL" in os.environ:
             del os.environ["DATABASE_URL"]
-        
+
         if original_env:
             os.environ["ENV"] = original_env
         elif "ENV" in os.environ:
             del os.environ["ENV"]
-            
+
         if original_skip_seed:
             os.environ["SKIP_SEED"] = original_skip_seed
         elif "SKIP_SEED" in os.environ:
