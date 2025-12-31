@@ -204,3 +204,20 @@ function LoginCardContent() {
     </Card>
   );
 }
+
+export function LoginCard() {
+  return (
+    <Suspense
+      fallback={
+        <Card className="rounded-xl border-slate-200 shadow-lg">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-slate-900">Welcome back</CardTitle>
+            <CardDescription className="text-slate-600">Loading...</CardDescription>
+          </CardHeader>
+        </Card>
+      }
+    >
+      <LoginCardContent />
+    </Suspense>
+  );
+}
