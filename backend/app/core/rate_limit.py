@@ -1,6 +1,5 @@
 """Rate limiting utilities using Redis."""
 
-
 from fastapi import Request, status
 
 from app.core.app_exceptions import raise_app_error

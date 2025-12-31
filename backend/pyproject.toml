@@ -11,6 +11,9 @@ ignore = []
 "schemas.py" = ["N805"]  # Validators are class methods, cls is correct
 "seed.py" = ["E501"]  # Seed data has long strings, acceptable
 "main.py" = ["B008"]  # FastAPI Depends() in function defaults is standard practice
+"**/endpoints/*.py" = ["B008"]  # FastAPI Depends() in function defaults is standard practice
+"**/dependencies.py" = ["B008"]  # FastAPI Depends() in function defaults is standard practice
+"**/health.py" = ["B008"]  # FastAPI Depends() in function defaults is standard practice
 
 [tool.black]
 line-length = 100

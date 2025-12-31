@@ -368,11 +368,7 @@ async def mfa_backup_codes_regenerate(
 ) -> MFAVerifyResponse:
     """Regenerate backup codes (requires password or TOTP confirmation)."""
     # Check MFA is enabled
-    mfa_totp = (
-        db.query(MFATOTP)
-        .filter(MFATOTP.user_id == current_user.id, MFATOTP.enabled)
-        .first()
-    )
+    mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == current_user.id, MFATOTP.enabled).first()
     if not mfa_totp:
         log_security_event(
             request,

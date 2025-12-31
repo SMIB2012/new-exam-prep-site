@@ -119,6 +119,6 @@ def verify_mfa_token(token: str) -> dict:
             raise jwt.InvalidTokenError("Token is not an MFA pending token")
         return payload
     except jwt.ExpiredSignatureError:
-        raise jwt.InvalidTokenError("MFA token has expired")
+        raise jwt.InvalidTokenError("MFA token has expired") from None
     except jwt.InvalidTokenError as e:
         raise jwt.InvalidTokenError(f"Invalid MFA token: {e}") from e

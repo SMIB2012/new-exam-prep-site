@@ -67,9 +67,9 @@ def verify_access_token(token: str) -> dict[str, Any]:
             raise jwt.InvalidTokenError("Token is not an access token")
         return payload
     except jwt.ExpiredSignatureError:
-        raise jwt.InvalidTokenError("Token has expired")
+        raise jwt.InvalidTokenError("Token has expired") from None
     except jwt.InvalidTokenError as e:
-        raise jwt.InvalidTokenError(f"Invalid token: {e}")
+        raise jwt.InvalidTokenError(f"Invalid token: {e}") from e
 
 
 def create_refresh_token() -> str:

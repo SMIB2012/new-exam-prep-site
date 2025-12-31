@@ -33,7 +33,6 @@ def _create_tokens_for_user(user: User, db: Session) -> TokensResponse:
     """Create access and refresh tokens for a user (same as auth.py)."""
     from datetime import timedelta
 
-
     # Create access token
     access_token = create_access_token(str(user.id), user.role)
 
@@ -260,9 +259,7 @@ async def oauth_callback(
         from app.core.mfa import create_mfa_token
         from app.models.mfa import MFATOTP
 
-        mfa_totp = (
-            db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled).first()
-        )
+        mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled).first()
 
         if mfa_totp:
             mfa_token = create_mfa_token(str(user.id))

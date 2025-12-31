@@ -484,9 +484,7 @@ async def request_password_reset(
         # Generate reset token
         reset_token = generate_password_reset_token()
         token_hash = hash_token(reset_token)
-        expires_at = datetime.now(UTC) + timedelta(
-            minutes=settings.PASSWORD_RESET_EXPIRE_MINUTES
-        )
+        expires_at = datetime.now(UTC) + timedelta(minutes=settings.PASSWORD_RESET_EXPIRE_MINUTES)
 
         # Create reset token record
         reset_token_record = PasswordResetToken(

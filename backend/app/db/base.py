@@ -10,7 +10,7 @@ class Base(DeclarativeBase):
 
 
 # Import all models here so Alembic can detect them
-from app.models import (  # noqa: F401
+from app.models import (  # noqa: F401, E402
     MFATOTP,
     AttemptAnswer,
     AttemptSession,
