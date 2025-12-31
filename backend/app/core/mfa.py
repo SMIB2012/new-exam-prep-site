@@ -1,8 +1,7 @@
 """MFA utilities: TOTP and backup codes."""
 
-import hashlib
 import secrets
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pyotp
 from cryptography.fernet import Fernet
@@ -83,7 +82,6 @@ def verify_backup_code(code: str, code_hash: str) -> bool:
 
 def create_mfa_token(user_id: str) -> str:
     """Create a short-lived MFA pending token (JWT)."""
-    from app.core.security import create_access_token
 
     # Reuse access token creation but with different type and shorter TTL
     from datetime import timedelta
@@ -94,7 +92,7 @@ def create_mfa_token(user_id: str) -> str:
     if not settings.JWT_SECRET:
         raise ValueError("JWT_SECRET must be set")
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     expire = now + timedelta(minutes=settings.MFA_TOKEN_EXPIRE_MINUTES)
 
     payload = {
@@ -124,4 +122,3 @@ def verify_mfa_token(token: str) -> dict:
         raise jwt.InvalidTokenError("MFA token has expired")
     except jwt.InvalidTokenError as e:
         raise jwt.InvalidTokenError(f"Invalid MFA token: {e}") from e
-

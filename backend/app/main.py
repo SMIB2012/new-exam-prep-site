@@ -16,8 +16,8 @@ from app.core.errors import (
 )
 from app.core.logging import setup_logging
 from app.core.redis_client import init_redis
-from app.core.seed_auth import seed_demo_accounts
 from app.core.security_headers import SecurityHeadersMiddleware
+from app.core.seed_auth import seed_demo_accounts
 from app.db.base import Base
 from app.db.engine import engine
 
@@ -85,4 +85,3 @@ def create_app() -> FastAPI:
 
 # Create app instance
 app = create_app()
-

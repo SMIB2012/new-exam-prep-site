@@ -124,4 +124,3 @@ class MeResponse(BaseModel):
     """Current user response schema."""
 
     user: UserResponse
-

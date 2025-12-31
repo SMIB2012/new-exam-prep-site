@@ -7,10 +7,8 @@ export default function ForbiddenPage() {
       <div className="text-center">
         <h1 className="text-6xl font-bold text-gray-900">403</h1>
         <h2 className="mt-4 text-2xl font-semibold text-gray-700">Access Forbidden</h2>
-        <p className="mt-2 text-gray-600">
-          You don't have permission to access this resource.
-        </p>
-        <div className="mt-8 flex gap-4 justify-center">
+        <p className="mt-2 text-gray-600">You don't have permission to access this resource.</p>
+        <div className="mt-8 flex justify-center gap-4">
           <Button asChild>
             <Link href="/student/dashboard">Go to Dashboard</Link>
           </Button>
@@ -22,4 +20,3 @@ export default function ForbiddenPage() {
     </div>
   );
 }
-

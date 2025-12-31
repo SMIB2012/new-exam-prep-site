@@ -23,7 +23,7 @@ export function LoadingState({
     <Loader2
       className={cn(
         "animate-spin text-primary",
-        variant === "page" ? "h-8 w-8" : variant === "section" ? "h-6 w-6" : "h-4 w-4"
+        variant === "page" ? "h-8 w-8" : variant === "section" ? "h-6 w-6" : "h-4 w-4",
       )}
       aria-hidden="true"
     />
@@ -36,7 +36,7 @@ export function LoadingState({
         <h3
           className={cn(
             "font-semibold text-slate-900",
-            variant === "page" ? "text-xl" : variant === "section" ? "text-lg" : "text-sm"
+            variant === "page" ? "text-xl" : variant === "section" ? "text-lg" : "text-sm",
           )}
         >
           {title}
@@ -45,7 +45,7 @@ export function LoadingState({
           <p
             className={cn(
               "mt-1 text-slate-600",
-              variant === "page" ? "text-base" : variant === "section" ? "text-sm" : "text-xs"
+              variant === "page" ? "text-base" : variant === "section" ? "text-sm" : "text-xs",
             )}
           >
             {description}
@@ -58,10 +58,7 @@ export function LoadingState({
   if (variant === "page") {
     return (
       <div
-        className={cn(
-          "flex min-h-[60vh] items-center justify-center",
-          className
-        )}
+        className={cn("flex min-h-[60vh] items-center justify-center", className)}
         role="status"
         aria-live="polite"
         aria-label={title}
@@ -95,4 +92,3 @@ export function LoadingState({
     </div>
   );
 }
-

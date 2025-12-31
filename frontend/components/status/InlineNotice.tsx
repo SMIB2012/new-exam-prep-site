@@ -64,24 +64,16 @@ export function InlineNotice({
 
   return (
     <div
-      className={cn(
-        "rounded-xl border p-4",
-        styles.container,
-        className
-      )}
+      className={cn("rounded-xl border p-4", styles.container, className)}
       role="alert"
       aria-live="polite"
     >
       <div className="flex items-start gap-3">
         <Icon className={cn("mt-0.5 h-5 w-5 flex-shrink-0", styles.icon)} aria-hidden="true" />
         <div className="flex-1">
-          {title && (
-            <h4 className={cn("font-semibold", styles.title)}>{title}</h4>
-          )}
-          {description && (
-            <p className={cn("mt-1 text-sm", styles.description)}>{description}</p>
-          )}
-          {(actionLabel && (onAction || actionHref)) && (
+          {title && <h4 className={cn("font-semibold", styles.title)}>{title}</h4>}
+          {description && <p className={cn("mt-1 text-sm", styles.description)}>{description}</p>}
+          {actionLabel && (onAction || actionHref) && (
             <div className="mt-3">
               {actionHref ? (
                 <Button asChild variant="outline" size="sm">
@@ -99,4 +91,3 @@ export function InlineNotice({
     </div>
   );
 }
-

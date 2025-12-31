@@ -1,14 +1,14 @@
 """MFA endpoints."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.app_exceptions import raise_app_error
+from app.core.config import settings
 from app.core.dependencies import get_current_user
 from app.core.mfa import (
-    create_mfa_token,
     decrypt_totp_secret,
     encrypt_totp_secret,
     generate_backup_codes,
@@ -22,14 +22,12 @@ from app.core.mfa import (
 from app.core.security import create_access_token, create_refresh_token, hash_token
 from app.core.security_logging import log_security_event
 from app.db.session import get_db
-from app.models.mfa import MFABackupCode, MFATOTP
+from app.models.mfa import MFATOTP, MFABackupCode
 from app.models.user import User
 from app.schemas.auth import TokensResponse, UserResponse
 from app.schemas.mfa import (
     MFACompleteRequest,
     MFACompleteResponse,
-    MFADisableRequest,
-    MFADisableResponse,
     MFASetupResponse,
     MFAVerifyRequest,
     MFAVerifyResponse,
@@ -40,7 +38,6 @@ router = APIRouter(tags=["MFA"])
 
 def _create_tokens_for_user(user: User, db: Session) -> TokensResponse:
     """Create access and refresh tokens for a user."""
-    from datetime import timedelta
 
     from app.models.auth import RefreshToken
 
@@ -52,13 +49,13 @@ def _create_tokens_for_user(user: User, db: Session) -> TokensResponse:
     token_hash = hash_token(refresh_token)
 
     # Calculate expiry
-    expires_at = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    expires_at = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
     # Revoke old refresh tokens for this user
     db.query(RefreshToken).filter(
         RefreshToken.user_id == user.id,
         RefreshToken.revoked_at.is_(None),
-    ).update({"revoked_at": datetime.now(timezone.utc)})
+    ).update({"revoked_at": datetime.now(UTC)})
 
     # Create new refresh token record
     db_refresh_token = RefreshToken(
@@ -205,7 +202,7 @@ async def mfa_totp_verify(
 
     # Enable MFA
     mfa_totp.enabled = True
-    mfa_totp.verified_at = datetime.now(timezone.utc)
+    mfa_totp.verified_at = datetime.now(UTC)
 
     # Generate backup codes
     backup_codes = generate_backup_codes()
@@ -250,7 +247,7 @@ async def mfa_complete(
     try:
         mfa_token_payload = verify_mfa_token(request_data.mfa_token)
         user_id = mfa_token_payload["sub"]
-    except Exception as e:
+    except Exception:
         log_security_event(
             request,
             event_type="mfa_failed",
@@ -280,7 +277,7 @@ async def mfa_complete(
         )
 
     # Get MFA TOTP
-    mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled == True).first()
+    mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled).first()
     if not mfa_totp:
         log_security_event(
             request,
@@ -305,15 +302,19 @@ async def mfa_complete(
 
     elif request_data.backup_code:
         # Verify backup code
-        backup_codes = db.query(MFABackupCode).filter(
-            MFABackupCode.user_id == user.id,
-            MFABackupCode.used_at.is_(None),
-        ).all()
+        backup_codes = (
+            db.query(MFABackupCode)
+            .filter(
+                MFABackupCode.user_id == user.id,
+                MFABackupCode.used_at.is_(None),
+            )
+            .all()
+        )
 
         for backup_code_record in backup_codes:
             if verify_backup_code(request_data.backup_code, backup_code_record.code_hash):
                 # Mark as used
-                backup_code_record.used_at = datetime.now(timezone.utc)
+                backup_code_record.used_at = datetime.now(UTC)
                 verified = True
                 break
 
@@ -332,7 +333,7 @@ async def mfa_complete(
         )
 
     # Update last login
-    user.last_login_at = datetime.now(timezone.utc)
+    user.last_login_at = datetime.now(UTC)
     db.commit()
 
     # Create tokens
@@ -367,7 +368,11 @@ async def mfa_backup_codes_regenerate(
 ) -> MFAVerifyResponse:
     """Regenerate backup codes (requires password or TOTP confirmation)."""
     # Check MFA is enabled
-    mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == current_user.id, MFATOTP.enabled == True).first()
+    mfa_totp = (
+        db.query(MFATOTP)
+        .filter(MFATOTP.user_id == current_user.id, MFATOTP.enabled)
+        .first()
+    )
     if not mfa_totp:
         log_security_event(
             request,
@@ -383,7 +388,6 @@ async def mfa_backup_codes_regenerate(
         )
 
     # Verify password or TOTP code
-    from app.core.security import verify_password
 
     verified = False
     if request_data.code:
@@ -447,4 +451,3 @@ async def mfa_backup_codes_regenerate(
         status="ok",
         backup_codes=backup_codes,  # Return once
     )
-

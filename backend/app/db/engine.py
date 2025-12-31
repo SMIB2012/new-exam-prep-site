@@ -19,4 +19,3 @@ def create_db_engine() -> Engine:
 
 # Global engine instance
 engine = create_db_engine()
-

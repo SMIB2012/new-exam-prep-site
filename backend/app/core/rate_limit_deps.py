@@ -1,6 +1,6 @@
 """FastAPI dependencies for rate limiting."""
 
-from fastapi import Depends, Request
+from fastapi import Request
 
 from app.core.config import settings
 from app.core.rate_limit import check_rate_limit_and_raise, get_client_ip, normalize_email_for_key
@@ -81,4 +81,3 @@ def require_rate_limit_refresh(user_id: str, request: Request) -> None:
         request,
         event_type="rate_limited_refresh",
     )
-

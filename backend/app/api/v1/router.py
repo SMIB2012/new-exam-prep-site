@@ -11,4 +11,3 @@ api_router.include_router(health.router, prefix="", tags=["Health"])
 api_router.include_router(auth.router, prefix="/auth", tags=["Auth"])
 api_router.include_router(oauth.router, prefix="/auth/oauth", tags=["OAuth"])
 api_router.include_router(mfa.router, prefix="/auth/mfa", tags=["MFA"])
-

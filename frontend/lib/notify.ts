@@ -46,4 +46,3 @@ export const notify = {
   error,
   info,
 };
-

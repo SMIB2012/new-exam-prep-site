@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 
 
 class AppError(HTTPException):
@@ -37,4 +37,3 @@ def raise_app_error(
 ) -> None:
     """Raise an application error with standardized format."""
     raise AppError(status_code=status_code, code=code, message=message, details=details)
-

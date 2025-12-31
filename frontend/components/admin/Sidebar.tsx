@@ -68,11 +68,7 @@ export function AdminSidebar() {
         })}
       </nav>
       <div className="mt-auto pt-4">
-        <Button
-          variant="outline"
-          onClick={handleLogout}
-          className="w-full justify-start gap-3"
-        >
+        <Button variant="outline" onClick={handleLogout} className="w-full justify-start gap-3">
           <LogOut className="h-5 w-5" />
           <span>Logout</span>
         </Button>

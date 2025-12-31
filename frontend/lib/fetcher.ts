@@ -11,11 +11,7 @@ export interface FetcherError {
   request_id?: string;
 }
 
-async function fetcher<T>(
-  url: string,
-  options: RequestInit = {},
-  retryOn401 = true,
-): Promise<T> {
+async function fetcher<T>(url: string, options: RequestInit = {}, retryOn401 = true): Promise<T> {
   const response = await fetch(url, {
     ...options,
     credentials: "include",
@@ -62,4 +58,3 @@ async function fetcher<T>(
 }
 
 export default fetcher;
-

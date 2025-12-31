@@ -114,7 +114,9 @@ class Settings(BaseSettings):
         super().__init__(**kwargs)
         # Fail fast in production if critical vars are missing
         if self.ENV == "prod":
-            if not self.DATABASE_URL or self.DATABASE_URL.startswith("postgresql+psycopg2://exam_user:change_me"):
+            if not self.DATABASE_URL or self.DATABASE_URL.startswith(
+                "postgresql+psycopg2://exam_user:change_me"
+            ):
                 raise ValueError("DATABASE_URL must be set in production")
             if not self.JWT_SECRET or self.JWT_SECRET == "change_me_super_secret":
                 raise ValueError("JWT_SECRET must be set in production")
@@ -131,4 +133,3 @@ class Settings(BaseSettings):
 
 # Global settings instance
 settings = Settings()
-

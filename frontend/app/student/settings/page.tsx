@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { userId, clearUser } = useUserStore();
+  const { user, clearUser } = useUserStore();
 
   const handleLogout = () => {
     clearUser();
@@ -31,7 +31,7 @@ export default function SettingsPage() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="userId">User ID</Label>
-            <Input id="userId" value={userId || ""} disabled />
+            <Input id="userId" value={user?.id || ""} disabled />
           </div>
           <Button variant="destructive" onClick={handleLogout}>
             Logout

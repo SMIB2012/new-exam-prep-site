@@ -32,6 +32,7 @@ REFRESH_COOKIE_MAXAGE_SECONDS=1209600   # 14 days (default)
 ### Production Security
 
 **Important:** In production (`NODE_ENV=production`):
+
 - Cookies are **ALWAYS** set with `Secure=true` (HTTPS required)
 - If `COOKIE_SECURE=false` is set in production, it is **ignored** and a warning is logged
 - Production deployments **must** use HTTPS
@@ -102,6 +103,7 @@ const data = await fetcher("/api/some-endpoint");
 ## Testing
 
 1. **Login Flow:**
+
    ```bash
    curl -X POST http://localhost:3000/api/auth/login \
      -H "Content-Type: application/json" \
@@ -110,6 +112,7 @@ const data = await fetcher("/api/some-endpoint");
    ```
 
 2. **Get Current User:**
+
    ```bash
    curl http://localhost:3000/api/auth/me \
      -b cookies.txt
@@ -125,12 +128,14 @@ const data = await fetcher("/api/some-endpoint");
 ## Cookie Verification Checklist
 
 ### Development (http://localhost:3000)
+
 - ✅ Cookies appear with `httpOnly` flag
 - ✅ Cookies appear with `Secure=false` (works on HTTP)
 - ✅ Cookies appear with `SameSite=Lax`
 - ✅ Logout clears cookies (`Max-Age=0`)
 
 ### Production (https://yourdomain.com)
+
 - ✅ Cookies appear with `httpOnly` flag
 - ✅ Cookies appear with `Secure=true` (HTTPS required)
 - ✅ Cookies appear with `SameSite=Lax`
@@ -160,4 +165,3 @@ const data = await fetcher("/api/some-endpoint");
    - Cookies should be cleared
    - Should redirect to `/login`
    - Visiting `/student/*` should redirect to `/login`
-

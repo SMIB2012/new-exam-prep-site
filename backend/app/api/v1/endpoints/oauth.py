@@ -1,8 +1,8 @@
 """OAuth/OIDC endpoints."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends, Query, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
@@ -33,7 +33,6 @@ def _create_tokens_for_user(user: User, db: Session) -> TokensResponse:
     """Create access and refresh tokens for a user (same as auth.py)."""
     from datetime import timedelta
 
-    from app.models.auth import RefreshToken
 
     # Create access token
     access_token = create_access_token(str(user.id), user.role)
@@ -43,13 +42,13 @@ def _create_tokens_for_user(user: User, db: Session) -> TokensResponse:
     token_hash = hash_token(refresh_token)
 
     # Calculate expiry
-    expires_at = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    expires_at = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
     # Revoke old refresh tokens for this user (single session per user)
     db.query(RefreshToken).filter(
         RefreshToken.user_id == user.id,
         RefreshToken.revoked_at.is_(None),
-    ).update({"revoked_at": datetime.now(timezone.utc)})
+    ).update({"revoked_at": datetime.now(UTC)})
 
     # Create new refresh token record
     db_refresh_token = RefreshToken(
@@ -81,7 +80,7 @@ async def oauth_start(
     try:
         adapter = get_provider_adapter(provider)
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
 
     # Generate state and nonce
     state = generate_oauth_state()
@@ -112,9 +111,9 @@ async def oauth_start(
 )
 async def oauth_callback(
     provider: str,
+    request: Request,
     code: str = Query(...),
     state: str = Query(...),
-    request: Request,
     db: Session = Depends(get_db),
 ) -> LoginResponse:
     """Handle OAuth callback."""
@@ -173,7 +172,7 @@ async def oauth_callback(
         id_token = token_response.get("id_token")
         if not id_token:
             raise ValueError("No id_token in response")
-    except Exception as e:
+    except Exception:
         log_security_event(
             request,
             event_type="oauth_callback_failed",
@@ -193,7 +192,7 @@ async def oauth_callback(
         if not client_id:
             raise ValueError("Client ID not configured")
         id_token_payload = await adapter.validate_id_token(id_token, nonce, client_id)
-    except Exception as e:
+    except Exception:
         log_security_event(
             request,
             event_type="oauth_callback_failed",
@@ -258,10 +257,12 @@ async def oauth_callback(
             )
 
         # Check MFA
-        from app.models.mfa import MFATOTP
         from app.core.mfa import create_mfa_token
+        from app.models.mfa import MFATOTP
 
-        mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled == True).first()
+        mfa_totp = (
+            db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled).first()
+        )
 
         if mfa_totp:
             mfa_token = create_mfa_token(str(user.id))
@@ -279,7 +280,7 @@ async def oauth_callback(
             )
 
         # Update last login
-        user.last_login_at = datetime.now(timezone.utc)
+        user.last_login_at = datetime.now(UTC)
         db.commit()
 
         # Create tokens
@@ -348,10 +349,10 @@ async def oauth_callback(
     db.refresh(user)
 
     # Check MFA (new user won't have it, but check anyway)
-    from app.models.mfa import MFATOTP
     from app.core.mfa import create_mfa_token
+    from app.models.mfa import MFATOTP
 
-    mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled == True).first()
+    mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled).first()
 
     if mfa_totp:
         mfa_token = create_mfa_token(str(user.id))
@@ -537,4 +538,3 @@ async def oauth_link_confirm(
     )
 
     return OAuthLinkConfirmResponse()
-

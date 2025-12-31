@@ -78,4 +78,3 @@ def log_security_event(
         logger.warning("Security event: degraded", extra=log_data)
     else:
         logger.info("Security event: allowed", extra=log_data)
-

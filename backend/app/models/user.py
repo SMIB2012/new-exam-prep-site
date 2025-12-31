@@ -37,10 +37,18 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), nullable=True)
 
     # Relationships
-    refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")
+    refresh_tokens = relationship(
+        "RefreshToken", back_populates="user", cascade="all, delete-orphan"
+    )
     password_reset_tokens = relationship(
         "PasswordResetToken", back_populates="user", cascade="all, delete-orphan"
     )
-    oauth_identities = relationship("OAuthIdentity", back_populates="user", cascade="all, delete-orphan")
-    mfa_totp = relationship("MFATOTP", back_populates="user", uselist=False, cascade="all, delete-orphan")
-    mfa_backup_codes = relationship("MFABackupCode", back_populates="user", cascade="all, delete-orphan")
+    oauth_identities = relationship(
+        "OAuthIdentity", back_populates="user", cascade="all, delete-orphan"
+    )
+    mfa_totp = relationship(
+        "MFATOTP", back_populates="user", uselist=False, cascade="all, delete-orphan"
+    )
+    mfa_backup_codes = relationship(
+        "MFABackupCode", back_populates="user", cascade="all, delete-orphan"
+    )

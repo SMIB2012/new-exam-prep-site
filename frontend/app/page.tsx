@@ -16,18 +16,18 @@ import { Footer } from "@/components/landing/Footer";
 
 export default function LandingPage() {
   const router = useRouter();
-  const { userId, role } = useUserStore();
+  const { user } = useUserStore();
 
   useEffect(() => {
     // If user is already logged in, redirect to their dashboard
-    if (userId && role) {
-      if (role === "student") {
+    if (user) {
+      if (user.role === "STUDENT") {
         router.push("/student/dashboard");
-      } else if (role === "admin") {
+      } else if (user.role === "ADMIN" || user.role === "REVIEWER") {
         router.push("/admin");
       }
     }
-  }, [userId, role, router]);
+  }, [user, router]);
 
   return (
     <div className="min-h-screen bg-white">

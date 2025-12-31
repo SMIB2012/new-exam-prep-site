@@ -31,4 +31,3 @@ class Theme(Base):
 
     block = relationship("Block", back_populates="themes")
     questions = relationship("Question", back_populates="theme")
-

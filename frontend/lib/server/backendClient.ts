@@ -79,4 +79,3 @@ export async function backendFetch<T>(
     headers: response.headers,
   };
 }
-

@@ -5,7 +5,9 @@ import type { NextRequest } from "next/server";
  * Decode JWT without verification (for routing only).
  * Backend always verifies for actual authorization.
  */
-function decodeJWT(token: string): { sub?: string; role?: string; exp?: number; type?: string } | null {
+function decodeJWT(
+  token: string,
+): { sub?: string; role?: string; exp?: number; type?: string } | null {
   try {
     const parts = token.split(".");
     if (parts.length !== 3) return null;
@@ -98,4 +100,3 @@ export const config = {
     "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };
-

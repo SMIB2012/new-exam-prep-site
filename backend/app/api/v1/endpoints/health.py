@@ -77,9 +77,7 @@ async def readiness_check(
         if is_redis_available():
             checks["redis"] = ReadinessCheck(status="ok")
         else:
-            checks["redis"] = ReadinessCheck(
-                status="degraded", message="Redis unavailable"
-            )
+            checks["redis"] = ReadinessCheck(status="degraded", message="Redis unavailable")
             # Only degrade if Redis is not required
             if not settings.REDIS_REQUIRED and overall_status == "ok":
                 overall_status = "degraded"
@@ -93,4 +91,3 @@ async def readiness_check(
         checks=checks,
         request_id=request_id,
     )
-

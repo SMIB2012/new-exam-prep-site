@@ -122,4 +122,3 @@ export function clearAuthCookies(response: NextResponse): NextResponse {
 
   return response;
 }
-

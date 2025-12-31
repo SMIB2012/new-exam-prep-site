@@ -40,7 +40,9 @@ def get_redis_client() -> redis.Redis | None:
             logger.info("Redis connection established")
         except (ConnectionError, RedisError) as e:
             if settings.REDIS_REQUIRED:
-                raise ConnectionError(f"Redis connection failed and REDIS_REQUIRED=true: {e}") from e
+                raise ConnectionError(
+                    f"Redis connection failed and REDIS_REQUIRED=true: {e}"
+                ) from e
             logger.warning(f"Redis connection failed (non-fatal): {e}")
             _redis_client = None
 
@@ -68,4 +70,3 @@ def init_redis() -> None:
             if settings.REDIS_REQUIRED:
                 raise
             logger.warning(f"Redis initialization failed (non-fatal): {e}")
-

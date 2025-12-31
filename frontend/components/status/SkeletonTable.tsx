@@ -15,10 +15,7 @@ export function SkeletonTable({ rows = 6, cols = 5, className }: SkeletonTablePr
         {/* Header */}
         <div className="flex gap-4 border-b border-slate-200 pb-3">
           {Array.from({ length: cols }).map((_, i) => (
-            <div
-              key={`header-${i}`}
-              className="h-4 w-24 animate-pulse rounded bg-slate-200"
-            />
+            <div key={`header-${i}`} className="h-4 w-24 animate-pulse rounded bg-slate-200" />
           ))}
         </div>
         {/* Rows */}
@@ -29,7 +26,7 @@ export function SkeletonTable({ rows = 6, cols = 5, className }: SkeletonTablePr
                 key={`cell-${rowIndex}-${colIndex}`}
                 className={cn(
                   "h-4 animate-pulse rounded bg-slate-200",
-                  colIndex === 0 ? "w-16" : colIndex === cols - 1 ? "w-32" : "w-24"
+                  colIndex === 0 ? "w-16" : colIndex === cols - 1 ? "w-32" : "w-24",
                 )}
                 style={{
                   animationDelay: `${(rowIndex * cols + colIndex) * 50}ms`,
@@ -42,4 +39,3 @@ export function SkeletonTable({ rows = 6, cols = 5, className }: SkeletonTablePr
     </div>
   );
 }
-

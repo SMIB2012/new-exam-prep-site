@@ -38,23 +38,18 @@ export function EmptyState({
         <h3
           className={cn(
             "font-semibold text-slate-900",
-            variant === "page" ? "text-xl" : variant === "card" ? "text-lg" : "text-base"
+            variant === "page" ? "text-xl" : variant === "card" ? "text-lg" : "text-base",
           )}
         >
           {title}
         </h3>
         {description && (
-          <p
-            className={cn(
-              "mt-2 text-slate-600",
-              variant === "page" ? "text-base" : "text-sm"
-            )}
-          >
+          <p className={cn("mt-2 text-slate-600", variant === "page" ? "text-base" : "text-sm")}>
             {description}
           </p>
         )}
       </div>
-      {(actionLabel && (onAction || actionHref)) && (
+      {actionLabel && (onAction || actionHref) && (
         <div className="mt-2">
           {actionHref ? (
             <Button asChild>
@@ -71,10 +66,7 @@ export function EmptyState({
   if (variant === "page") {
     return (
       <div
-        className={cn(
-          "flex min-h-[60vh] items-center justify-center",
-          className
-        )}
+        className={cn("flex min-h-[60vh] items-center justify-center", className)}
         role="status"
         aria-live="polite"
       >
@@ -105,4 +97,3 @@ export function EmptyState({
     </div>
   );
 }
-

@@ -2,8 +2,6 @@
 
 from sqlalchemy.orm import DeclarativeBase
 
-from app.db.engine import engine
-
 
 class Base(DeclarativeBase):
     """Base class for all database models."""
@@ -13,11 +11,11 @@ class Base(DeclarativeBase):
 
 # Import all models here so Alembic can detect them
 from app.models import (  # noqa: F401
+    MFATOTP,
     AttemptAnswer,
     AttemptSession,
     Block,
     MFABackupCode,
-    MFATOTP,
     OAuthIdentity,
     PasswordResetToken,
     Question,
@@ -25,4 +23,3 @@ from app.models import (  # noqa: F401
     Theme,
     User,
 )
-

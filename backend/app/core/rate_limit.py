@@ -1,6 +1,5 @@
 """Rate limiting utilities using Redis."""
 
-from typing import Tuple
 
 from fastapi import Request, status
 
@@ -13,7 +12,7 @@ from app.core.security_logging import log_security_event
 logger = get_logger(__name__)
 
 
-def rate_limit(key: str, limit: int, window_seconds: int) -> Tuple[bool, int, int]:
+def rate_limit(key: str, limit: int, window_seconds: int) -> tuple[bool, int, int]:
     """
     Check rate limit using Redis.
 
@@ -118,4 +117,3 @@ def get_client_ip(request: Request) -> str:
 def normalize_email_for_key(email: str) -> str:
     """Normalize email for use in Redis keys."""
     return email.lower().strip()
-

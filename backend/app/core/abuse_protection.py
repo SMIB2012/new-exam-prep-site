@@ -5,7 +5,7 @@ from fastapi import Request, status
 from app.core.app_exceptions import raise_app_error
 from app.core.config import settings
 from app.core.logging import get_logger
-from app.core.rate_limit import get_client_ip, normalize_email_for_key
+from app.core.rate_limit import normalize_email_for_key
 from app.core.redis_client import get_redis_client
 from app.core.security_logging import log_security_event
 
@@ -154,4 +154,3 @@ def check_ip_locked(ip: str, request: Request) -> None:
     except Exception as e:
         logger.error(f"Failed to check IP lock: {e}", exc_info=True)
         # On error, don't block (fail open if Redis fails)
-

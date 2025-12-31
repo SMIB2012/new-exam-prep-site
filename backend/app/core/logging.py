@@ -12,7 +12,9 @@ from app.core.config import settings
 class CustomJsonFormatter(jsonlogger.JsonFormatter):
     """Custom JSON formatter with consistent fields."""
 
-    def add_fields(self, log_record: dict[str, Any], record: logging.LogRecord, message_dict: dict) -> None:
+    def add_fields(
+        self, log_record: dict[str, Any], record: logging.LogRecord, message_dict: dict
+    ) -> None:
         """Add custom fields to log record."""
         super().add_fields(log_record, record, message_dict)
 
@@ -56,4 +58,3 @@ def setup_logging() -> None:
 def get_logger(name: str) -> logging.Logger:
     """Get a logger instance."""
     return logging.getLogger(name)
-

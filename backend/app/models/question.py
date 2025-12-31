@@ -1,6 +1,6 @@
 """Question model."""
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, JSON, String, Text
+from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -25,4 +25,3 @@ class Question(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     theme = relationship("Theme", back_populates="questions")
-

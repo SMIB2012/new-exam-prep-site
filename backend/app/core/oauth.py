@@ -2,7 +2,7 @@
 
 import json
 import secrets
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 from urllib.parse import urlencode
 
@@ -141,7 +141,7 @@ class GoogleOAuthAdapter(OAuthProviderAdapter):
     async def _get_jwks(self) -> dict:
         """Get JWKS (cached with TTL)."""
         cache_key = "jwks:google"
-        now = datetime.now(timezone.utc).timestamp()
+        now = datetime.now(UTC).timestamp()
 
         # Check cache
         if cache_key in _jwks_cache:
@@ -256,7 +256,7 @@ class MicrosoftOAuthAdapter(OAuthProviderAdapter):
     async def _get_jwks(self) -> dict:
         """Get JWKS (cached with TTL)."""
         cache_key = "jwks:microsoft"
-        now = datetime.now(timezone.utc).timestamp()
+        now = datetime.now(UTC).timestamp()
 
         # Check cache
         if cache_key in _jwks_cache:
@@ -307,7 +307,7 @@ def store_oauth_state(state: str, nonce: str, provider: str) -> None:
     data = {
         "nonce": nonce,
         "provider": provider,
-        "created_at": str(datetime.now(timezone.utc)),
+        "created_at": str(datetime.now(UTC)),
     }
     redis_client.setex(
         f"oauth:state:{state}",
@@ -343,7 +343,7 @@ def create_oauth_link_token(provider: str, provider_subject: str, email: str) ->
         "provider": provider,
         "provider_subject": provider_subject,
         "email": email,
-        "created_at": str(datetime.now(timezone.utc)),
+        "created_at": str(datetime.now(UTC)),
     }
     redis_client.setex(
         f"oauth:link:{link_token}",
@@ -365,4 +365,3 @@ def get_oauth_link_token(link_token: str) -> dict[str, Any] | None:
         redis_client.delete(key)  # One-time use
         return json.loads(data)
     return None
-

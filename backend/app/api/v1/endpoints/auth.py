@@ -1,6 +1,6 @@
 """Authentication endpoints."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.orm import Session
@@ -13,6 +13,8 @@ from app.core.abuse_protection import (
 )
 from app.core.app_exceptions import raise_app_error
 from app.core.config import settings
+from app.core.dependencies import get_current_user
+from app.core.rate_limit import get_client_ip
 from app.core.rate_limit_deps import (
     require_rate_limit_login_email,
     require_rate_limit_login_ip,
@@ -21,7 +23,6 @@ from app.core.rate_limit_deps import (
     require_rate_limit_reset_ip,
     require_rate_limit_signup_ip,
 )
-from app.core.rate_limit import get_client_ip
 from app.core.security import (
     create_access_token,
     create_refresh_token,
@@ -31,7 +32,6 @@ from app.core.security import (
     verify_password,
 )
 from app.core.security_logging import log_security_event
-from app.core.dependencies import get_current_user
 from app.db.session import get_db
 from app.models.auth import PasswordResetToken, RefreshToken
 from app.models.user import User, UserRole
@@ -64,13 +64,13 @@ def _create_tokens_for_user(user: User, db: Session) -> TokensResponse:
     token_hash = hash_token(refresh_token)
 
     # Calculate expiry
-    expires_at = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    expires_at = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
     # Revoke old refresh tokens for this user (single session per user)
     db.query(RefreshToken).filter(
         RefreshToken.user_id == user.id,
         RefreshToken.revoked_at.is_(None),
-    ).update({"revoked_at": datetime.now(timezone.utc)})
+    ).update({"revoked_at": datetime.now(UTC)})
 
     # Create new refresh token record
     db_refresh_token = RefreshToken(
@@ -153,7 +153,9 @@ async def signup(
     response_model=LoginResponse,
     status_code=status.HTTP_200_OK,
     summary="Log in",
-    description="Authenticate with email and password. Returns user data and authentication tokens.",
+    description=(
+        "Authenticate with email and password. Returns user data and authentication tokens."
+    ),
 )
 async def login(
     request_data: LoginRequest,
@@ -181,7 +183,11 @@ async def login(
     password_hash = user.password_hash if (user and user.password_hash) else dummy_hash
 
     # Verify password (this takes similar time whether user exists or not)
-    password_valid = verify_password(request_data.password, password_hash) if password_hash != dummy_hash else False
+    password_valid = (
+        verify_password(request_data.password, password_hash)
+        if password_hash != dummy_hash
+        else False
+    )
 
     # Generic error for invalid credentials (don't reveal if email exists)
     if not user or not password_valid:
@@ -221,10 +227,10 @@ async def login(
     clear_login_failures(email_normalized, ip)
 
     # Check if MFA is enabled
-    from app.models.mfa import MFATOTP
     from app.core.mfa import create_mfa_token
+    from app.models.mfa import MFATOTP
 
-    mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled == True).first()
+    mfa_totp = db.query(MFATOTP).filter(MFATOTP.user_id == user.id, MFATOTP.enabled).first()
 
     if mfa_totp:
         # MFA required - return step-up token
@@ -245,7 +251,7 @@ async def login(
 
     # No MFA - proceed with normal login
     # Update last login
-    user.last_login_at = datetime.now(timezone.utc)
+    user.last_login_at = datetime.now(UTC)
     db.commit()
 
     # Log successful login
@@ -325,13 +331,13 @@ async def refresh(
     require_rate_limit_refresh(str(user.id), request)
 
     # Rotate: revoke old token
-    refresh_token_record.revoked_at = datetime.now(timezone.utc)
+    refresh_token_record.revoked_at = datetime.now(UTC)
 
     # Create new tokens
     new_access_token = create_access_token(str(user.id), user.role)
     new_refresh_token = create_refresh_token()
     new_token_hash = hash_token(new_refresh_token)
-    expires_at = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    expires_at = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
     # Create new refresh token record
     new_refresh_token_record = RefreshToken(
@@ -373,6 +379,7 @@ async def refresh(
 )
 async def logout(
     request_data: LogoutRequest,
+    request: Request,
     db: Session = Depends(get_db),
 ) -> StatusResponse:
     """Log out by revoking refresh token."""
@@ -390,7 +397,7 @@ async def logout(
     )
 
     if refresh_token_record:
-        refresh_token_record.revoked_at = datetime.now(timezone.utc)
+        refresh_token_record.revoked_at = datetime.now(UTC)
         db.commit()
         log_security_event(
             request,
@@ -422,7 +429,7 @@ async def logout_all(
             RefreshToken.user_id == current_user.id,
             RefreshToken.revoked_at.is_(None),
         )
-        .update({"revoked_at": datetime.now(timezone.utc)})
+        .update({"revoked_at": datetime.now(UTC)})
     )
     db.commit()
 
@@ -471,13 +478,13 @@ async def request_password_reset(
     require_rate_limit_reset_email(email_normalized, request)
 
     # Always return success to prevent email enumeration
-    user = db.query(User).filter(User.email == email_normalized, User.is_active == True).first()
+    user = db.query(User).filter(User.email == email_normalized, User.is_active).first()
 
     if user:
         # Generate reset token
         reset_token = generate_password_reset_token()
         token_hash = hash_token(reset_token)
-        expires_at = datetime.now(timezone.utc) + timedelta(
+        expires_at = datetime.now(UTC) + timedelta(
             minutes=settings.PASSWORD_RESET_EXPIRE_MINUTES
         )
 
@@ -514,6 +521,7 @@ async def request_password_reset(
 )
 async def confirm_password_reset(
     request_data: PasswordResetConfirm,
+    request: Request,
     db: Session = Depends(get_db),
 ) -> StatusResponse:
     """Confirm password reset with token."""
@@ -522,9 +530,7 @@ async def confirm_password_reset(
 
     # Find valid reset token
     reset_token_record = (
-        db.query(PasswordResetToken)
-        .filter(PasswordResetToken.token_hash == token_hash)
-        .first()
+        db.query(PasswordResetToken).filter(PasswordResetToken.token_hash == token_hash).first()
     )
 
     if not reset_token_record or not reset_token_record.is_valid():
@@ -557,13 +563,13 @@ async def confirm_password_reset(
 
     # Update password
     user.password_hash = hash_password(request_data.new_password)
-    reset_token_record.used_at = datetime.now(timezone.utc)
+    reset_token_record.used_at = datetime.now(UTC)
 
     # Revoke all refresh tokens for this user (security best practice)
     db.query(RefreshToken).filter(
         RefreshToken.user_id == user.id,
         RefreshToken.revoked_at.is_(None),
-    ).update({"revoked_at": datetime.now(timezone.utc)})
+    ).update({"revoked_at": datetime.now(UTC)})
 
     db.commit()
 
@@ -576,4 +582,3 @@ async def confirm_password_reset(
     )
 
     return StatusResponse(status="ok")
-

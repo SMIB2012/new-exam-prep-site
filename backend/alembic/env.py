@@ -2,9 +2,6 @@
 
 from logging.config import fileConfig
 
-from sqlalchemy import pool
-from sqlalchemy.engine import Connection
-
 from alembic import context
 
 # Import settings and base
@@ -14,11 +11,11 @@ from app.db.engine import engine
 
 # Import all models so Alembic can detect them
 from app.models import (  # noqa: F401
+    MFATOTP,
     AttemptAnswer,
     AttemptSession,
     Block,
     MFABackupCode,
-    MFATOTP,
     OAuthIdentity,
     PasswordResetToken,
     Question,
@@ -94,4 +91,3 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
-

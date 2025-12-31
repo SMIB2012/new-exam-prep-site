@@ -31,7 +31,7 @@ export function ErrorState({
       <AlertCircle
         className={cn(
           "text-red-600",
-          variant === "page" ? "h-12 w-12" : variant === "card" ? "h-10 w-10" : "h-8 w-8"
+          variant === "page" ? "h-12 w-12" : variant === "card" ? "h-10 w-10" : "h-8 w-8",
         )}
         aria-hidden="true"
       />
@@ -39,24 +39,17 @@ export function ErrorState({
         <h3
           className={cn(
             "font-semibold text-slate-900",
-            variant === "page" ? "text-xl" : variant === "card" ? "text-lg" : "text-base"
+            variant === "page" ? "text-xl" : variant === "card" ? "text-lg" : "text-base",
           )}
         >
           {title}
         </h3>
         {description && (
-          <p
-            className={cn(
-              "mt-2 text-slate-600",
-              variant === "page" ? "text-base" : "text-sm"
-            )}
-          >
+          <p className={cn("mt-2 text-slate-600", variant === "page" ? "text-base" : "text-sm")}>
             {description}
           </p>
         )}
-        {errorCode && (
-          <p className="mt-1 text-xs text-slate-500">Error code: {errorCode}</p>
-        )}
+        {errorCode && <p className="mt-1 text-xs text-slate-500">Error code: {errorCode}</p>}
         {showSupportHint && (
           <p className="mt-3 text-sm text-slate-600">
             If this problem persists, please{" "}
@@ -81,10 +74,7 @@ export function ErrorState({
   if (variant === "page") {
     return (
       <div
-        className={cn(
-          "flex min-h-[60vh] items-center justify-center",
-          className
-        )}
+        className={cn("flex min-h-[60vh] items-center justify-center", className)}
         role="alert"
         aria-live="assertive"
       >
@@ -115,4 +105,3 @@ export function ErrorState({
     </div>
   );
 }
-

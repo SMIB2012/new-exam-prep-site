@@ -48,12 +48,14 @@ export function LoginCard() {
       if (result.error) {
         // Handle specific error codes
         if (result.error.code === "RATE_LIMITED") {
-          const retryAfter = (result.error.details as { retry_after_seconds?: number })?.retry_after_seconds;
+          const retryAfter = (result.error.details as { retry_after_seconds?: number })
+            ?.retry_after_seconds;
           setErrors({
             general: `Too many login attempts. Please try again in ${retryAfter || "a few"} seconds.`,
           });
         } else if (result.error.code === "ACCOUNT_LOCKED") {
-          const lockExpires = (result.error.details as { lock_expires_in?: number })?.lock_expires_in;
+          const lockExpires = (result.error.details as { lock_expires_in?: number })
+            ?.lock_expires_in;
           setErrors({
             general: `Account temporarily locked. Please try again in ${lockExpires || "a few"} minutes.`,
           });
@@ -168,9 +170,7 @@ export function LoginCard() {
           </div>
 
           {errors.general && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">
-              {errors.general}
-            </div>
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">{errors.general}</div>
           )}
 
           <Button

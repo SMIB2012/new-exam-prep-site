@@ -2,7 +2,7 @@
 
 import hashlib
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import uuid4
 
@@ -41,7 +41,7 @@ def create_access_token(user_id: str, role: str) -> str:
     if not settings.JWT_SECRET:
         raise ValueError("JWT_SECRET must be set")
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     expire = now + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
     payload = {
@@ -90,4 +90,3 @@ def hash_token(token: str) -> str:
 def generate_password_reset_token() -> str:
     """Generate a password reset token (opaque random string)."""
     return secrets.token_urlsafe(32)
-

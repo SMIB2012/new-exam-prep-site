@@ -16,4 +16,3 @@ class OAuthLinkConfirmResponse(BaseModel):
 
     status: str = "ok"
     message: str = "Account linked successfully"
-

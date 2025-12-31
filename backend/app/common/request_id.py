@@ -2,11 +2,10 @@
 
 import time
 import uuid
-from typing import Callable
+from collections.abc import Callable
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.types import ASGIApp
 
 from app.core.logging import get_logger
 
@@ -78,4 +77,3 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
         )
 
         return response
-

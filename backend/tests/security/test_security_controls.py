@@ -1,11 +1,7 @@
 """Security verification harness for critical security behaviors."""
 
-import json
 import os
-import re
-import subprocess
 import time
-from typing import Any
 
 import httpx
 import pytest
@@ -89,7 +85,9 @@ class TestSecurityControls:
         assert rate_limited_response is not None, "Rate limit should have been triggered"
 
         error = self._verify_error_envelope(rate_limited_response, "RATE_LIMITED")
-        assert "Retry-After" in rate_limited_response.headers, "Response must include Retry-After header"
+        assert (
+            "Retry-After" in rate_limited_response.headers
+        ), "Response must include Retry-After header"
         retry_after = int(rate_limited_response.headers["Retry-After"])
         assert retry_after > 0, "Retry-After must be positive"
 
@@ -122,7 +120,7 @@ class TestSecurityControls:
 
         # Trigger failed logins to reach threshold (default 8)
         responses = []
-        for i in range(10):
+        for _i in range(10):
             response = await self.client.post(
                 f"{API_PREFIX}/auth/login",
                 json={"email": test_email, "password": "wrongpassword"},
@@ -166,7 +164,7 @@ class TestSecurityControls:
         )
 
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
-        error = self._verify_error_envelope(response, "OAUTH_STATE_INVALID")
+        self._verify_error_envelope(response, "OAUTH_STATE_INVALID")
 
         request_id = self._extract_request_id(response)
         if request_id:
@@ -190,7 +188,10 @@ class TestSecurityControls:
         if "error" in data:
             # Verify it's either UNAUTHORIZED or MFA_INVALID
             error_code = data["error"].get("code")
-            assert error_code in ["UNAUTHORIZED", "MFA_INVALID"], f"Unexpected error code: {error_code}"
+            assert error_code in [
+                "UNAUTHORIZED",
+                "MFA_INVALID",
+            ], f"Unexpected error code: {error_code}"
 
         request_id = self._extract_request_id(response)
         if request_id:
@@ -224,19 +225,6 @@ class TestSecurityControls:
     async def test_7_no_secrets_in_logs(self):
         """TEST 7: Verify no secrets appear in logs."""
         # Dangerous substrings to check for
-        dangerous_patterns = [
-            r"password\s*[:=]",
-            r"access_token\s*[:=]",
-            r"refresh_token\s*[:=]",
-            r"id_token\s*[:=]",
-            r"authorization:\s*bearer",
-            r"bearer\s+[a-zA-Z0-9_-]{20,}",
-            r"secret\s*[:=]\s*[a-zA-Z0-9_-]{10,}",
-            r"otpauth://",
-            r"backup_code\s*[:=]",
-            r"reset_token\s*[:=]",
-            r"code=\s*[a-zA-Z0-9_-]{20,}",  # OAuth code
-        ]
 
         # In a real implementation, you would:
         # 1. Read logs from docker logs or log file
@@ -250,4 +238,3 @@ class TestSecurityControls:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
-

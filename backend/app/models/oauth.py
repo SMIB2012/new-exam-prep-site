@@ -24,7 +24,9 @@ class OAuthIdentity(Base):
     __tablename__ = "oauth_identities"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
     provider = Column(String, nullable=False)
     provider_subject = Column(String, nullable=False)  # OIDC 'sub' claim
     email_at_link_time = Column(String, nullable=True)
@@ -37,4 +39,3 @@ class OAuthIdentity(Base):
     __table_args__ = (
         UniqueConstraint("provider", "provider_subject", name="uq_oauth_provider_subject"),
     )
-

@@ -31,7 +31,9 @@ def get_request_id(request: Request) -> str:
     return str(uuid.uuid4())
 
 
-async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+async def validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
     """Handle request validation errors (422)."""
     request_id = get_request_id(request)
     errors = exc.errors()
@@ -79,7 +81,11 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
             ).model_dump(),
         )
         # Add Retry-After header for rate limiting
-        if exc.status_code == status.HTTP_429_TOO_MANY_REQUESTS and exc.details and isinstance(exc.details, dict):
+        if (
+            exc.status_code == status.HTTP_429_TOO_MANY_REQUESTS
+            and exc.details
+            and isinstance(exc.details, dict)
+        ):
             retry_after = exc.details.get("retry_after_seconds")
             if retry_after:
                 response.headers["Retry-After"] = str(retry_after)
@@ -141,4 +147,3 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
             )
         ).model_dump(),
     )
-

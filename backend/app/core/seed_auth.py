@@ -62,4 +62,3 @@ def seed_demo_accounts() -> None:
         raise
     finally:
         db.close()
-

@@ -8,13 +8,13 @@ const nextConfig = {
   // Webpack configuration for compatibility (when not using Turbopack)
   webpack: (config, { isServer }) => {
     // Fix module resolution for packages using "exports" field
-    config.resolve.conditionNames = ['require', 'node', 'default'];
-    
+    config.resolve.conditionNames = ["require", "node", "default"];
+
     // Ensure proper resolution of @radix-ui packages
     config.resolve.alias = {
       ...config.resolve.alias,
     };
-    
+
     return config;
   },
 };

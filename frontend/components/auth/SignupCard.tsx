@@ -221,9 +221,7 @@ export function SignupCard() {
           </p>
 
           {errors.general && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">
-              {errors.general}
-            </div>
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">{errors.general}</div>
           )}
 
           <Button

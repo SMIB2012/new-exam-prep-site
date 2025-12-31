@@ -41,10 +41,7 @@ export interface AuthResponse<T = unknown> {
   method?: string;
 }
 
-async function authFetch<T>(
-  endpoint: string,
-  options: RequestInit = {},
-): Promise<AuthResponse<T>> {
+async function authFetch<T>(endpoint: string, options: RequestInit = {}): Promise<AuthResponse<T>> {
   const response = await fetch(`/api/auth${endpoint}`, {
     ...options,
     credentials: "include", // Include cookies
@@ -116,4 +113,3 @@ export const authClient = {
     });
   },
 };
-

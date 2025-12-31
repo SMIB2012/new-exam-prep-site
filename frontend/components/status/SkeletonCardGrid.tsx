@@ -9,12 +9,7 @@ interface SkeletonCardGridProps {
 
 export function SkeletonCardGrid({ cards = 6, className }: SkeletonCardGridProps) {
   return (
-    <div
-      className={cn(
-        "grid gap-4 md:grid-cols-2 lg:grid-cols-3",
-        className
-      )}
-    >
+    <div className={cn("grid gap-4 md:grid-cols-2 lg:grid-cols-3", className)}>
       {Array.from({ length: cards }).map((_, i) => (
         <div
           key={`card-${i}`}
@@ -36,4 +31,3 @@ export function SkeletonCardGrid({ cards = 6, className }: SkeletonCardGridProps
     </div>
   );
 }
-
