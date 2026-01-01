@@ -69,13 +69,15 @@ await authClient.logout();
 
 ## Route Guards
 
-Middleware protects routes:
+Route protection is handled via **Server Component layout guards**:
 
-- `/student/*` - Requires authentication (any role)
-- `/admin/*` - Requires ADMIN or REVIEWER role
+- `/student/*` - `app/student/layout.tsx` calls `await requireUser()` (requires authentication, any role)
+- `/admin/*` - `app/admin/layout.tsx` calls `await requireRole(["ADMIN", "REVIEWER"])` (requires authentication + role)
 - `/login`, `/signup` - Public (no auth required)
 
-Unauthenticated users are redirected to `/login` with a `redirect` query parameter.
+Unauthenticated users are redirected to `/login` with a `redirect` query parameter. Users with insufficient permissions are redirected to `/403`.
+
+**Note**: Route protection is done via Server Component layout guards; we do not rely on Next middleware for auth. The backend FastAPI RBAC dependencies provide the enforcement layer, while frontend guards provide UX + safety.
 
 ## Automatic Token Refresh
 
@@ -97,7 +99,7 @@ const data = await fetcher("/api/some-endpoint");
 - ✅ Token rotation on refresh
 - ✅ Automatic logout on refresh failure
 - ✅ No tokens in localStorage
-- ✅ MFA pending tokens rejected in middleware
+- ✅ MFA pending tokens rejected in proxy
 - ✅ Centralized cookie configuration (no duplication)
 
 ## Testing

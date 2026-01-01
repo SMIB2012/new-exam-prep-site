@@ -1,6 +1,10 @@
 import { StudentSidebar } from "@/components/student/Sidebar";
+import { requireUser } from "@/lib/server/authGuard";
 
-export default function StudentLayout({ children }: { children: React.ReactNode }) {
+export default async function StudentLayout({ children }: { children: React.ReactNode }) {
+  // Enforce authentication - redirects to /login if not authenticated
+  await requireUser();
+
   return (
     <div className="flex min-h-screen">
       <StudentSidebar />

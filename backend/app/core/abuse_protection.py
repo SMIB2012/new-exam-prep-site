@@ -121,6 +121,11 @@ def check_email_locked(email: str, request: Request) -> None:
                 details={"lock_expires_in": ttl},
             )
     except Exception as e:
+        # Re-raise AppError (lock detected) - don't catch it
+        from app.core.app_exceptions import AppError
+        if isinstance(e, AppError):
+            raise
+        # Only catch non-AppError exceptions (Redis connection errors, etc.)
         logger.error(f"Failed to check email lock: {e}", exc_info=True)
         # On error, don't block (fail open if Redis fails)
 
@@ -152,5 +157,10 @@ def check_ip_locked(ip: str, request: Request) -> None:
                 details={"lock_expires_in": ttl},
             )
     except Exception as e:
+        # Re-raise AppError (lock detected) - don't catch it
+        from app.core.app_exceptions import AppError
+        if isinstance(e, AppError):
+            raise
+        # Only catch non-AppError exceptions (Redis connection errors, etc.)
         logger.error(f"Failed to check IP lock: {e}", exc_info=True)
         # On error, don't block (fail open if Redis fails)

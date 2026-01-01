@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import Field, field_validator  # type: ignore
+from pydantic import Field, field_validator, model_validator  # type: ignore
 from pydantic_settings import BaseSettings, SettingsConfigDict  # type: ignore
 
 
@@ -34,9 +34,9 @@ class Settings(BaseSettings):
     REDIS_ENABLED: bool = Field(default=True)
     REDIS_REQUIRED: bool = Field(default=False)  # True in prod, False in dev
 
-    # CORS
-    CORS_ORIGINS: list[str] = Field(
-        default_factory=lambda: ["http://localhost:3000", "http://localhost:3001"]
+    # CORS - Accept string or list, will be normalized to list
+    CORS_ORIGINS: str | list[str] = Field(
+        default="http://localhost:3000,http://localhost:3001"
     )
 
     # Logging
@@ -101,17 +101,27 @@ class Settings(BaseSettings):
     IP_LOCK_ESCALATION: bool = Field(default=True)
     IP_LOCK_MAX_TTL: int = Field(default=86400)  # 24 hours
 
-    @field_validator("CORS_ORIGINS", mode="before")
+    @model_validator(mode="before")
     @classmethod
-    def parse_cors_origins(cls, v):
+    def parse_cors_origins(cls, data):
         """Parse CORS_ORIGINS from comma-separated string or list."""
-        if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
-        return v
+        if isinstance(data, dict) and "CORS_ORIGINS" in data:
+            cors_origins = data["CORS_ORIGINS"]
+            if isinstance(cors_origins, str):
+                data["CORS_ORIGINS"] = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
+            elif isinstance(cors_origins, list):
+                data["CORS_ORIGINS"] = cors_origins
+        return data
 
     def __init__(self, **kwargs):
         """Validate settings on initialization."""
+        # Normalize CORS_ORIGINS to list if it's a string
+        if "CORS_ORIGINS" in kwargs and isinstance(kwargs["CORS_ORIGINS"], str):
+            kwargs["CORS_ORIGINS"] = [origin.strip() for origin in kwargs["CORS_ORIGINS"].split(",") if origin.strip()]
         super().__init__(**kwargs)
+        # Ensure CORS_ORIGINS is a list after initialization
+        if isinstance(self.CORS_ORIGINS, str):
+            object.__setattr__(self, "CORS_ORIGINS", [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()])
         # Fail fast in production if critical vars are missing
         if self.ENV == "prod":
             if not self.DATABASE_URL or self.DATABASE_URL.startswith(

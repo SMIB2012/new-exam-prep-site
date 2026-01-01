@@ -9,17 +9,5 @@ class Base(DeclarativeBase):
     pass
 
 
-# Import all models here so Alembic can detect them
-from app.models import (  # noqa: F401, E402
-    MFATOTP,
-    AttemptAnswer,
-    AttemptSession,
-    Block,
-    MFABackupCode,
-    OAuthIdentity,
-    PasswordResetToken,
-    Question,
-    RefreshToken,
-    Theme,
-    User,
-)
+# Note: Models are imported in app/models/__init__.py for Alembic discovery
+# Importing them here causes circular imports

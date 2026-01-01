@@ -1,6 +1,7 @@
 """Attempt models (Session and Answer)."""
 
 from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -13,7 +14,7 @@ class AttemptSession(Base):
     __tablename__ = "attempt_sessions"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     question_count = Column(Integer, nullable=False)
     time_limit_minutes = Column(Integer, nullable=False)
     question_ids = Column(JSON)  # List of question IDs

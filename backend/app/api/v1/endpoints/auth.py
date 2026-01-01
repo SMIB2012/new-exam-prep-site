@@ -13,7 +13,7 @@ from app.core.abuse_protection import (
 )
 from app.core.app_exceptions import raise_app_error
 from app.core.config import settings
-from app.core.dependencies import get_current_user
+from app.core.dependencies import get_current_user, require_roles
 from app.core.rate_limit import get_client_ip
 from app.core.rate_limit_deps import (
     require_rate_limit_login_email,
@@ -580,3 +580,17 @@ async def confirm_password_reset(
     )
 
     return StatusResponse(status="ok")
+
+
+@router.get(
+    "/admin/_rbac_smoke",
+    response_model=StatusResponse,
+    status_code=status.HTTP_200_OK,
+    summary="RBAC smoke test",
+    description="Test endpoint to verify RBAC dependency. Requires ADMIN role.",
+)
+async def rbac_smoke_test(
+    current_user: User = Depends(require_roles(UserRole.ADMIN)),
+) -> StatusResponse:
+    """RBAC smoke test endpoint - ADMIN only."""
+    return StatusResponse(status="ok", message="RBAC check passed - ADMIN access confirmed")

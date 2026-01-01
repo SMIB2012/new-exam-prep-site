@@ -88,6 +88,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-change_me_super_secret}
       - JWT_ACCESS_TTL_MIN=${JWT_ACCESS_TTL_MIN:-60}
       - JWT_REFRESH_TTL_DAYS=${JWT_REFRESH_TTL_DAYS:-30}
+      - TOKEN_PEPPER=${TOKEN_PEPPER:-dev_token_pepper_change_in_production}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
       - NEO4J_URI=${NEO4J_URI:-bolt://neo4j:7687}
       - NEO4J_USER=${NEO4J_USER:-neo4j}
