@@ -33,9 +33,8 @@ jobs:
         run: npm ci
 
       - name: Run linter
-        run: |
-          cd frontend
-          npx next lint --dir .
+        working-directory: frontend
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx --config .eslintrc.json
 
       - name: Check formatting
         working-directory: frontend
