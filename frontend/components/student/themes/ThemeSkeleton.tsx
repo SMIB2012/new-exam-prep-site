@@ -31,7 +31,7 @@ export function ThemeSkeleton() {
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-3">
           <Skeleton className="h-4 w-full" />
@@ -47,7 +47,7 @@ export function ThemeSkeleton() {
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-2">
           <Skeleton className="h-10 w-full" />

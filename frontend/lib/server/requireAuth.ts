@@ -16,4 +16,3 @@ export {
   getAccessTokenFromCookies,
   getRefreshTokenFromCookies,
 } from "./authGuard";
-

@@ -34,7 +34,11 @@ export async function GET() {
       },
     );
   } catch (error: unknown) {
-    const err = error as { status?: number; error?: { code: string; message: string; request_id?: string }; request_id?: string };
+    const err = error as {
+      status?: number;
+      error?: { code: string; message: string; request_id?: string };
+      request_id?: string;
+    };
     const status = err.status || 500;
     const backendError = err.error || {
       code: "INTERNAL_ERROR",

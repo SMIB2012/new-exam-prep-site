@@ -32,9 +32,7 @@ export function SecuritySettings({ settings, onChange }: SecuritySettingsProps) 
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="access_token_minutes">
-              Access Token Minutes (5-240)
-            </Label>
+            <Label htmlFor="access_token_minutes">Access Token Minutes (5-240)</Label>
             <Input
               id="access_token_minutes"
               type="number"
@@ -67,9 +65,7 @@ export function SecuritySettings({ settings, onChange }: SecuritySettingsProps) 
           </div>
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label htmlFor="force_logout_on_password_reset">
-                Force Logout on Password Reset
-              </Label>
+              <Label htmlFor="force_logout_on_password_reset">Force Logout on Password Reset</Label>
               <p className="text-sm text-muted-foreground">
                 Invalidate all sessions when password is reset
               </p>
@@ -92,9 +88,7 @@ export function SecuritySettings({ settings, onChange }: SecuritySettingsProps) 
           <CardDescription>API rate limiting configuration</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Configured in infrastructure
-          </p>
+          <p className="text-sm text-muted-foreground">Configured in infrastructure</p>
         </CardContent>
       </Card>
     </div>

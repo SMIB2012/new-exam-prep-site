@@ -30,11 +30,7 @@ interface CsvImportDialogProps {
   onSuccess?: () => void;
 }
 
-export function CsvImportDialog({
-  open,
-  onOpenChange,
-  onSuccess,
-}: CsvImportDialogProps) {
+export function CsvImportDialog({ open, onOpenChange, onSuccess }: CsvImportDialogProps) {
   const [importType, setImportType] = useState<"years" | "blocks" | "themes">("years");
   const [file, setFile] = useState<File | null>(null);
   const [dryRun, setDryRun] = useState(true);
@@ -81,7 +77,7 @@ export function CsvImportDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Import CSV</DialogTitle>
           <DialogDescription>
@@ -93,7 +89,10 @@ export function CsvImportDialog({
           {/* Import Type */}
           <div className="space-y-2">
             <Label>Import Type</Label>
-            <Select value={importType} onValueChange={(v) => setImportType(v as "years" | "blocks" | "themes")}>
+            <Select
+              value={importType}
+              onValueChange={(v) => setImportType(v as "years" | "blocks" | "themes")}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -109,12 +108,7 @@ export function CsvImportDialog({
           <div className="space-y-2">
             <Label>CSV File</Label>
             <div className="flex items-center gap-2">
-              <Input
-                type="file"
-                accept=".csv"
-                onChange={handleFileChange}
-                className="flex-1"
-              />
+              <Input type="file" accept=".csv" onChange={handleFileChange} className="flex-1" />
               {file && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <FileText className="h-4 w-4" />
@@ -127,20 +121,12 @@ export function CsvImportDialog({
           {/* Options */}
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
-              <Switch
-                id="dry-run"
-                checked={dryRun}
-                onCheckedChange={setDryRun}
-              />
+              <Switch id="dry-run" checked={dryRun} onCheckedChange={setDryRun} />
               <Label htmlFor="dry-run">Dry run (validate only)</Label>
             </div>
             {(importType === "blocks" || importType === "themes") && (
               <div className="flex items-center space-x-2">
-                <Switch
-                  id="auto-create"
-                  checked={autoCreate}
-                  onCheckedChange={setAutoCreate}
-                />
+                <Switch id="auto-create" checked={autoCreate} onCheckedChange={setAutoCreate} />
                 <Label htmlFor="auto-create">Auto-create missing parents</Label>
               </div>
             )}
@@ -148,12 +134,10 @@ export function CsvImportDialog({
 
           {/* Results */}
           {result && (
-            <div className="rounded-lg border p-4 space-y-3">
+            <div className="space-y-3 rounded-lg border p-4">
               <div className="flex items-center gap-2">
                 <h4 className="font-semibold">Import Results</h4>
-                {result.dry_run && (
-                  <Badge variant="secondary">Dry Run</Badge>
-                )}
+                {result.dry_run && <Badge variant="secondary">Dry Run</Badge>}
               </div>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex items-center gap-2">
@@ -173,12 +157,12 @@ export function CsvImportDialog({
               </div>
               {result.errors && result.errors.length > 0 && (
                 <div className="mt-3">
-                  <p className="text-sm font-medium mb-2">Errors:</p>
-                  <div className="max-h-48 overflow-y-auto space-y-1">
+                  <p className="mb-2 text-sm font-medium">Errors:</p>
+                  <div className="max-h-48 space-y-1 overflow-y-auto">
                     {result.errors.map((error, idx: number) => (
                       <div
                         key={idx}
-                        className="text-xs p-2 bg-destructive/10 rounded border border-destructive/20"
+                        className="rounded border border-destructive/20 bg-destructive/10 p-2 text-xs"
                       >
                         <span className="font-medium">Row {error.row}:</span>{" "}
                         {error.reason || error.message}
@@ -195,20 +179,12 @@ export function CsvImportDialog({
           <Button variant="outline" onClick={handleClose} disabled={importing}>
             {result ? "Close" : "Cancel"}
           </Button>
-          <Button
-            onClick={handleImport}
-            disabled={!file || importing}
-          >
-            <Upload className="h-4 w-4 mr-2" />
-            {importing
-              ? "Processing..."
-              : dryRun
-              ? "Validate"
-              : "Import"}
+          <Button onClick={handleImport} disabled={!file || importing}>
+            <Upload className="mr-2 h-4 w-4" />
+            {importing ? "Processing..." : dryRun ? "Validate" : "Import"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
-

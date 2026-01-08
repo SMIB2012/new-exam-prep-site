@@ -9,10 +9,7 @@ import { BlockOverviewCard } from "@/components/student/blocks/BlockOverviewCard
 import { ThemeCard } from "@/components/student/blocks/ThemeCard";
 import { QuickActionsCard } from "@/components/student/blocks/QuickActionsCard";
 import { BlockDetailSkeleton } from "@/components/student/blocks/BlockDetailSkeleton";
-import {
-  useBlockData,
-  useThemes,
-} from "@/lib/blocks/hooks";
+import { useBlockData, useThemes } from "@/lib/blocks/hooks";
 
 export default function BlockDetailPage() {
   const params = useParams();
@@ -28,7 +25,7 @@ export default function BlockDetailPage() {
   // Loading state
   if (loadingBlock) {
     return (
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto max-w-6xl">
         <BlockDetailSkeleton />
       </div>
     );
@@ -37,7 +34,7 @@ export default function BlockDetailPage() {
   // Error state - block not found
   if (blockError || !block) {
     return (
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6">
         <div>
           <Button variant="ghost" onClick={() => router.push("/student/blocks")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -65,19 +62,12 @@ export default function BlockDetailPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="mx-auto max-w-6xl space-y-6">
       {/* Header */}
-      <BlockHeader
-        block={block}
-        yearName={year?.name || "Unknown Year"}
-        status="not_available"
-      />
+      <BlockHeader block={block} yearName={year?.name || "Unknown Year"} status="not_available" />
 
       {/* Overview Card */}
-      <BlockOverviewCard
-        block={block}
-        themeCount={themes.length}
-      />
+      <BlockOverviewCard block={block} themeCount={themes.length} />
 
       {/* Themes Section */}
       <div className="space-y-4">
@@ -92,9 +82,9 @@ export default function BlockDetailPage() {
               <Card key={i}>
                 <CardContent className="pt-6">
                   <div className="space-y-2">
-                    <div className="h-6 w-3/4 bg-muted animate-pulse rounded" />
-                    <div className="h-4 w-1/2 bg-muted animate-pulse rounded" />
-                    <div className="h-10 w-full bg-muted animate-pulse rounded mt-4" />
+                    <div className="h-6 w-3/4 animate-pulse rounded bg-muted" />
+                    <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
+                    <div className="mt-4 h-10 w-full animate-pulse rounded bg-muted" />
                   </div>
                 </CardContent>
               </Card>
@@ -110,11 +100,7 @@ export default function BlockDetailPage() {
                   <p className="text-sm text-muted-foreground">{themesError.message}</p>
                 </div>
               </div>
-              <Button
-                onClick={() => window.location.reload()}
-                variant="outline"
-                className="mt-4"
-              >
+              <Button onClick={() => window.location.reload()} variant="outline" className="mt-4">
                 Retry
               </Button>
             </CardContent>
@@ -130,25 +116,17 @@ export default function BlockDetailPage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {themes.map((theme, index) => (
-              <ThemeCard
-                key={theme.id}
-                theme={theme}
-                index={index}
-                total={themes.length}
-              />
+              <ThemeCard key={theme.id} theme={theme} index={index} total={themes.length} />
             ))}
           </div>
         )}
       </div>
 
       {/* Quick Actions */}
-      <QuickActionsCard
-        blockId={block.id}
-        yearId={year?.id || 0}
-      />
+      <QuickActionsCard blockId={block.id} yearId={year?.id || 0} />
 
       {/* Footer Navigation */}
-      <div className="flex items-center justify-between pt-4 border-t">
+      <div className="flex items-center justify-between border-t pt-4">
         <Button variant="ghost" onClick={() => router.push("/student/blocks")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Blocks

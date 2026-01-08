@@ -57,7 +57,10 @@ export function UsersFilters({
       </div>
       <div className="space-y-2 md:w-48">
         <Label htmlFor="role">Role</Label>
-        <Select value={role || "all"} onValueChange={(v) => onRoleChange(v === "all" ? undefined : v)}>
+        <Select
+          value={role || "all"}
+          onValueChange={(v) => onRoleChange(v === "all" ? undefined : v)}
+        >
           <SelectTrigger id="role">
             <SelectValue placeholder="All roles" />
           </SelectTrigger>
@@ -71,7 +74,10 @@ export function UsersFilters({
       </div>
       <div className="space-y-2 md:w-48">
         <Label htmlFor="status">Status</Label>
-        <Select value={status || "all"} onValueChange={(v) => onStatusChange(v === "all" ? undefined : v)}>
+        <Select
+          value={status || "all"}
+          onValueChange={(v) => onStatusChange(v === "all" ? undefined : v)}
+        >
           <SelectTrigger id="status">
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>

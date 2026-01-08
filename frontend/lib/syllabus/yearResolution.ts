@@ -30,7 +30,7 @@ export interface YearResolutionResult {
 export function resolveUserYear(
   years: Year[],
   profile: UserProfile | null = null,
-  yearIdFromQuery: number | null = null
+  yearIdFromQuery: number | null = null,
 ): YearResolutionResult {
   // Priority 1: Query parameter
   if (yearIdFromQuery !== null) {
@@ -52,16 +52,12 @@ export function resolveUserYear(
     let year = years.find((y) => y.name === profileYearName);
     // Try case-insensitive match
     if (!year) {
-      year = years.find(
-        (y) => y.name.toLowerCase() === profileYearName.toLowerCase()
-      );
+      year = years.find((y) => y.name.toLowerCase() === profileYearName.toLowerCase());
     }
     // Try normalized match (trim whitespace)
     if (!year) {
       const normalizedProfileName = profileYearName.trim();
-      year = years.find(
-        (y) => y.name.trim().toLowerCase() === normalizedProfileName.toLowerCase()
-      );
+      year = years.find((y) => y.name.trim().toLowerCase() === normalizedProfileName.toLowerCase());
     }
 
     if (year) {

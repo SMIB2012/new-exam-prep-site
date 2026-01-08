@@ -12,12 +12,10 @@ export function UsersEmpty({ onAddUser }: UsersEmptyProps) {
   return (
     <Card>
       <CardContent className="flex flex-col items-center justify-center py-12">
-        <p className="text-sm font-medium text-muted-foreground mb-2">No users found</p>
-        <p className="text-xs text-muted-foreground mb-4">
-          Try adjusting your search or filters
-        </p>
+        <p className="mb-2 text-sm font-medium text-muted-foreground">No users found</p>
+        <p className="mb-4 text-xs text-muted-foreground">Try adjusting your search or filters</p>
         <Button variant="outline" size="sm" onClick={onAddUser}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           Add User
         </Button>
       </CardContent>

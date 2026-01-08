@@ -2,8 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export default function LegalPage() {
   return (
-    <div className="container mx-auto py-12 px-4 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-8">Legal Information</h1>
+    <div className="container mx-auto max-w-4xl px-4 py-12">
+      <h1 className="mb-8 text-4xl font-bold">Legal Information</h1>
 
       <div className="space-y-6">
         <Card>
@@ -13,23 +13,23 @@ export default function LegalPage() {
           </CardHeader>
           <CardContent className="prose max-w-none">
             <p>
-              By using this Medical Exam Preparation Platform, you agree to comply with and be bound by the following
-              terms and conditions. Please review these terms carefully.
+              By using this Medical Exam Preparation Platform, you agree to comply with and be bound
+              by the following terms and conditions. Please review these terms carefully.
             </p>
-            <h3 className="text-xl font-semibold mt-4 mb-2">1. Acceptance of Terms</h3>
+            <h3 className="mb-2 mt-4 text-xl font-semibold">1. Acceptance of Terms</h3>
             <p>
-              Your access to and use of this platform is subject to these Terms of Service and all applicable laws and
-              regulations.
+              Your access to and use of this platform is subject to these Terms of Service and all
+              applicable laws and regulations.
             </p>
-            <h3 className="text-xl font-semibold mt-4 mb-2">2. Use License</h3>
+            <h3 className="mb-2 mt-4 text-xl font-semibold">2. Use License</h3>
             <p>
-              Permission is granted to temporarily access the materials on this platform for personal, non-commercial
-              transitory viewing only.
+              Permission is granted to temporarily access the materials on this platform for
+              personal, non-commercial transitory viewing only.
             </p>
-            <h3 className="text-xl font-semibold mt-4 mb-2">3. User Accounts</h3>
+            <h3 className="mb-2 mt-4 text-xl font-semibold">3. User Accounts</h3>
             <p>
-              You are responsible for maintaining the confidentiality of your account credentials and for all activities
-              that occur under your account.
+              You are responsible for maintaining the confidentiality of your account credentials
+              and for all activities that occur under your account.
             </p>
           </CardContent>
         </Card>
@@ -41,19 +41,19 @@ export default function LegalPage() {
           </CardHeader>
           <CardContent className="prose max-w-none">
             <p>
-              We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and
-              safeguard your information.
+              We are committed to protecting your privacy. This Privacy Policy explains how we
+              collect, use, and safeguard your information.
             </p>
-            <h3 className="text-xl font-semibold mt-4 mb-2">Information We Collect</h3>
+            <h3 className="mb-2 mt-4 text-xl font-semibold">Information We Collect</h3>
             <p>We collect information that you provide directly to us, including:</p>
-            <ul className="list-disc pl-6 mt-2">
+            <ul className="mt-2 list-disc pl-6">
               <li>Account registration information (name, email)</li>
               <li>Practice session data and performance metrics</li>
               <li>Usage analytics and interaction data</li>
             </ul>
-            <h3 className="text-xl font-semibold mt-4 mb-2">How We Use Your Information</h3>
+            <h3 className="mb-2 mt-4 text-xl font-semibold">How We Use Your Information</h3>
             <p>We use the information we collect to:</p>
-            <ul className="list-disc pl-6 mt-2">
+            <ul className="mt-2 list-disc pl-6">
               <li>Provide and improve our services</li>
               <li>Personalize your learning experience</li>
               <li>Communicate with you about your account</li>
@@ -68,8 +68,9 @@ export default function LegalPage() {
           </CardHeader>
           <CardContent className="prose max-w-none">
             <p>
-              We use httpOnly cookies to maintain your authentication session. These cookies are essential for the
-              platform to function and are not accessible via JavaScript for security purposes.
+              We use httpOnly cookies to maintain your authentication session. These cookies are
+              essential for the platform to function and are not accessible via JavaScript for
+              security purposes.
             </p>
           </CardContent>
         </Card>
@@ -77,4 +78,3 @@ export default function LegalPage() {
     </div>
   );
 }
-

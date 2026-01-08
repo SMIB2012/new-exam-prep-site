@@ -4,20 +4,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { backendFetch } from "@/lib/server/backendClient";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { type: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { type: string } }) {
   try {
     const cookies = request.headers.get("cookie") || "";
 
-    const { data } = await backendFetch<{ content: string; filename: string; content_type: string }>(
-      `/admin/syllabus/import/templates/${params.type}`,
-      {
-        method: "GET",
-        cookies,
-      }
-    );
+    const { data } = await backendFetch<{
+      content: string;
+      filename: string;
+      content_type: string;
+    }>(`/admin/syllabus/import/templates/${params.type}`, {
+      method: "GET",
+      cookies,
+    });
 
     // Return CSV content
     return new NextResponse(data.content, {
@@ -30,7 +28,10 @@ export async function GET(
   } catch (error: unknown) {
     const err = error as { status?: number; error?: { code: string; message: string } };
     const status = err.status || 500;
-    const errorData = err.error || { code: "INTERNAL_ERROR", message: "Failed to download template" };
+    const errorData = err.error || {
+      code: "INTERNAL_ERROR",
+      message: "Failed to download template",
+    };
 
     return NextResponse.json({ error: errorData }, { status });
   }

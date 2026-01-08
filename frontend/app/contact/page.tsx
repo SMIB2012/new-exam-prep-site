@@ -7,10 +7,10 @@ import { Mail, MessageSquare, HelpCircle } from "lucide-react";
 
 export default function ContactPage() {
   return (
-    <div className="container mx-auto py-12 px-4 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-8">Contact & Support</h1>
+    <div className="container mx-auto max-w-4xl px-4 py-12">
+      <h1 className="mb-8 text-4xl font-bold">Contact & Support</h1>
 
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      <div className="mb-8 grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -20,11 +20,13 @@ export default function ContactPage() {
             <CardDescription>Get help via email</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="mb-4 text-sm text-muted-foreground">
               For general inquiries, technical support, or account assistance, please email us:
             </p>
             <p className="font-medium">support@examprep.com</p>
-            <p className="text-sm text-muted-foreground mt-2">We typically respond within 24-48 hours.</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              We typically respond within 24-48 hours.
+            </p>
           </CardContent>
         </Card>
 
@@ -37,7 +39,7 @@ export default function ContactPage() {
             <CardDescription>Find answers to common questions</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="mb-4 text-sm text-muted-foreground">
               Check our help center for frequently asked questions and troubleshooting guides.
             </p>
             <Button variant="outline" className="w-full">
@@ -82,8 +84,9 @@ export default function ContactPage() {
             <Button type="submit" className="w-full">
               Send Message
             </Button>
-            <p className="text-xs text-muted-foreground text-center">
-              Note: This is a placeholder form. In production, this would connect to a support ticket system.
+            <p className="text-center text-xs text-muted-foreground">
+              Note: This is a placeholder form. In production, this would connect to a support
+              ticket system.
             </p>
           </form>
         </CardContent>
@@ -101,8 +104,9 @@ export default function ContactPage() {
             <p>
               <span className="font-medium">Saturday - Sunday:</span> Closed
             </p>
-            <p className="text-muted-foreground mt-4">
-              For urgent technical issues outside of office hours, please email us and we'll prioritize your request.
+            <p className="mt-4 text-muted-foreground">
+              For urgent technical issues outside of office hours, please email us and we'll
+              prioritize your request.
             </p>
           </div>
         </CardContent>
@@ -110,4 +114,3 @@ export default function ContactPage() {
     </div>
   );
 }
-

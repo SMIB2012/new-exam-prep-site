@@ -43,7 +43,7 @@ export function PracticePreferencesCard() {
 
   const updatePreference = <K extends keyof PracticePreferences>(
     key: K,
-    value: PracticePreferences[K]
+    value: PracticePreferences[K],
   ) => {
     const updated = { ...preferences, [key]: value };
     setPreferences(updated);
@@ -89,7 +89,9 @@ export function PracticePreferencesCard() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label htmlFor="resume-unfinished">Resume last unfinished session automatically</Label>
+              <Label htmlFor="resume-unfinished">
+                Resume last unfinished session automatically
+              </Label>
               <p className="text-sm text-muted-foreground">
                 Automatically resume your last incomplete practice session when starting practice
               </p>
@@ -111,7 +113,9 @@ export function PracticePreferencesCard() {
             <Checkbox
               id="show-review"
               checked={preferences.showReviewImmediately}
-              onCheckedChange={(checked) => updatePreference("showReviewImmediately", checked === true)}
+              onCheckedChange={(checked) =>
+                updatePreference("showReviewImmediately", checked === true)
+              }
             />
           </div>
 
@@ -130,9 +134,7 @@ export function PracticePreferencesCard() {
           </div>
         </div>
 
-        <p className="text-xs text-muted-foreground">
-          These preferences apply on this device
-        </p>
+        <p className="text-xs text-muted-foreground">These preferences apply on this device</p>
       </CardContent>
     </Card>
   );

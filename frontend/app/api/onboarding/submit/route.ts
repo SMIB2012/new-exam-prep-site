@@ -23,7 +23,10 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     const err = error as { status?: number; error?: { code: string; message: string } };
     const status = err.status || 500;
-    const errorData = err.error || { code: "INTERNAL_ERROR", message: "Failed to save preferences" };
+    const errorData = err.error || {
+      code: "INTERNAL_ERROR",
+      message: "Failed to save preferences",
+    };
 
     return NextResponse.json({ error: errorData }, { status });
   }

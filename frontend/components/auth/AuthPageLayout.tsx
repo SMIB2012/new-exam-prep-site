@@ -14,9 +14,7 @@ export function AuthPageLayout({ children, className }: AuthPageLayoutProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (!containerRef.current) return;
 
@@ -26,7 +24,7 @@ export function AuthPageLayout({ children, className }: AuthPageLayoutProps) {
       gsap.fromTo(
         containerRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.3, ease: "power2.out" }
+        { opacity: 1, duration: 0.3, ease: "power2.out" },
       );
     }
   }, []);
@@ -36,7 +34,7 @@ export function AuthPageLayout({ children, className }: AuthPageLayoutProps) {
       ref={containerRef}
       className={cn(
         "min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30",
-        className
+        className,
       )}
     >
       {/* Top Bar */}

@@ -14,9 +14,10 @@ interface SyllabusKpiCardProps {
 export function SyllabusKpiCard({ years, blocks, themes, loading }: SyllabusKpiCardProps) {
   const router = useRouter();
 
-  const total = years !== null && blocks !== null && themes !== null
-    ? `${years} years, ${blocks} blocks, ${themes} themes`
-    : "--";
+  const total =
+    years !== null && blocks !== null && themes !== null
+      ? `${years} years, ${blocks} blocks, ${themes} themes`
+      : "--";
 
   return (
     <KpiCard

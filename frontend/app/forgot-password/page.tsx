@@ -77,8 +77,8 @@ export default function ForgotPasswordPage() {
             />
 
             {isDev && (
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-xs text-blue-800 font-medium mb-1">Development Mode</p>
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                <p className="mb-1 text-xs font-medium text-blue-800">Development Mode</p>
                 <a
                   href="http://localhost:8025"
                   target="_blank"
@@ -100,10 +100,10 @@ export default function ForgotPasswordPage() {
               </p>
             </div>
 
-            <div className="text-center text-sm text-slate-600 pt-4 border-t">
+            <div className="border-t pt-4 text-center text-sm text-slate-600">
               <Link
                 href="/login"
-                className="font-medium text-primary hover:underline underline-offset-2"
+                className="font-medium text-primary underline-offset-2 hover:underline"
               >
                 Back to sign in
               </Link>
@@ -113,7 +113,7 @@ export default function ForgotPasswordPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
             <div data-animate className="space-y-2">
-              <Label htmlFor="email" className="text-slate-700 font-medium">
+              <Label htmlFor="email" className="font-medium text-slate-700">
                 Email
               </Label>
               <Input
@@ -139,7 +139,7 @@ export default function ForgotPasswordPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-11 rounded-lg bg-primary font-semibold text-white hover:bg-primary/90 transition-all duration-200"
+                className="h-11 w-full rounded-lg bg-primary font-semibold text-white transition-all duration-200 hover:bg-primary/90"
               >
                 {loading ? (
                   <>
@@ -157,7 +157,7 @@ export default function ForgotPasswordPage() {
               Remember your password?{" "}
               <Link
                 href="/login"
-                className="font-medium text-primary hover:underline underline-offset-2"
+                className="font-medium text-primary underline-offset-2 hover:underline"
               >
                 Sign in
               </Link>

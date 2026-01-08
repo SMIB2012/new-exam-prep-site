@@ -20,19 +20,14 @@ interface OAuthButtonsProps {
   className?: string;
 }
 
-export function OAuthButtons({
-  mode,
-  loading,
-  disabled,
-  className,
-}: OAuthButtonsProps) {
+export function OAuthButtons({ mode, loading, disabled, className }: OAuthButtonsProps) {
   const [loadingProvider, setLoadingProvider] = React.useState<string | null>(null);
 
   const handleOAuthClick = (provider: "google" | "microsoft") => {
     if (loading || disabled) return;
-    
+
     setLoadingProvider(provider);
-    
+
     // Redirect to backend OAuth start endpoint
     const startUrl = `${API_URL}/v1/auth/oauth/${provider}/start`;
     window.location.assign(startUrl);
@@ -47,9 +42,9 @@ export function OAuthButtons({
         type="button"
         variant="outline"
         className={cn(
-          "w-full h-11 rounded-lg border-slate-200 bg-white hover:bg-slate-50",
-          "text-slate-700 hover:text-slate-700 font-medium transition-all duration-200",
-          "shadow-sm hover:shadow"
+          "h-11 w-full rounded-lg border-slate-200 bg-white hover:bg-slate-50",
+          "font-medium text-slate-700 transition-all duration-200 hover:text-slate-700",
+          "shadow-sm hover:shadow",
         )}
         disabled={loading || disabled}
         onClick={() => handleOAuthClick("google")}
@@ -67,9 +62,9 @@ export function OAuthButtons({
         type="button"
         variant="outline"
         className={cn(
-          "w-full h-11 rounded-lg border-slate-200 bg-white hover:bg-slate-50",
-          "text-slate-700 hover:text-slate-700 font-medium transition-all duration-200",
-          "shadow-sm hover:shadow"
+          "h-11 w-full rounded-lg border-slate-200 bg-white hover:bg-slate-50",
+          "font-medium text-slate-700 transition-all duration-200 hover:text-slate-700",
+          "shadow-sm hover:shadow",
         )}
         disabled={loading || disabled}
         onClick={() => handleOAuthClick("microsoft")}

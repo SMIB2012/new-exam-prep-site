@@ -40,7 +40,7 @@ export function BrowseSyllabusCard({
   useEffect(() => {
     if (blocks.length > 0) {
       // If no block selected or selected block no longer exists, select first block
-      if (!selectedBlockId || !blocks.find(b => b.id === selectedBlockId)) {
+      if (!selectedBlockId || !blocks.find((b) => b.id === selectedBlockId)) {
         setSelectedBlockId(blocks[0].id);
       }
     } else {
@@ -77,7 +77,7 @@ export function BrowseSyllabusCard({
       <Card className="col-span-full md:col-span-1">
         <CardHeader>
           <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-3">
           <Skeleton className="h-10 w-full" />

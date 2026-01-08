@@ -10,19 +10,14 @@ interface EmptyStateProps {
   onAction?: () => void;
 }
 
-export function EmptyState({
-  title,
-  description,
-  actionLabel = "Add",
-  onAction,
-}: EmptyStateProps) {
+export function EmptyState({ title, description, actionLabel = "Add", onAction }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-      <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
-      <p className="text-xs text-muted-foreground mb-4">{description}</p>
+    <div className="flex flex-col items-center justify-center px-4 py-8 text-center">
+      <p className="mb-1 text-sm font-medium text-muted-foreground">{title}</p>
+      <p className="mb-4 text-xs text-muted-foreground">{description}</p>
       {onAction && (
         <Button variant="outline" size="sm" onClick={onAction}>
-          <Plus className="h-4 w-4 mr-1" />
+          <Plus className="mr-1 h-4 w-4" />
           {actionLabel}
         </Button>
       )}

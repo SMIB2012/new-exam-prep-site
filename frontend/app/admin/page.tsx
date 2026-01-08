@@ -14,7 +14,11 @@ import { useAttentionItems } from "@/lib/admin/dashboard/useAttentionItems";
 import { FileQuestion, Upload, Badge } from "lucide-react";
 
 export default function AdminDashboard() {
-  const { data: summary, loading: summaryLoading, error: summaryError } = useAdminDashboardSummary();
+  const {
+    data: summary,
+    loading: summaryLoading,
+    error: summaryError,
+  } = useAdminDashboardSummary();
   const { data: ready, loading: readyLoading } = useSystemReady();
   const { items: attentionItems, loading: attentionLoading } = useAttentionItems();
 

@@ -60,25 +60,18 @@ export function InlineAlert({
         "flex items-start gap-3 rounded-lg border p-3",
         config.bg,
         config.border,
-        className
+        className,
       )}
     >
-      <Icon className={cn("h-5 w-5 shrink-0 mt-0.5", config.iconColor)} />
-      <div className="flex-1 min-w-0">
-        {title && (
-          <p className={cn("text-sm font-medium", config.text)}>{title}</p>
-        )}
-        <p className={cn("text-sm", config.text, title && "mt-0.5")}>
-          {message}
-        </p>
+      <Icon className={cn("mt-0.5 h-5 w-5 shrink-0", config.iconColor)} />
+      <div className="min-w-0 flex-1">
+        {title && <p className={cn("text-sm font-medium", config.text)}>{title}</p>}
+        <p className={cn("text-sm", config.text, title && "mt-0.5")}>{message}</p>
       </div>
       {onDismiss && (
         <button
           onClick={onDismiss}
-          className={cn(
-            "shrink-0 rounded p-1 hover:bg-black/5 transition-colors",
-            config.text
-          )}
+          className={cn("shrink-0 rounded p-1 transition-colors hover:bg-black/5", config.text)}
           aria-label="Dismiss"
         >
           <XCircle className="h-4 w-4" />

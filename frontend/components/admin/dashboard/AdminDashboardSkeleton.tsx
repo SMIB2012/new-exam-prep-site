@@ -21,7 +21,7 @@ export function AdminDashboardSkeleton() {
               <Skeleton className="h-4 w-4" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-8 w-16 mb-1" />
+              <Skeleton className="mb-1 h-8 w-16" />
               <Skeleton className="h-3 w-32" />
             </CardContent>
           </Card>
@@ -35,7 +35,7 @@ export function AdminDashboardSkeleton() {
           <Card>
             <CardHeader>
               <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-64 mt-2" />
+              <Skeleton className="mt-2 h-4 w-64" />
             </CardHeader>
             <CardContent className="space-y-3">
               <Skeleton className="h-16 w-full" />
@@ -46,7 +46,7 @@ export function AdminDashboardSkeleton() {
           <Card>
             <CardHeader>
               <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-64 mt-2" />
+              <Skeleton className="mt-2 h-4 w-64" />
             </CardHeader>
             <CardContent>
               <Skeleton className="h-20 w-full" />
@@ -59,7 +59,7 @@ export function AdminDashboardSkeleton() {
           <Card>
             <CardHeader>
               <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-64 mt-2" />
+              <Skeleton className="mt-2 h-4 w-64" />
             </CardHeader>
             <CardContent className="space-y-4">
               <Skeleton className="h-10 w-full" />
@@ -70,7 +70,7 @@ export function AdminDashboardSkeleton() {
           <Card>
             <CardHeader>
               <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-64 mt-2" />
+              <Skeleton className="mt-2 h-4 w-64" />
             </CardHeader>
             <CardContent className="space-y-3">
               <Skeleton className="h-10 w-full" />

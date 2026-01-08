@@ -5,10 +5,7 @@
 import { useEffect, useState } from "react";
 import { syllabusAPI, onboardingAPI } from "@/lib/api";
 import { Year, Block, Theme, UserProfile } from "@/lib/api";
-import {
-  DashboardVM,
-  NextAction,
-} from "./types";
+import { DashboardVM, NextAction } from "./types";
 import {
   getMockMetrics,
   getMockWeakThemes,
@@ -47,7 +44,7 @@ export function useDashboardData(): DashboardDataState {
           console.error("[Dashboard] Failed to load profile:", err);
           // Continue without profile - will use defaults
         }
-        
+
         // Determine year to use
         let selectedYear: Year | null = null;
 
@@ -58,39 +55,51 @@ export function useDashboardData(): DashboardDataState {
           console.log("[Dashboard] Loaded years:", years.length);
         } catch (err) {
           console.error("[Dashboard] Failed to load years:", err);
-          throw new Error(`Failed to load academic years: ${err instanceof Error ? err.message : "Unknown error"}`);
+          throw new Error(
+            `Failed to load academic years: ${err instanceof Error ? err.message : "Unknown error"}`,
+          );
         }
-        
+
         if (years.length === 0) {
           throw new Error("No years available in the system");
         }
-        
+
         // Improved year matching logic
         if (profile?.selected_year) {
           const profileYearName = profile.selected_year.display_name;
           console.log("[Dashboard] User selected year:", profileYearName);
-          
+
           // Try multiple matching strategies
-          selectedYear = years.find((y) => {
-            // Exact match
-            if (y.name === profileYearName) return true;
-            // Case-insensitive match
-            if (y.name.toLowerCase() === profileYearName.toLowerCase()) return true;
-            // Partial match (e.g., "1st Year" matches "1st Year MBBS")
-            if (y.name.toLowerCase().includes(profileYearName.toLowerCase()) || 
-                profileYearName.toLowerCase().includes(y.name.toLowerCase())) return true;
-            // Try matching by removing common suffixes
-            const normalizedYear = y.name.toLowerCase().replace(/\s*(mbbs|year|yr)\s*/gi, "").trim();
-            const normalizedProfile = profileYearName.toLowerCase().replace(/\s*(mbbs|year|yr)\s*/gi, "").trim();
-            if (normalizedYear === normalizedProfile) return true;
-            return false;
-          }) || null;
-          
+          selectedYear =
+            years.find((y) => {
+              // Exact match
+              if (y.name === profileYearName) return true;
+              // Case-insensitive match
+              if (y.name.toLowerCase() === profileYearName.toLowerCase()) return true;
+              // Partial match (e.g., "1st Year" matches "1st Year MBBS")
+              if (
+                y.name.toLowerCase().includes(profileYearName.toLowerCase()) ||
+                profileYearName.toLowerCase().includes(y.name.toLowerCase())
+              )
+                return true;
+              // Try matching by removing common suffixes
+              const normalizedYear = y.name
+                .toLowerCase()
+                .replace(/\s*(mbbs|year|yr)\s*/gi, "")
+                .trim();
+              const normalizedProfile = profileYearName
+                .toLowerCase()
+                .replace(/\s*(mbbs|year|yr)\s*/gi, "")
+                .trim();
+              if (normalizedYear === normalizedProfile) return true;
+              return false;
+            }) || null;
+
           if (!selectedYear) {
             console.warn("[Dashboard] Could not match user's year, using first available year");
           }
         }
-        
+
         // Fallback to first year if no match found
         if (!selectedYear) {
           selectedYear = years[0] || null;
@@ -111,7 +120,9 @@ export function useDashboardData(): DashboardDataState {
           console.log("[Dashboard] Loaded blocks:", blocks.length);
         } catch (err) {
           console.error("[Dashboard] Failed to load blocks:", err);
-          throw new Error(`Failed to load blocks for ${selectedYearName}: ${err instanceof Error ? err.message : "Unknown error"}`);
+          throw new Error(
+            `Failed to load blocks for ${selectedYearName}: ${err instanceof Error ? err.message : "Unknown error"}`,
+          );
         }
 
         // Load themes for first block (for dropdown)
@@ -132,12 +143,7 @@ export function useDashboardData(): DashboardDataState {
         const unfinishedSession = recentSessions.find((s) => s.status === "in_progress");
 
         // Determine next action
-        const nextAction = determineNextAction(
-          profile,
-          unfinishedSession,
-          blocks,
-          themesByBlock
-        );
+        const nextAction = determineNextAction(profile, unfinishedSession, blocks, themesByBlock);
 
         // Load metrics (mock for now)
         const metrics = getMockMetrics();
@@ -196,7 +202,7 @@ function determineNextAction(
   profile: UserProfile | null,
   unfinishedSession: RecentSession | undefined,
   blocks: Block[],
-  themesByBlock: Record<number, Theme[]>
+  themesByBlock: Record<number, Theme[]>,
 ): NextAction {
   console.log("[Dashboard] determineNextAction called with:", {
     profile_exists: !!profile,
@@ -238,18 +244,19 @@ function determineNextAction(
 
   // Default: quick practice
   const firstBlock = blocks.length > 0 ? blocks[0] : null;
-  const firstBlockThemes = firstBlock ? (themesByBlock[firstBlock.id] || []) : [];
+  const firstBlockThemes = firstBlock ? themesByBlock[firstBlock.id] || [] : [];
   const firstTheme = firstBlockThemes.length > 0 ? firstBlockThemes[0] : null;
 
   return {
     type: "quick_practice",
     label: "Start Quick Practice",
     href: "/student/practice/build?preset=quick",
-    hint: firstBlock && firstTheme
-      ? `Suggested: Block ${firstBlock.code} → Theme: ${firstTheme.title} (10 questions)`
-      : blocks.length > 0
-      ? "Start your first practice session"
-      : "Complete onboarding to select blocks and start practicing",
+    hint:
+      firstBlock && firstTheme
+        ? `Suggested: Block ${firstBlock.code} → Theme: ${firstTheme.title} (10 questions)`
+        : blocks.length > 0
+          ? "Start your first practice session"
+          : "Complete onboarding to select blocks and start practicing",
     secondaryActions: [
       {
         label: "Build Custom Practice",

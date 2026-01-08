@@ -26,11 +26,7 @@ export function SystemHealthCard({ status, checks, loading }: SystemHealthCardPr
       down: "Down",
     } as const;
 
-    return (
-      <Badge variant={variants[status]}>
-        {labels[status]}
-      </Badge>
-    );
+    return <Badge variant={variants[status]}>{labels[status]}</Badge>;
   };
 
   const getStatusValue = () => {
@@ -42,10 +38,10 @@ export function SystemHealthCard({ status, checks, loading }: SystemHealthCardPr
 
   const getDescription = () => {
     if (!checks) return "System status";
-    
+
     const dbStatus = checks.db?.status || "unknown";
     const redisStatus = checks.redis?.status || "unknown";
-    
+
     return `DB: ${dbStatus}, Redis: ${redisStatus}`;
   };
 

@@ -110,9 +110,9 @@ export default function SignupPage() {
 
       if (result.error) {
         if (result.error.code === "CONFLICT") {
-          setErrors({ 
+          setErrors({
             email: "An account with this email already exists",
-            general: "An account with this email already exists. Please log in instead."
+            general: "An account with this email already exists. Please log in instead.",
           });
         } else if (result.error.code === "RATE_LIMITED") {
           setErrors({
@@ -189,12 +189,13 @@ export default function SignupPage() {
 
             <div data-animate className="space-y-3">
               <p className="text-sm text-slate-600">
-                Click the link in the email to verify your account. The link will expire in 24 hours.
+                Click the link in the email to verify your account. The link will expire in 24
+                hours.
               </p>
 
               {isDev && (
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-xs text-blue-800 font-medium mb-1">Development Mode</p>
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                  <p className="mb-1 text-xs font-medium text-blue-800">Development Mode</p>
                   <a
                     href="http://localhost:8025"
                     target="_blank"
@@ -223,16 +224,16 @@ export default function SignupPage() {
                   )}
                 </Button>
 
-                <p className="text-xs text-slate-500 text-center">
+                <p className="text-center text-xs text-slate-500">
                   Didn't receive the email? Check your spam folder.
                 </p>
               </div>
             </div>
 
-            <div data-animate className="text-center text-sm text-slate-600 pt-4 border-t">
+            <div data-animate className="border-t pt-4 text-center text-sm text-slate-600">
               <Link
                 href="/login"
-                className="font-medium text-primary hover:underline underline-offset-2"
+                className="font-medium text-primary underline-offset-2 hover:underline"
               >
                 Back to sign in
               </Link>
@@ -264,7 +265,7 @@ export default function SignupPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name Field */}
           <div data-animate className="space-y-2">
-            <Label htmlFor="name" className="text-slate-700 font-medium">
+            <Label htmlFor="name" className="font-medium text-slate-700">
               Full name
             </Label>
             <Input
@@ -279,14 +280,12 @@ export default function SignupPage() {
                 errors.name ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
               }`}
             />
-            {errors.name && (
-              <p className="text-sm text-red-600">{errors.name}</p>
-            )}
+            {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
           </div>
 
           {/* Email Field */}
           <div data-animate className="space-y-2">
-            <Label htmlFor="email" className="text-slate-700 font-medium">
+            <Label htmlFor="email" className="font-medium text-slate-700">
               Email
             </Label>
             <Input
@@ -301,9 +300,7 @@ export default function SignupPage() {
                 errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
               }`}
             />
-            {errors.email && (
-              <p className="text-sm text-red-600">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
           </div>
 
           {/* Password Field */}
@@ -344,7 +341,9 @@ export default function SignupPage() {
               {errors.general.includes("already exists") && (
                 <Button
                   type="button"
-                  onClick={() => router.push(`/login?email=${encodeURIComponent(formData.email.trim())}`)}
+                  onClick={() =>
+                    router.push(`/login?email=${encodeURIComponent(formData.email.trim())}`)
+                  }
                   variant="default"
                   className="w-full"
                 >
@@ -359,7 +358,7 @@ export default function SignupPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-lg bg-primary font-semibold text-white hover:bg-primary/90 transition-all duration-200"
+              className="h-11 w-full rounded-lg bg-primary font-semibold text-white transition-all duration-200 hover:bg-primary/90"
             >
               {loading ? (
                 <>
@@ -377,7 +376,7 @@ export default function SignupPage() {
             Already have an account?{" "}
             <Link
               href="/login"
-              className="font-medium text-primary hover:underline underline-offset-2"
+              className="font-medium text-primary underline-offset-2 hover:underline"
             >
               Sign in
             </Link>

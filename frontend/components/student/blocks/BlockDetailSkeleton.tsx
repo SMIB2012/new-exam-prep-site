@@ -29,7 +29,7 @@ export function BlockDetailSkeleton() {
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-3">
           <Skeleton className="h-4 w-full" />
@@ -49,7 +49,7 @@ export function BlockDetailSkeleton() {
             <Card key={i}>
               <CardHeader>
                 <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2 mt-2" />
+                <Skeleton className="mt-2 h-4 w-1/2" />
               </CardHeader>
               <CardContent className="space-y-2">
                 <Skeleton className="h-10 w-full" />

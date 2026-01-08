@@ -17,10 +17,10 @@ export function DashboardSkeleton() {
         <Card className="col-span-full md:col-span-2">
           <CardHeader>
             <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-64 mt-2" />
+            <Skeleton className="mt-2 h-4 w-64" />
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-12 w-full mb-2" />
+            <Skeleton className="mb-2 h-12 w-full" />
             <Skeleton className="h-4 w-56" />
           </CardContent>
         </Card>
@@ -41,7 +41,7 @@ export function DashboardSkeleton() {
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-40" />
-            <Skeleton className="h-4 w-32 mt-2" />
+            <Skeleton className="mt-2 h-4 w-32" />
           </CardHeader>
           <CardContent className="space-y-4">
             {[1, 2, 3].map((i) => (
@@ -55,7 +55,7 @@ export function DashboardSkeleton() {
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-4 w-48 mt-2" />
+            <Skeleton className="mt-2 h-4 w-48" />
           </CardHeader>
           <CardContent className="space-y-3">
             {[1, 2, 3].map((i) => (
@@ -70,7 +70,7 @@ export function DashboardSkeleton() {
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-4 w-48 mt-2" />
+            <Skeleton className="mt-2 h-4 w-48" />
           </CardHeader>
           <CardContent className="space-y-2">
             {[1, 2, 3, 4].map((i) => (
@@ -81,7 +81,7 @@ export function DashboardSkeleton() {
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-4 w-48 mt-2" />
+            <Skeleton className="mt-2 h-4 w-48" />
           </CardHeader>
           <CardContent className="space-y-3">
             {[1, 2, 3].map((i) => (
@@ -96,7 +96,7 @@ export function DashboardSkeleton() {
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-4 w-48 mt-2" />
+            <Skeleton className="mt-2 h-4 w-48" />
           </CardHeader>
           <CardContent className="space-y-3">
             <Skeleton className="h-10 w-full" />
@@ -106,7 +106,7 @@ export function DashboardSkeleton() {
         <Card>
           <CardHeader>
             <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-4 w-48 mt-2" />
+            <Skeleton className="mt-2 h-4 w-48" />
           </CardHeader>
           <CardContent>
             <Skeleton className="h-16 w-full" />

@@ -55,9 +55,7 @@ export function truncate(text: string, maxChars: number): string {
 /**
  * Get badge variant for notification type.
  */
-export function getTypeBadgeVariant(
-  type: NotificationType
-): "default" | "secondary" | "outline" {
+export function getTypeBadgeVariant(type: NotificationType): "default" | "secondary" | "outline" {
   switch (type) {
     case "announcement":
       return "default";

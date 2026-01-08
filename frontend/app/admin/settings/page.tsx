@@ -78,7 +78,7 @@ export default function AdminSettingsPage() {
           <p className="text-muted-foreground">Platform-wide configuration and defaults</p>
         </div>
         <Button onClick={handleSave} disabled={!isDirty}>
-          <Save className="h-4 w-4 mr-2" />
+          <Save className="mr-2 h-4 w-4" />
           Save Changes
         </Button>
       </div>

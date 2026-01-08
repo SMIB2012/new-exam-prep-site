@@ -21,10 +21,10 @@ export function NextBestActionCard({ nextAction, loading, error }: NextBestActio
       <Card className="col-span-full md:col-span-2">
         <CardHeader>
           <Skeleton className="h-6 w-48" />
-          <Skeleton className="h-4 w-64 mt-2" />
+          <Skeleton className="mt-2 h-4 w-64" />
         </CardHeader>
         <CardContent>
-          <Skeleton className="h-12 w-full mb-2" />
+          <Skeleton className="mb-2 h-12 w-full" />
           <Skeleton className="h-4 w-56" />
         </CardContent>
       </Card>
@@ -67,18 +67,12 @@ export function NextBestActionCard({ nextAction, loading, error }: NextBestActio
         <CardDescription>Based on your recent activity</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button
-          size="lg"
-          className="w-full"
-          onClick={() => router.push(nextAction.href)}
-        >
+        <Button size="lg" className="w-full" onClick={() => router.push(nextAction.href)}>
           <PlayCircle className="mr-2 h-5 w-5" />
           {nextAction.label}
         </Button>
 
-        {nextAction.hint && (
-          <p className="text-sm text-muted-foreground">{nextAction.hint}</p>
-        )}
+        {nextAction.hint && <p className="text-sm text-muted-foreground">{nextAction.hint}</p>}
 
         {nextAction.secondaryActions && nextAction.secondaryActions.length > 0 && (
           <div className="flex flex-wrap gap-2">

@@ -35,7 +35,7 @@ export function PasswordField({
 
   return (
     <div className={cn("space-y-2", className)}>
-      <Label htmlFor={id} className="text-slate-700 font-medium">
+      <Label htmlFor={id} className="font-medium text-slate-700">
         {label}
       </Label>
       <div className="relative">
@@ -48,27 +48,21 @@ export function PasswordField({
           autoComplete={autoComplete}
           disabled={disabled}
           className={cn(
-            "pr-10 h-11 rounded-lg border-slate-200 bg-white focus:border-primary focus:ring-primary",
+            "h-11 rounded-lg border-slate-200 bg-white pr-10 focus:border-primary focus:ring-primary",
             error && "border-red-500 focus:border-red-500 focus:ring-red-500",
-            disabled && "opacity-50 cursor-not-allowed"
+            disabled && "cursor-not-allowed opacity-50",
           )}
         />
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
-          {showPassword ? (
-            <EyeOff className="h-4 w-4" />
-          ) : (
-            <Eye className="h-4 w-4" />
-          )}
+          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
       </div>
-      {helperText && !error && (
-        <p className="text-xs text-slate-500">{helperText}</p>
-      )}
+      {helperText && !error && <p className="text-xs text-slate-500">{helperText}</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
   );

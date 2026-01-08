@@ -26,11 +26,7 @@ export function DangerZoneCard() {
         <CardDescription>Irreversible actions</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button
-          variant="outline"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full"
-        >
+        <Button variant="outline" onClick={() => setIsExpanded(!isExpanded)} className="w-full">
           {isExpanded ? "Hide" : "Show"} reset progress options
         </Button>
 
@@ -38,7 +34,7 @@ export function DangerZoneCard() {
           <div className="space-y-4 rounded-lg border border-destructive/50 bg-destructive/5 p-4">
             <div>
               <h4 className="font-medium">Reset practice data</h4>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="mt-1 text-sm text-muted-foreground">
                 This will reset your practice sessions and analytics. Syllabus access will remain
                 unchanged.
               </p>
@@ -57,17 +53,11 @@ export function DangerZoneCard() {
               />
             </div>
 
-            <Button
-              variant="destructive"
-              onClick={handleReset}
-              disabled={confirmText !== "RESET"}
-            >
+            <Button variant="destructive" onClick={handleReset} disabled={confirmText !== "RESET"}>
               Reset my practice data
             </Button>
 
-            <p className="text-xs text-muted-foreground">
-              If you need help, contact admin
-            </p>
+            <p className="text-xs text-muted-foreground">If you need help, contact admin</p>
           </div>
         )}
       </CardContent>

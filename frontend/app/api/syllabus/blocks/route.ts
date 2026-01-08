@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const year = searchParams.get("year");
-    
+
     const cookieStore = await cookies();
     const cookieHeader = Array.from(cookieStore.getAll())
       .map((cookie) => `${cookie.name}=${cookie.value}`)
@@ -29,7 +29,11 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error: unknown) {
-    const err = error as { status?: number; error?: { code: string; message: string; request_id?: string }; request_id?: string };
+    const err = error as {
+      status?: number;
+      error?: { code: string; message: string; request_id?: string };
+      request_id?: string;
+    };
     const status = err.status || 500;
     const backendError = err.error || {
       code: "INTERNAL_ERROR",

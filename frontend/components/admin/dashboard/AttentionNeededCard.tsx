@@ -27,7 +27,7 @@ export function AttentionNeededCard({ items, loading }: AttentionNeededCardProps
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-4 w-64 mt-2" />
+          <Skeleton className="mt-2 h-4 w-64" />
         </CardHeader>
         <CardContent className="space-y-3">
           <Skeleton className="h-16 w-full" />
@@ -45,21 +45,18 @@ export function AttentionNeededCard({ items, loading }: AttentionNeededCardProps
       </CardHeader>
       <CardContent>
         {items.length === 0 ? (
-          <div className="flex items-center gap-2 text-muted-foreground py-4">
+          <div className="flex items-center gap-2 py-4 text-muted-foreground">
             <CheckCircle2 className="h-5 w-5 text-green-600" />
             <span>All clear</span>
           </div>
         ) : (
           <div className="space-y-3">
             {items.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-start gap-3 rounded-lg border p-3"
-              >
-                <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm">{item.title}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+              <div key={item.id} className="flex items-start gap-3 rounded-lg border p-3">
+                <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-600" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">{item.title}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
                   {item.actionHref && item.actionLabel && (
                     <Button
                       variant="outline"

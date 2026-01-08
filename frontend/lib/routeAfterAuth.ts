@@ -15,9 +15,7 @@ export interface RouteAfterAuthOptions {
  *
  * @returns The path to navigate to
  */
-export async function getRouteAfterAuth(
-  options?: RouteAfterAuthOptions
-): Promise<string> {
+export async function getRouteAfterAuth(options?: RouteAfterAuthOptions): Promise<string> {
   const { redirectParam } = options || {};
 
   try {
@@ -62,7 +60,7 @@ export async function getRouteAfterAuth(
  */
 export async function routeAfterAuth(
   navigate: (path: string) => void,
-  options?: RouteAfterAuthOptions
+  options?: RouteAfterAuthOptions,
 ): Promise<void> {
   const path = await getRouteAfterAuth(options);
   navigate(path);

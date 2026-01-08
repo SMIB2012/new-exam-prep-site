@@ -9,10 +9,10 @@ interface BlockOverviewCardProps {
   isAllowed?: boolean; // Deprecated - always true now
 }
 
-export function BlockOverviewCard({ 
+export function BlockOverviewCard({
   block: _block, // eslint-disable-line @typescript-eslint/no-unused-vars
-  themeCount, 
-  isAllowed: _isAllowed // eslint-disable-line @typescript-eslint/no-unused-vars
+  themeCount,
+  isAllowed: _isAllowed, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: BlockOverviewCardProps) {
   return (
     <Card>

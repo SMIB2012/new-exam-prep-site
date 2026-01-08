@@ -14,11 +14,11 @@ interface BlockHeaderProps {
   status?: "not_started" | "in_progress" | "completed" | "not_available";
 }
 
-export function BlockHeader({ 
-  block, 
-  yearName, 
+export function BlockHeader({
+  block,
+  yearName,
   isAllowed: _isAllowed, // eslint-disable-line @typescript-eslint/no-unused-vars
-  status = "not_available" 
+  status = "not_available",
 }: BlockHeaderProps) {
   const router = useRouter();
 
@@ -51,17 +51,18 @@ export function BlockHeader({
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <h1 className="text-3xl font-bold">Block {block.code}</h1>
-          <p className="text-muted-foreground mt-1">
-            Part of {yearName} curriculum
-          </p>
+          <p className="mt-1 text-muted-foreground">Part of {yearName} curriculum</p>
         </div>
 
         <div className="flex items-center gap-3">
-          <Badge variant={statusVariants[status]} title={
-            status === "not_available"
-              ? "Progress will appear after the test engine is enabled"
-              : undefined
-          }>
+          <Badge
+            variant={statusVariants[status]}
+            title={
+              status === "not_available"
+                ? "Progress will appear after the test engine is enabled"
+                : undefined
+            }
+          >
             {statusLabels[status]}
           </Badge>
           <Button

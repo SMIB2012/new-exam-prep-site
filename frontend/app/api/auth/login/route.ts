@@ -61,7 +61,11 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ user: data.user }, { status: 200 });
   } catch (error: unknown) {
-    const err = error as { status?: number; error?: { code: string; message: string; request_id?: string }; request_id?: string };
+    const err = error as {
+      status?: number;
+      error?: { code: string; message: string; request_id?: string };
+      request_id?: string;
+    };
     const status = err.status || 500;
     const backendError = err.error || {
       code: "INTERNAL_ERROR",

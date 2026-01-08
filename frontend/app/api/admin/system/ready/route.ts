@@ -22,7 +22,10 @@ export async function GET(request: NextRequest) {
   } catch (error: unknown) {
     const err = error as { status?: number; error?: { code: string; message: string } };
     const status = err.status || 500;
-    const errorData = err.error || { code: "INTERNAL_ERROR", message: "Failed to check system readiness" };
+    const errorData = err.error || {
+      code: "INTERNAL_ERROR",
+      message: "Failed to check system readiness",
+    };
 
     return NextResponse.json({ error: errorData }, { status });
   }

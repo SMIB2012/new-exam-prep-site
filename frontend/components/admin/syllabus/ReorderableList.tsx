@@ -36,7 +36,7 @@ export function ReorderableList<T extends { id: number }>({
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -58,11 +58,7 @@ export function ReorderableList<T extends { id: number }>({
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext
         items={items.map((item) => item.id)}
         strategy={verticalListSortingStrategy}
@@ -87,14 +83,10 @@ interface SortableItemProps {
 }
 
 function SortableItem({ id, children, disabled }: SortableItemProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id, disabled });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+    disabled,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -108,7 +100,7 @@ function SortableItem({ id, children, disabled }: SortableItemProps) {
         <div
           {...attributes}
           {...listeners}
-          className="absolute left-0 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 text-muted-foreground hover:text-foreground"
+          className="absolute left-0 top-1/2 -translate-y-1/2 cursor-grab p-1 text-muted-foreground hover:text-foreground active:cursor-grabbing"
         >
           <GripVertical className="h-4 w-4" />
         </div>

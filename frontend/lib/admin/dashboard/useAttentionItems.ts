@@ -29,7 +29,7 @@ export function useAttentionItems(): UseAttentionItemsResult {
     try {
       // Load all syllabus data
       const years = await syllabusAPI.getYears();
-      
+
       // Load blocks for all years
       const allBlocks: Block[] = [];
       for (const year of years) {

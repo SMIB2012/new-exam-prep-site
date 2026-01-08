@@ -22,7 +22,7 @@ export function BlockProgressCard({ blocks, loading, error }: BlockProgressCardP
       <Card className="col-span-full md:col-span-1">
         <CardHeader>
           <Skeleton className="h-5 w-40" />
-          <Skeleton className="h-4 w-32 mt-2" />
+          <Skeleton className="mt-2 h-4 w-32" />
         </CardHeader>
         <CardContent className="space-y-4">
           {[1, 2, 3].map((i) => (

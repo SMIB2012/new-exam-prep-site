@@ -55,7 +55,7 @@ export function UsersTable({
         <TableBody>
           {users.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+              <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
                 No users found
               </TableCell>
             </TableRow>
@@ -70,8 +70,8 @@ export function UsersTable({
                       user.role === "ADMIN"
                         ? "default"
                         : user.role === "REVIEWER"
-                        ? "secondary"
-                        : "outline"
+                          ? "secondary"
+                          : "outline"
                     }
                   >
                     {user.role}

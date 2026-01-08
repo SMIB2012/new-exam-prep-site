@@ -31,7 +31,7 @@ export function KpiCard({
           <Skeleton className="h-4 w-4" />
         </CardHeader>
         <CardContent>
-          <Skeleton className="h-8 w-16 mb-1" />
+          <Skeleton className="mb-1 h-8 w-16" />
           <Skeleton className="h-3 w-32" />
         </CardContent>
       </Card>
@@ -54,9 +54,7 @@ export function KpiCard({
         <div className="text-2xl font-bold">
           {value !== null && value !== undefined ? value : "--"}
         </div>
-        {description && (
-          <p className="text-xs text-muted-foreground mt-1">{description}</p>
-        )}
+        {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
       </CardContent>
     </Card>
   );

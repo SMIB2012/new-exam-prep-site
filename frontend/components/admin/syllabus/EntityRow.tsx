@@ -35,33 +35,26 @@ export function EntityRow({
   return (
     <div
       className={cn(
-        "flex items-center justify-between p-3 rounded-lg border transition-colors",
-        isSelected && "bg-primary/10 border-primary",
+        "flex items-center justify-between rounded-lg border p-3 transition-colors",
+        isSelected && "border-primary bg-primary/10",
         !isSelected && "hover:bg-muted/50",
         !isActive && "opacity-60",
-        className
+        className,
       )}
       onClick={onSelect}
     >
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <p className="font-medium text-sm truncate">{title}</p>
+          <p className="truncate text-sm font-medium">{title}</p>
           <Badge variant={isActive ? "default" : "secondary"} className="text-xs">
             {isActive ? "Active" : "Inactive"}
           </Badge>
         </div>
-        {subtitle && (
-          <p className="text-xs text-muted-foreground mt-1 truncate">{subtitle}</p>
-        )}
+        {subtitle && <p className="mt-1 truncate text-xs text-muted-foreground">{subtitle}</p>}
       </div>
-      <div className="flex items-center gap-1 ml-2" onClick={(e) => e.stopPropagation()}>
+      <div className="ml-2 flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
         {onEdit && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onEdit}
-            className="h-8 w-8 p-0"
-          >
+          <Button variant="ghost" size="sm" onClick={onEdit} className="h-8 w-8 p-0">
             <Edit className="h-4 w-4" />
           </Button>
         )}

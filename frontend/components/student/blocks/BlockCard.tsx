@@ -17,10 +17,10 @@ interface BlockCardProps {
   loading?: boolean;
 }
 
-export function BlockCard({ 
-  block, 
+export function BlockCard({
+  block,
   isAllowed: _isAllowed, // eslint-disable-line @typescript-eslint/no-unused-vars
-  loading 
+  loading,
 }: BlockCardProps) {
   const router = useRouter();
   const [themes, setThemes] = useState<Theme[]>([]);
@@ -52,7 +52,7 @@ export function BlockCard({
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-3">
           <Skeleton className="h-2 w-full" />
@@ -81,7 +81,7 @@ export function BlockCard({
         <div className="space-y-1">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Progress</span>
-            <span className="text-muted-foreground text-xs">Not available yet</span>
+            <span className="text-xs text-muted-foreground">Not available yet</span>
           </div>
           <Progress value={0} className="opacity-50" />
           <p className="text-xs text-muted-foreground">
@@ -103,9 +103,7 @@ export function BlockCard({
                   key={theme.id}
                   variant="outline"
                   className="cursor-pointer hover:bg-accent"
-                  onClick={() =>
-                    router.push(`/student/blocks/${block.id}/themes/${theme.id}`)
-                  }
+                  onClick={() => router.push(`/student/blocks/${block.id}/themes/${theme.id}`)}
                 >
                   {theme.title}
                 </Badge>
@@ -139,9 +137,7 @@ export function BlockCard({
             variant="default"
             className="flex-1"
             onClick={() => {
-              router.push(
-                `/student/practice/build?year_id=${block.year_id}&block_ids=${block.id}`
-              );
+              router.push(`/student/practice/build?year_id=${block.year_id}&block_ids=${block.id}`);
             }}
           >
             <Play className="mr-2 h-4 w-4" />

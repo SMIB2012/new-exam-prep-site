@@ -11,24 +11,17 @@ interface ColumnHeaderProps {
   addLabel?: string;
 }
 
-export function ColumnHeader({
-  title,
-  description,
-  onAdd,
-  addLabel = "Add",
-}: ColumnHeaderProps) {
+export function ColumnHeader({ title, description, onAdd, addLabel = "Add" }: ColumnHeaderProps) {
   return (
     <CardHeader className="pb-3">
       <div className="flex items-center justify-between">
         <div>
           <CardTitle className="text-lg">{title}</CardTitle>
-          {description && (
-            <CardDescription className="mt-1">{description}</CardDescription>
-          )}
+          {description && <CardDescription className="mt-1">{description}</CardDescription>}
         </div>
         {onAdd && (
           <Button variant="outline" size="sm" onClick={onAdd}>
-            <Plus className="h-4 w-4 mr-1" />
+            <Plus className="mr-1 h-4 w-4" />
             {addLabel}
           </Button>
         )}

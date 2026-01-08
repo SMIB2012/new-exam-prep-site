@@ -5,10 +5,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { backendFetch } from "@/lib/server/backendClient";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const cookies = request.headers.get("cookie") || "";
     const { id } = await params;

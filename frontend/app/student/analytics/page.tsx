@@ -62,12 +62,12 @@ export default function AnalyticsPage() {
     );
   }
 
-  const hasData = data && (
-    data.total_sessions !== undefined ||
-    data.average_score !== undefined ||
-    data.questions_answered !== undefined ||
-    data.study_time_hours !== undefined
-  );
+  const hasData =
+    data &&
+    (data.total_sessions !== undefined ||
+      data.average_score !== undefined ||
+      data.questions_answered !== undefined ||
+      data.study_time_hours !== undefined);
 
   return (
     <div className="space-y-6">
@@ -82,9 +82,9 @@ export default function AnalyticsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Info className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Analytics will appear here</h3>
-              <p className="text-sm text-muted-foreground max-w-md">
+              <Info className="mb-4 h-12 w-12 text-muted-foreground" />
+              <h3 className="mb-2 text-lg font-semibold">Analytics will appear here</h3>
+              <p className="max-w-md text-sm text-muted-foreground">
                 Once you start attempting questions and completing practice sessions, your
                 performance metrics will be displayed here.
               </p>
@@ -115,9 +115,7 @@ export default function AnalyticsPage() {
                     <BarChart3 className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">
-                      {data.total_sessions ?? 0}
-                    </div>
+                    <div className="text-2xl font-bold">{data.total_sessions ?? 0}</div>
                     <p className="text-xs text-muted-foreground">Practice sessions completed</p>
                   </CardContent>
                 </Card>
@@ -143,9 +141,7 @@ export default function AnalyticsPage() {
                     <Target className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">
-                      {data.questions_answered ?? 0}
-                    </div>
+                    <div className="text-2xl font-bold">{data.questions_answered ?? 0}</div>
                     <p className="text-xs text-muted-foreground">Total practice questions</p>
                   </CardContent>
                 </Card>
@@ -181,7 +177,7 @@ export default function AnalyticsPage() {
           ) : (
             <Card>
               <CardContent className="pt-6">
-                <div className="text-center py-8">
+                <div className="py-8 text-center">
                   <p className="text-sm text-muted-foreground">
                     Analytics data will appear here once you start practicing.
                   </p>
@@ -194,7 +190,7 @@ export default function AnalyticsPage() {
         <TabsContent value="by-block">
           <Card>
             <CardContent className="pt-6">
-              <div className="text-center py-8">
+              <div className="py-8 text-center">
                 <p className="text-sm text-muted-foreground">
                   Block-level analytics will be available once the analytics engine is enabled.
                 </p>
@@ -206,7 +202,7 @@ export default function AnalyticsPage() {
         <TabsContent value="by-theme">
           <Card>
             <CardContent className="pt-6">
-              <div className="text-center py-8">
+              <div className="py-8 text-center">
                 <p className="text-sm text-muted-foreground">
                   Theme-level analytics will be available once the analytics engine is enabled.
                 </p>

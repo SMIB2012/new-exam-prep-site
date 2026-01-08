@@ -46,10 +46,7 @@ export function ThemeHeader({
           Blocks
         </Link>
         <ChevronRight className="h-4 w-4" />
-        <Link
-          href={`/student/blocks/${block.id}`}
-          className="hover:text-foreground"
-        >
+        <Link href={`/student/blocks/${block.id}`} className="hover:text-foreground">
           Block {block.code}
         </Link>
         <ChevronRight className="h-4 w-4" />
@@ -60,21 +57,17 @@ export function ThemeHeader({
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <h1 className="text-3xl font-bold">{theme.title}</h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="mt-1 text-muted-foreground">
             Theme in Block {block.code} · {yearName}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <Badge variant={statusVariants[status]}>
-            {statusLabels[status]}
-          </Badge>
+          <Badge variant={statusVariants[status]}>{statusLabels[status]}</Badge>
           <Button
             variant="default"
             onClick={() => {
-              router.push(
-                `/student/practice/build?mode=tutor&theme_ids=${theme.id}`
-              );
+              router.push(`/student/practice/build?mode=tutor&theme_ids=${theme.id}`);
             }}
           >
             <Play className="mr-2 h-4 w-4" />

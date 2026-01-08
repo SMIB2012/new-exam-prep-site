@@ -5,12 +5,12 @@ import { backendFetch } from "@/lib/server/backendClient";
 export async function GET() {
   try {
     const cookieStore = await cookies();
-    
+
     // Build cookie string for forwarding
     const cookieHeader = Array.from(cookieStore.getAll())
       .map((cookie) => `${cookie.name}=${cookie.value}`)
       .join("; ");
-    
+
     const { data, headers } = await backendFetch<unknown[]>("/syllabus/years", {
       method: "GET",
       cookies: cookieHeader,
@@ -23,7 +23,11 @@ export async function GET() {
       },
     });
   } catch (error: unknown) {
-    const err = error as { status?: number; error?: { code: string; message: string; request_id?: string }; request_id?: string };
+    const err = error as {
+      status?: number;
+      error?: { code: string; message: string; request_id?: string };
+      request_id?: string;
+    };
     const status = err.status || 500;
     const backendError = err.error || {
       code: "INTERNAL_ERROR",

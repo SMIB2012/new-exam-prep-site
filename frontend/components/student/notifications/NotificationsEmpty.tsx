@@ -9,11 +9,11 @@ export function NotificationsEmpty() {
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="flex flex-col items-center justify-center text-center space-y-4 py-8">
+        <div className="flex flex-col items-center justify-center space-y-4 py-8 text-center">
           <Bell className="h-12 w-12 text-muted-foreground" />
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">No notifications yet</h3>
-            <p className="text-sm text-muted-foreground max-w-sm">
+            <p className="max-w-sm text-sm text-muted-foreground">
               When you have important updates, announcements, or reminders, they'll appear here.
             </p>
           </div>

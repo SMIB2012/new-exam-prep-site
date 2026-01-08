@@ -81,7 +81,7 @@ export function SyllabusShortcutsCard({ loading }: SyllabusShortcutsCardProps) {
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-4 w-64 mt-2" />
+          <Skeleton className="mt-2 h-4 w-64" />
         </CardHeader>
         <CardContent className="space-y-4">
           <Skeleton className="h-10 w-full" />
@@ -101,7 +101,7 @@ export function SyllabusShortcutsCard({ loading }: SyllabusShortcutsCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <label className="text-sm font-medium mb-2 block">Select Year</label>
+          <label className="mb-2 block text-sm font-medium">Select Year</label>
           <Select
             value={selectedYearId?.toString() || ""}
             onValueChange={(value) => setSelectedYearId(Number(value))}

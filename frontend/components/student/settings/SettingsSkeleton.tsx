@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export function SettingsSkeleton() {
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6">
       {/* Header */}
       <div className="space-y-2">
         <Skeleton className="h-8 w-32" />
@@ -16,7 +16,7 @@ export function SettingsSkeleton() {
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-4 w-64 mt-2" />
+          <Skeleton className="mt-2 h-4 w-64" />
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -34,13 +34,12 @@ export function SettingsSkeleton() {
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent>
           <Skeleton className="h-10 w-full" />
         </CardContent>
       </Card>
-
     </div>
   );
 }

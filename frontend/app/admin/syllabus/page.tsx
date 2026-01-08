@@ -16,14 +16,12 @@ export default function SyllabusPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Syllabus Management</h1>
-          <p className="text-muted-foreground">
-            Manage years, blocks, and themes
-          </p>
+          <p className="text-muted-foreground">Manage years, blocks, and themes</p>
         </div>
         <div className="flex gap-2">
           <TemplatesMenu />
           <Button onClick={() => setImportDialogOpen(true)}>
-            <Upload className="h-4 w-4 mr-2" />
+            <Upload className="mr-2 h-4 w-4" />
             Import (CSV)
           </Button>
         </div>

@@ -21,7 +21,7 @@ export function AccountCard({ name, email, role, createdAt, loading }: AccountCa
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -65,11 +65,7 @@ export function AccountCard({ name, email, role, createdAt, loading }: AccountCa
         {createdAt && (
           <div className="space-y-2">
             <Label htmlFor="createdAt">Account created</Label>
-            <Input
-              id="createdAt"
-              value={new Date(createdAt).toLocaleDateString()}
-              disabled
-            />
+            <Input id="createdAt" value={new Date(createdAt).toLocaleDateString()} disabled />
           </div>
         )}
         <div className="pt-2">

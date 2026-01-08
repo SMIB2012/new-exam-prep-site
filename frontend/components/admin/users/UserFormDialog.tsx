@@ -29,12 +29,7 @@ interface UserFormDialogProps {
   onSave: (data: UserCreate | UserUpdate) => Promise<void>;
 }
 
-export function UserFormDialog({
-  open,
-  onOpenChange,
-  user,
-  onSave,
-}: UserFormDialogProps) {
+export function UserFormDialog({ open, onOpenChange, user, onSave }: UserFormDialogProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<"STUDENT" | "ADMIN" | "REVIEWER">("STUDENT");
@@ -123,13 +118,14 @@ export function UserFormDialog({
               placeholder="user@example.com"
               disabled={!!user}
             />
-            {user && (
-              <p className="text-xs text-muted-foreground">Email cannot be changed</p>
-            )}
+            {user && <p className="text-xs text-muted-foreground">Email cannot be changed</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="role">Role *</Label>
-            <Select value={role} onValueChange={(v) => setRole(v as "STUDENT" | "ADMIN" | "REVIEWER")}>
+            <Select
+              value={role}
+              onValueChange={(v) => setRole(v as "STUDENT" | "ADMIN" | "REVIEWER")}
+            >
               <SelectTrigger id="role">
                 <SelectValue />
               </SelectTrigger>
@@ -141,16 +137,10 @@ export function UserFormDialog({
             </Select>
           </div>
           <div className="flex items-center space-x-2">
-            <Switch
-              id="is_active"
-              checked={isActive}
-              onCheckedChange={setIsActive}
-            />
+            <Switch id="is_active" checked={isActive} onCheckedChange={setIsActive} />
             <Label htmlFor="is_active">Active</Label>
           </div>
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>

@@ -91,7 +91,7 @@ export default function UsersPage() {
     title: string,
     description: string,
     confirmLabel: string,
-    action: () => Promise<void>
+    action: () => Promise<void>,
   ) => {
     setConfirmAction({ title, description, confirmLabel, action });
     setConfirmDialogOpen(true);
@@ -146,13 +146,17 @@ export default function UsersPage() {
             users={users}
             currentUserId={currentUserId}
             onEdit={handleEditUser}
-            onEnable={(user) => showConfirmDialog("Enable User", `Enable user "${user.name}"?`, "Enable", () => handleEnableUser(user))}
+            onEnable={(user) =>
+              showConfirmDialog("Enable User", `Enable user "${user.name}"?`, "Enable", () =>
+                handleEnableUser(user),
+              )
+            }
             onDisable={(user) =>
               showConfirmDialog(
                 "Disable User",
                 `This user will lose access immediately. Disable user "${user.name}"?`,
                 "Disable",
-                () => handleDisableUser(user)
+                () => handleDisableUser(user),
               )
             }
             onPasswordReset={(user) =>
@@ -160,7 +164,7 @@ export default function UsersPage() {
                 "Send Password Reset",
                 `Send password reset link to "${user.email}"?`,
                 "Send Reset",
-                () => handlePasswordReset(user)
+                () => handlePasswordReset(user),
               )
             }
           />
@@ -169,7 +173,8 @@ export default function UsersPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <div className="text-sm text-muted-foreground">
-                Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total} users
+                Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total}{" "}
+                users
               </div>
               <div className="flex items-center gap-2">
                 <Button

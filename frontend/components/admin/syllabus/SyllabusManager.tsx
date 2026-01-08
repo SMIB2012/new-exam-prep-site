@@ -17,11 +17,26 @@ import { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";
 
 export function SyllabusManager() {
   // Data hooks
-  const { years, loading: yearsLoading, error: yearsError, refetch: refetchYears } = useAdminYears();
+  const {
+    years,
+    loading: yearsLoading,
+    error: yearsError,
+    refetch: refetchYears,
+  } = useAdminYears();
   const [selectedYearId, setSelectedYearId] = useState<number | null>(null);
-  const { blocks, loading: blocksLoading, error: blocksError, refetch: refetchBlocks } = useAdminBlocks(selectedYearId);
+  const {
+    blocks,
+    loading: blocksLoading,
+    error: blocksError,
+    refetch: refetchBlocks,
+  } = useAdminBlocks(selectedYearId);
   const [selectedBlockId, setSelectedBlockId] = useState<number | null>(null);
-  const { themes, loading: themesLoading, error: themesError, refetch: refetchThemes } = useAdminThemes(selectedBlockId);
+  const {
+    themes,
+    loading: themesLoading,
+    error: themesError,
+    refetch: refetchThemes,
+  } = useAdminThemes(selectedBlockId);
 
   // Reorder hooks
   const { reorderYears } = useReorderYears();
@@ -49,9 +64,17 @@ export function SyllabusManager() {
 
   // Auto-select first year/block
   useEffect(() => {
-    if (years.length > 0 && (selectedYearId === null || selectedYearId === undefined || selectedYearId === 0)) {
+    if (
+      years.length > 0 &&
+      (selectedYearId === null || selectedYearId === undefined || selectedYearId === 0)
+    ) {
       const firstYear = years[0];
-      if (firstYear && typeof firstYear.id === "number" && !isNaN(firstYear.id) && firstYear.id > 0) {
+      if (
+        firstYear &&
+        typeof firstYear.id === "number" &&
+        !isNaN(firstYear.id) &&
+        firstYear.id > 0
+      ) {
         setSelectedYearId(firstYear.id);
       }
     }
@@ -77,23 +100,47 @@ export function SyllabusManager() {
     await refetchYears();
   };
 
-  const handleCreateBlock = async (data: { year_id: number; code: string; name: string; order_no: number; is_active: boolean }) => {
+  const handleCreateBlock = async (data: {
+    year_id: number;
+    code: string;
+    name: string;
+    order_no: number;
+    is_active: boolean;
+  }) => {
     await createBlock(data);
     await refetchBlocks();
   };
 
-  const handleUpdateBlock = async (data: { year_id: number; code: string; name: string; order_no: number; is_active: boolean }) => {
+  const handleUpdateBlock = async (data: {
+    year_id: number;
+    code: string;
+    name: string;
+    order_no: number;
+    is_active: boolean;
+  }) => {
     if (!editingBlock) return;
     await updateBlock(editingBlock.id, data);
     await refetchBlocks();
   };
 
-  const handleCreateTheme = async (data: { block_id: number; title: string; order_no: number; description?: string; is_active: boolean }) => {
+  const handleCreateTheme = async (data: {
+    block_id: number;
+    title: string;
+    order_no: number;
+    description?: string;
+    is_active: boolean;
+  }) => {
     await createTheme(data);
     await refetchThemes();
   };
 
-  const handleUpdateTheme = async (data: { block_id: number; title: string; order_no: number; description?: string; is_active: boolean }) => {
+  const handleUpdateTheme = async (data: {
+    block_id: number;
+    title: string;
+    order_no: number;
+    description?: string;
+    is_active: boolean;
+  }) => {
     if (!editingTheme) return;
     await updateTheme(editingTheme.id, data);
     await refetchThemes();
@@ -151,9 +198,9 @@ export function SyllabusManager() {
   return (
     <div className="space-y-4">
       {/* Desktop: 3-column layout */}
-      <div className="hidden md:grid md:grid-cols-3 gap-4">
+      <div className="hidden gap-4 md:grid md:grid-cols-3">
         {/* Years Column */}
-        <Card className="flex flex-col h-[calc(100vh-12rem)]">
+        <Card className="flex h-[calc(100vh-12rem)] flex-col">
           <ColumnHeader
             title="Years"
             description="Academic years"
@@ -167,7 +214,7 @@ export function SyllabusManager() {
             {yearsLoading ? (
               <div className="space-y-2">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-16 bg-muted animate-pulse rounded" />
+                  <div key={i} className="h-16 animate-pulse rounded bg-muted" />
                 ))}
               </div>
             ) : yearsError ? (
@@ -212,7 +259,7 @@ export function SyllabusManager() {
         </Card>
 
         {/* Blocks Column */}
-        <Card className="flex flex-col h-[calc(100vh-12rem)]">
+        <Card className="flex h-[calc(100vh-12rem)] flex-col">
           <ColumnHeader
             title="Blocks"
             description={selectedYear ? selectedYear.name : "Select a year"}
@@ -228,14 +275,11 @@ export function SyllabusManager() {
           />
           <CardContent className="flex-1 overflow-y-auto">
             {!selectedYearId ? (
-              <EmptyState
-                title="No year selected"
-                description="Select a year to view blocks"
-              />
+              <EmptyState title="No year selected" description="Select a year to view blocks" />
             ) : blocksLoading ? (
               <div className="space-y-2">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-16 bg-muted animate-pulse rounded" />
+                  <div key={i} className="h-16 animate-pulse rounded bg-muted" />
                 ))}
               </div>
             ) : blocksError ? (
@@ -266,7 +310,9 @@ export function SyllabusManager() {
                       setEditingBlock(block);
                       setBlockDialogOpen(true);
                     }}
-                    onToggle={() => toggleBlock(block.id, !block.is_active).then(() => refetchBlocks())}
+                    onToggle={() =>
+                      toggleBlock(block.id, !block.is_active).then(() => refetchBlocks())
+                    }
                     onDelete={() => {
                       setDeletingEntity({ type: "block", id: block.id, name: block.name });
                       setDeleteDialogOpen(true);
@@ -280,7 +326,7 @@ export function SyllabusManager() {
         </Card>
 
         {/* Themes Column */}
-        <Card className="flex flex-col h-[calc(100vh-12rem)]">
+        <Card className="flex h-[calc(100vh-12rem)] flex-col">
           <ColumnHeader
             title="Themes"
             description={selectedBlock ? selectedBlock.name : "Select a block"}
@@ -296,14 +342,11 @@ export function SyllabusManager() {
           />
           <CardContent className="flex-1 overflow-y-auto">
             {!selectedBlockId ? (
-              <EmptyState
-                title="No block selected"
-                description="Select a block to view themes"
-              />
+              <EmptyState title="No block selected" description="Select a block to view themes" />
             ) : themesLoading ? (
               <div className="space-y-2">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-16 bg-muted animate-pulse rounded" />
+                  <div key={i} className="h-16 animate-pulse rounded bg-muted" />
                 ))}
               </div>
             ) : themesError ? (
@@ -332,7 +375,9 @@ export function SyllabusManager() {
                       setEditingTheme(theme);
                       setThemeDialogOpen(true);
                     }}
-                    onToggle={() => toggleTheme(theme.id, !theme.is_active).then(() => refetchThemes())}
+                    onToggle={() =>
+                      toggleTheme(theme.id, !theme.is_active).then(() => refetchThemes())
+                    }
                     onDelete={() => {
                       setDeletingEntity({ type: "theme", id: theme.id, name: theme.title });
                       setDeleteDialogOpen(true);
@@ -370,7 +415,7 @@ export function SyllabusManager() {
                 {yearsLoading ? (
                   <div className="space-y-2">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-16 bg-muted animate-pulse rounded" />
+                      <div key={i} className="h-16 animate-pulse rounded bg-muted" />
                     ))}
                   </div>
                 ) : yearsError ? (
@@ -400,7 +445,9 @@ export function SyllabusManager() {
                           setEditingYear(year);
                           setYearDialogOpen(true);
                         }}
-                        onToggle={() => toggleYear(year.id, !year.is_active).then(() => refetchYears())}
+                        onToggle={() =>
+                          toggleYear(year.id, !year.is_active).then(() => refetchYears())
+                        }
                         onDelete={() => {
                           setDeletingEntity({ type: "year", id: year.id, name: year.name });
                           setDeleteDialogOpen(true);
@@ -438,7 +485,7 @@ export function SyllabusManager() {
                 ) : blocksLoading ? (
                   <div className="space-y-2">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-16 bg-muted animate-pulse rounded" />
+                      <div key={i} className="h-16 animate-pulse rounded bg-muted" />
                     ))}
                   </div>
                 ) : blocksError ? (
@@ -468,7 +515,9 @@ export function SyllabusManager() {
                           setEditingBlock(block);
                           setBlockDialogOpen(true);
                         }}
-                        onToggle={() => toggleBlock(block.id, !block.is_active).then(() => refetchBlocks())}
+                        onToggle={() =>
+                          toggleBlock(block.id, !block.is_active).then(() => refetchBlocks())
+                        }
                         onDelete={() => {
                           setDeletingEntity({ type: "block", id: block.id, name: block.name });
                           setDeleteDialogOpen(true);
@@ -506,7 +555,7 @@ export function SyllabusManager() {
                 ) : themesLoading ? (
                   <div className="space-y-2">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-16 bg-muted animate-pulse rounded" />
+                      <div key={i} className="h-16 animate-pulse rounded bg-muted" />
                     ))}
                   </div>
                 ) : themesError ? (
@@ -534,7 +583,9 @@ export function SyllabusManager() {
                           setEditingTheme(theme);
                           setThemeDialogOpen(true);
                         }}
-                        onToggle={() => toggleTheme(theme.id, !theme.is_active).then(() => refetchThemes())}
+                        onToggle={() =>
+                          toggleTheme(theme.id, !theme.is_active).then(() => refetchThemes())
+                        }
                         onDelete={() => {
                           setDeletingEntity({ type: "theme", id: theme.id, name: theme.title });
                           setDeleteDialogOpen(true);

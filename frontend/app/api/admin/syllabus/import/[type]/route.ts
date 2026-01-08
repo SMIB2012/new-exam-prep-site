@@ -5,10 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://backend:8000";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { type: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { type: string } }) {
   try {
     const cookies = request.headers.get("cookie") || "";
     const { searchParams } = new URL(request.url);
@@ -22,7 +19,7 @@ export async function POST(
     if (!file) {
       return NextResponse.json(
         { error: { code: "VALIDATION_ERROR", message: "No file provided" } },
-        { status: 400 }
+        { status: 400 },
       );
     }
 

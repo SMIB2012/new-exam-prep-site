@@ -22,7 +22,7 @@ export function RecentActivityCard({ recentSessions, loading, error }: RecentAct
       <Card className="col-span-full md:col-span-1">
         <CardHeader>
           <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -60,7 +60,7 @@ export function RecentActivityCard({ recentSessions, loading, error }: RecentAct
           <CardDescription>Your recent practice sessions</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="mb-4 text-sm text-muted-foreground">
             No recent sessions. Start practicing to see your activity here.
           </p>
           <Button
@@ -110,13 +110,10 @@ export function RecentActivityCard({ recentSessions, loading, error }: RecentAct
       </CardHeader>
       <CardContent className="space-y-3">
         {recentSessions.slice(0, 5).map((session) => (
-          <div
-            key={session.id}
-            className="flex items-center justify-between rounded-lg border p-3"
-          >
+          <div key={session.id} className="flex items-center justify-between rounded-lg border p-3">
             <div className="flex-1">
-              <p className="font-medium text-sm">{session.title}</p>
-              <div className="flex items-center gap-2 mt-1">
+              <p className="text-sm font-medium">{session.title}</p>
+              <div className="mt-1 flex items-center gap-2">
                 {getStatusBadge(session.status)}
                 {session.score !== undefined && (
                   <span className="text-xs text-muted-foreground">
@@ -125,11 +122,7 @@ export function RecentActivityCard({ recentSessions, loading, error }: RecentAct
                 )}
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push(session.href)}
-            >
+            <Button variant="ghost" size="sm" onClick={() => router.push(session.href)}>
               {session.status === "in_progress" ? (
                 <>
                   <Play className="mr-1 h-4 w-4" />

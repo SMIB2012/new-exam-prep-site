@@ -10,7 +10,7 @@ export function SettingsSkeleton() {
         <Card key={i}>
           <CardHeader>
             <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-64 mt-2" />
+            <Skeleton className="mt-2 h-4 w-64" />
           </CardHeader>
           <CardContent className="space-y-4">
             <Skeleton className="h-10 w-full" />

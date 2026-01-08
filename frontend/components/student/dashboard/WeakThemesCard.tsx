@@ -22,7 +22,7 @@ export function WeakThemesCard({ weakThemes, loading, error }: WeakThemesCardPro
       <Card className="col-span-full md:col-span-1">
         <CardHeader>
           <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -60,7 +60,7 @@ export function WeakThemesCard({ weakThemes, loading, error }: WeakThemesCardPro
           <CardDescription>Themes that need attention</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="mb-4 text-sm text-muted-foreground">
             Not enough data yet. Complete practice sessions to identify weak themes.
           </p>
           <Button
@@ -89,7 +89,9 @@ export function WeakThemesCard({ weakThemes, loading, error }: WeakThemesCardPro
     }
   };
 
-  const getReasonVariant = (reason: WeakTheme["reason"]): "default" | "destructive" | "secondary" => {
+  const getReasonVariant = (
+    reason: WeakTheme["reason"],
+  ): "default" | "destructive" | "secondary" => {
     switch (reason) {
       case "low_accuracy":
         return "destructive";
@@ -118,14 +120,12 @@ export function WeakThemesCard({ weakThemes, loading, error }: WeakThemesCardPro
             className="flex items-center justify-between rounded-lg border p-3"
           >
             <div className="flex-1">
-              <p className="font-medium text-sm">{theme.themeTitle}</p>
-              <div className="flex items-center gap-2 mt-1">
+              <p className="text-sm font-medium">{theme.themeTitle}</p>
+              <div className="mt-1 flex items-center gap-2">
                 <Badge variant={getReasonVariant(theme.reason)} className="text-xs">
                   {getReasonLabel(theme.reason)}
                 </Badge>
-                <span className="text-xs text-muted-foreground">
-                  Block {theme.blockCode}
-                </span>
+                <span className="text-xs text-muted-foreground">Block {theme.blockCode}</span>
               </div>
             </div>
             <Button

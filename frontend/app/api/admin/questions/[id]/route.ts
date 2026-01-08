@@ -5,10 +5,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { backendFetch } from "@/lib/server/backendClient";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const cookies = request.headers.get("cookie") || "";
     const { id } = await params;
@@ -28,10 +25,7 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const cookies = request.headers.get("cookie") || "";
     const { id } = await params;

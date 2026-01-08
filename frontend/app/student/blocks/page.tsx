@@ -49,7 +49,7 @@ export default function BlocksPage() {
         if (profile.selected_year) {
           const profileYearName = profile.selected_year.display_name;
           console.log("[Blocks] User selected year from profile:", profileYearName);
-          
+
           // Improved matching logic (same as dashboard)
           const matchingYear = yearsData.find((y) => {
             // Exact match
@@ -57,15 +57,24 @@ export default function BlocksPage() {
             // Case-insensitive match
             if (y.name.toLowerCase() === profileYearName.toLowerCase()) return true;
             // Partial match
-            if (y.name.toLowerCase().includes(profileYearName.toLowerCase()) || 
-                profileYearName.toLowerCase().includes(y.name.toLowerCase())) return true;
+            if (
+              y.name.toLowerCase().includes(profileYearName.toLowerCase()) ||
+              profileYearName.toLowerCase().includes(y.name.toLowerCase())
+            )
+              return true;
             // Try matching by removing common suffixes
-            const normalizedYear = y.name.toLowerCase().replace(/\s*(mbbs|year|yr)\s*/gi, "").trim();
-            const normalizedProfile = profileYearName.toLowerCase().replace(/\s*(mbbs|year|yr)\s*/gi, "").trim();
+            const normalizedYear = y.name
+              .toLowerCase()
+              .replace(/\s*(mbbs|year|yr)\s*/gi, "")
+              .trim();
+            const normalizedProfile = profileYearName
+              .toLowerCase()
+              .replace(/\s*(mbbs|year|yr)\s*/gi, "")
+              .trim();
             if (normalizedYear === normalizedProfile) return true;
             return false;
           });
-          
+
           if (matchingYear) {
             console.log("[Blocks] Matched year:", matchingYear.name);
             setSelectedYearId(matchingYear.id);
@@ -103,14 +112,13 @@ export default function BlocksPage() {
     }
   }
 
-
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <Skeleton className="h-8 w-32" />
-            <Skeleton className="h-4 w-64 mt-2" />
+            <Skeleton className="mt-2 h-4 w-64" />
           </div>
           <Skeleton className="h-10 w-32" />
         </div>
@@ -191,11 +199,7 @@ export default function BlocksPage() {
           {blocks
             .sort((a, b) => a.order_no - b.order_no)
             .map((block) => (
-              <BlockCard
-                key={block.id}
-                block={block}
-                isAllowed={true}
-              />
+              <BlockCard key={block.id} block={block} isAllowed={true} />
             ))}
         </div>
       )}

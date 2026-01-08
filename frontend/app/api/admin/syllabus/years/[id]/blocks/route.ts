@@ -5,19 +5,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { backendFetch } from "@/lib/server/backendClient";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    
+
     // Validate year ID - must be a valid positive integer
     // Check for undefined, null, empty, or invalid values
     if (!id || id === "undefined" || id === "null" || id === "" || id.trim() === "") {
       return NextResponse.json(
         { error: { code: "INVALID_REQUEST", message: "Year ID is required" } },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -25,8 +22,13 @@ export async function GET(
     const yearIdNum = Number(id);
     if (isNaN(yearIdNum) || !Number.isInteger(yearIdNum) || yearIdNum <= 0) {
       return NextResponse.json(
-        { error: { code: "INVALID_REQUEST", message: `Year ID must be a positive integer, got: ${id}` } },
-        { status: 400 }
+        {
+          error: {
+            code: "INVALID_REQUEST",
+            message: `Year ID must be a positive integer, got: ${id}`,
+          },
+        },
+        { status: 400 },
       );
     }
 
@@ -44,10 +46,14 @@ export async function GET(
   } catch (error: unknown) {
     // Handle different error types
     if (error && typeof error === "object" && "status" in error && "error" in error) {
-      const err = error as { status?: number; error?: { code: string; message: string; details?: unknown }; request_id?: string };
+      const err = error as {
+        status?: number;
+        error?: { code: string; message: string; details?: unknown };
+        request_id?: string;
+      };
       const status = err.status || 500;
       const errorData = err.error || { code: "INTERNAL_ERROR", message: "Failed to fetch blocks" };
-      
+
       // Extract validation error details if present
       if (status === 422 && err.error?.details) {
         errorData.message = err.error.message || "Invalid request data";
@@ -59,15 +65,20 @@ export async function GET(
         {
           status,
           headers: err.request_id ? { "X-Request-ID": err.request_id } : undefined,
-        }
+        },
       );
     }
 
     // Handle unexpected errors
     console.error("[Blocks Route] Unexpected error:", error);
     return NextResponse.json(
-      { error: { code: "INTERNAL_ERROR", message: error instanceof Error ? error.message : "Failed to fetch blocks" } },
-      { status: 500 }
+      {
+        error: {
+          code: "INTERNAL_ERROR",
+          message: error instanceof Error ? error.message : "Failed to fetch blocks",
+        },
+      },
+      { status: 500 },
     );
   }
 }

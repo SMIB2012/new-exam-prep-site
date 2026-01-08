@@ -35,7 +35,7 @@ export function SelectableCard({
           ? "border-primary bg-primary/5 shadow-sm"
           : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm",
         disabled && "cursor-not-allowed opacity-50",
-        className
+        className,
       )}
     >
       <div className="flex items-start gap-3">
@@ -44,27 +44,23 @@ export function SelectableCard({
           <div
             className={cn(
               "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200",
-              selected
-                ? "border-primary bg-primary text-white"
-                : "border-slate-300 bg-white"
+              selected ? "border-primary bg-primary text-white" : "border-slate-300 bg-white",
             )}
           >
             {selected && <Check className="h-3 w-3" />}
           </div>
         )}
 
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <p
             className={cn(
               "font-medium transition-colors",
-              selected ? "text-primary" : "text-slate-900"
+              selected ? "text-primary" : "text-slate-900",
             )}
           >
             {title}
           </p>
-          {description && (
-            <p className="mt-0.5 text-sm text-slate-500">{description}</p>
-          )}
+          {description && <p className="mt-0.5 text-sm text-slate-500">{description}</p>}
         </div>
       </div>
     </button>
@@ -99,15 +95,13 @@ export function SelectableChip({
           ? "border-primary bg-primary/5 text-primary"
           : "border-slate-200 bg-white text-slate-700 hover:border-slate-300",
         disabled && "cursor-not-allowed opacity-50",
-        className
+        className,
       )}
     >
       <div
         className={cn(
           "flex h-4 w-4 items-center justify-center rounded border transition-all duration-200",
-          selected
-            ? "border-primary bg-primary text-white"
-            : "border-slate-300 bg-white"
+          selected ? "border-primary bg-primary text-white" : "border-slate-300 bg-white",
         )}
       >
         {selected && <Check className="h-3 w-3" />}

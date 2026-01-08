@@ -13,11 +13,11 @@ interface ThemeCardProps {
   isBlockAllowed?: boolean; // Deprecated - always true now
 }
 
-export function ThemeCard({ 
-  theme, 
-  index, 
-  total, 
-  isBlockAllowed: _isBlockAllowed // eslint-disable-line @typescript-eslint/no-unused-vars
+export function ThemeCard({
+  theme,
+  index,
+  total,
+  isBlockAllowed: _isBlockAllowed, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: ThemeCardProps) {
   const router = useRouter();
 
@@ -29,9 +29,7 @@ export function ThemeCard({
           Theme {index + 1} of {total}
         </CardDescription>
         {theme.description && (
-          <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-            {theme.description}
-          </p>
+          <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{theme.description}</p>
         )}
       </CardHeader>
       <CardContent className="space-y-2">
@@ -39,9 +37,7 @@ export function ThemeCard({
           variant="default"
           className="w-full"
           onClick={() => {
-            router.push(
-              `/student/practice/build?theme_ids=${theme.id}&block_id=${theme.block_id}`
-            );
+            router.push(`/student/practice/build?theme_ids=${theme.id}&block_id=${theme.block_id}`);
           }}
         >
           <Play className="mr-2 h-4 w-4" />

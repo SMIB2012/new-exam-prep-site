@@ -15,7 +15,7 @@ export function UsersHeader({ onAddUser }: UsersHeaderProps) {
         <p className="text-muted-foreground">Manage platform users and access control</p>
       </div>
       <Button onClick={onAddUser}>
-        <Plus className="h-4 w-4 mr-2" />
+        <Plus className="mr-2 h-4 w-4" />
         Add User
       </Button>
     </div>

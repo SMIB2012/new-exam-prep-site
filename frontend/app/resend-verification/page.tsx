@@ -70,16 +70,18 @@ function ResendVerificationForm() {
 
           <div className="space-y-3">
             <p className="text-sm text-slate-600">
-              We've sent a verification link to <strong>{email}</strong>. Please check your inbox and click the link to verify your email address.
+              We've sent a verification link to <strong>{email}</strong>. Please check your inbox
+              and click the link to verify your email address.
             </p>
             <p className="text-sm text-slate-600">
-              The verification link will expire in 24 hours. If you don't see the email, check your spam folder.
+              The verification link will expire in 24 hours. If you don't see the email, check your
+              spam folder.
             </p>
           </div>
 
           <Button
             onClick={() => router.push("/login")}
-            className="w-full h-11 rounded-lg bg-primary font-semibold text-white hover:bg-primary/90"
+            className="h-11 w-full rounded-lg bg-primary font-semibold text-white hover:bg-primary/90"
           >
             Go to login
           </Button>
@@ -87,7 +89,7 @@ function ResendVerificationForm() {
           <div className="text-center text-sm text-slate-600">
             <Link
               href="/login"
-              className="font-medium text-primary hover:underline underline-offset-2"
+              className="font-medium text-primary underline-offset-2 hover:underline"
             >
               Sign in →
             </Link>
@@ -104,13 +106,7 @@ function ResendVerificationForm() {
       footer={<AuthCardFooter />}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <InlineAlert
-            variant="error"
-            message={error}
-            onDismiss={() => setError(null)}
-          />
-        )}
+        {error && <InlineAlert variant="error" message={error} onDismiss={() => setError(null)} />}
 
         <div className="space-y-2">
           <Label htmlFor="email">Email address</Label>
@@ -130,7 +126,7 @@ function ResendVerificationForm() {
         <Button
           type="submit"
           disabled={loading || !email.trim()}
-          className="w-full h-11 rounded-lg bg-primary font-semibold text-white hover:bg-primary/90"
+          className="h-11 w-full rounded-lg bg-primary font-semibold text-white hover:bg-primary/90"
         >
           {loading ? (
             <>
@@ -142,10 +138,10 @@ function ResendVerificationForm() {
           )}
         </Button>
 
-        <div className="text-center text-sm text-slate-600 pt-4 border-t">
+        <div className="border-t pt-4 text-center text-sm text-slate-600">
           <Link
             href="/login"
-            className="font-medium text-primary hover:underline underline-offset-2"
+            className="font-medium text-primary underline-offset-2 hover:underline"
           >
             Back to sign in
           </Link>

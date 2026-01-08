@@ -21,10 +21,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data, { status: 201 });
   } catch (error: unknown) {
-    const err = error as { status?: number; error?: { code: string; message: string; details?: unknown } };
+    const err = error as {
+      status?: number;
+      error?: { code: string; message: string; details?: unknown };
+    };
     const status = err.status || 500;
     const errorData = err.error || { code: "INTERNAL_ERROR", message: "Failed to create block" };
-    
+
     // Extract validation error details if present
     if (status === 422 && err.error?.details) {
       errorData.message = err.error.message || "Invalid request data";

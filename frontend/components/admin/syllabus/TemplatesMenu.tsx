@@ -33,7 +33,10 @@ export function TemplatesMenu() {
       document.body.removeChild(a);
       notify.success("Template downloaded", `Downloaded ${type} template`);
     } catch (error) {
-      notify.error("Download failed", error instanceof Error ? error.message : "Failed to download template");
+      notify.error(
+        "Download failed",
+        error instanceof Error ? error.message : "Failed to download template",
+      );
     }
   };
 
@@ -41,14 +44,12 @@ export function TemplatesMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
-          <Download className="h-4 w-4 mr-2" />
+          <Download className="mr-2 h-4 w-4" />
           Download Templates
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => handleDownload("years")}>
-          Years Template
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleDownload("years")}>Years Template</DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleDownload("blocks")}>
           Blocks Template
         </DropdownMenuItem>

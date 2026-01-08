@@ -24,7 +24,7 @@ export function OnboardingWizardShell({
     <div
       className={cn(
         "min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30",
-        className
+        className,
       )}
     >
       {/* Top Bar */}
@@ -40,7 +40,7 @@ export function OnboardingWizardShell({
             </Link>
 
             {/* Progress indicator */}
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="hidden items-center gap-2 sm:flex">
               {Array.from({ length: totalSteps }).map((_, index) => (
                 <React.Fragment key={index}>
                   <StepIndicator
@@ -53,7 +53,7 @@ export function OnboardingWizardShell({
                     <div
                       className={cn(
                         "h-0.5 w-8 transition-colors duration-300",
-                        currentStep > index + 1 ? "bg-primary" : "bg-slate-200"
+                        currentStep > index + 1 ? "bg-primary" : "bg-slate-200",
                       )}
                     />
                   )}
@@ -62,7 +62,7 @@ export function OnboardingWizardShell({
             </div>
 
             {/* Mobile progress */}
-            <div className="sm:hidden flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:hidden">
               <span className="text-sm font-medium text-slate-600">
                 Step {currentStep} of {totalSteps}
               </span>
@@ -86,20 +86,15 @@ interface StepIndicatorProps {
   isCompleted: boolean;
 }
 
-function StepIndicator({
-  step,
-  label,
-  isActive,
-  isCompleted,
-}: StepIndicatorProps) {
+function StepIndicator({ step, label, isActive, isCompleted }: StepIndicatorProps) {
   return (
     <div className="flex items-center gap-2">
       <div
         className={cn(
           "flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-medium transition-all duration-300",
           isCompleted && "border-primary bg-primary text-white",
-          isActive && !isCompleted && "border-primary text-primary bg-primary/5",
-          !isActive && !isCompleted && "border-slate-300 text-slate-400"
+          isActive && !isCompleted && "border-primary bg-primary/5 text-primary",
+          !isActive && !isCompleted && "border-slate-300 text-slate-400",
         )}
       >
         {isCompleted ? <Check className="h-4 w-4" /> : step}
@@ -107,8 +102,8 @@ function StepIndicator({
       {label && (
         <span
           className={cn(
-            "hidden lg:block text-sm font-medium transition-colors",
-            isActive || isCompleted ? "text-slate-900" : "text-slate-400"
+            "hidden text-sm font-medium transition-colors lg:block",
+            isActive || isCompleted ? "text-slate-900" : "text-slate-400",
           )}
         >
           {label}
@@ -125,22 +120,20 @@ interface ProgressBarProps {
   className?: string;
 }
 
-export function OnboardingProgressBar({
-  currentStep,
-  totalSteps,
-  className,
-}: ProgressBarProps) {
+export function OnboardingProgressBar({ currentStep, totalSteps, className }: ProgressBarProps) {
   const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
 
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex justify-between text-sm text-slate-600">
-        <span>Step {currentStep} of {totalSteps}</span>
+        <span>
+          Step {currentStep} of {totalSteps}
+        </span>
         <span>{Math.round(progress)}% complete</span>
       </div>
-      <div className="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
         <div
-          className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+          className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>

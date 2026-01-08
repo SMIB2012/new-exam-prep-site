@@ -194,7 +194,13 @@ export const syllabusAPI = {
   },
   getThemes: async (blockId: number): Promise<Theme[]> => {
     // Validate blockId - must be a valid positive integer
-    if (blockId === null || blockId === undefined || typeof blockId !== "number" || isNaN(blockId) || blockId <= 0) {
+    if (
+      blockId === null ||
+      blockId === undefined ||
+      typeof blockId !== "number" ||
+      isNaN(blockId) ||
+      blockId <= 0
+    ) {
       throw new Error("Valid block ID is required");
     }
     const params = `?block_id=${blockId}`;
@@ -230,7 +236,11 @@ export const adminSyllabusAPI = {
     }
     return response.json();
   },
-  createYear: async (data: { name: string; order_no: number; is_active?: boolean }): Promise<YearAdmin> => {
+  createYear: async (data: {
+    name: string;
+    order_no: number;
+    is_active?: boolean;
+  }): Promise<YearAdmin> => {
     const response = await fetch(`/api/admin/syllabus/years`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -281,7 +291,13 @@ export const adminSyllabusAPI = {
   // Blocks
   getBlocks: async (yearId: number): Promise<BlockAdmin[]> => {
     // Validate yearId - must be a valid positive integer
-    if (yearId === null || yearId === undefined || typeof yearId !== "number" || isNaN(yearId) || yearId <= 0) {
+    if (
+      yearId === null ||
+      yearId === undefined ||
+      typeof yearId !== "number" ||
+      isNaN(yearId) ||
+      yearId <= 0
+    ) {
       throw new Error("Valid year ID is required");
     }
     const response = await fetch(`/api/admin/syllabus/years/${yearId}/blocks`, {
@@ -298,7 +314,13 @@ export const adminSyllabusAPI = {
     }
     return response.json();
   },
-  createBlock: async (data: { year_id: number; code: string; name: string; order_no: number; is_active?: boolean }): Promise<BlockAdmin> => {
+  createBlock: async (data: {
+    year_id: number;
+    code: string;
+    name: string;
+    order_no: number;
+    is_active?: boolean;
+  }): Promise<BlockAdmin> => {
     const response = await fetch(`/api/admin/syllabus/blocks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -361,7 +383,13 @@ export const adminSyllabusAPI = {
   // Themes
   getThemes: async (blockId: number): Promise<ThemeAdmin[]> => {
     // Validate blockId - must be a valid positive integer
-    if (blockId === null || blockId === undefined || typeof blockId !== "number" || isNaN(blockId) || blockId <= 0) {
+    if (
+      blockId === null ||
+      blockId === undefined ||
+      typeof blockId !== "number" ||
+      isNaN(blockId) ||
+      blockId <= 0
+    ) {
       throw new Error("Valid block ID is required");
     }
     const response = await fetch(`/api/admin/syllabus/blocks/${blockId}/themes`, {
@@ -378,7 +406,13 @@ export const adminSyllabusAPI = {
     }
     return response.json();
   },
-  createTheme: async (data: { block_id: number; title: string; order_no: number; description?: string; is_active?: boolean }): Promise<ThemeAdmin> => {
+  createTheme: async (data: {
+    block_id: number;
+    title: string;
+    order_no: number;
+    description?: string;
+    is_active?: boolean;
+  }): Promise<ThemeAdmin> => {
     const response = await fetch(`/api/admin/syllabus/themes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -454,7 +488,7 @@ export const adminSyllabusAPI = {
     type: "years" | "blocks" | "themes",
     file: File,
     dryRun: boolean,
-    autoCreate: boolean
+    autoCreate: boolean,
   ): Promise<{
     success: boolean;
     message?: string;
@@ -464,11 +498,14 @@ export const adminSyllabusAPI = {
   }> => {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await fetch(`/api/admin/syllabus/import/${type}?dry_run=${dryRun}&auto_create=${autoCreate}`, {
-      method: "POST",
-      credentials: "include",
-      body: formData,
-    });
+    const response = await fetch(
+      `/api/admin/syllabus/import/${type}?dry_run=${dryRun}&auto_create=${autoCreate}`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      },
+    );
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.error?.message || "Failed to import CSV");
@@ -485,14 +522,15 @@ export const adminAPI = {
       limit: limit.toString(),
     });
     if (published !== undefined) params.set("published", published.toString());
-    
+
     const response = await fetch(`/api/admin/questions?${params}`, {
       method: "GET",
       credentials: "include",
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      const errorMessage = errorData.error?.message || `Failed to load questions (${response.status})`;
+      const errorMessage =
+        errorData.error?.message || `Failed to load questions (${response.status})`;
       const error = new Error(errorMessage) as Error & { status: number; errorData: unknown };
       error.status = response.status;
       error.errorData = errorData;
@@ -500,7 +538,7 @@ export const adminAPI = {
     }
     return response.json();
   },
-  
+
   getQuestion: async (id: number): Promise<Question> => {
     const response = await fetch(`/api/admin/questions/${id}`, {
       method: "GET",
@@ -512,7 +550,7 @@ export const adminAPI = {
     }
     return response.json();
   },
-  
+
   createQuestion: async (
     question: Omit<Question, "id" | "created_at" | "updated_at" | "is_published">,
   ): Promise<Question> => {
@@ -528,7 +566,7 @@ export const adminAPI = {
     }
     return response.json();
   },
-  
+
   updateQuestion: async (id: number, question: Partial<Question>): Promise<Question> => {
     const response = await fetch(`/api/admin/questions/${id}`, {
       method: "PUT",
@@ -542,7 +580,7 @@ export const adminAPI = {
     }
     return response.json();
   },
-  
+
   publishQuestion: async (id: number): Promise<void> => {
     const response = await fetch(`/api/admin/questions/${id}/publish`, {
       method: "POST",
@@ -553,7 +591,7 @@ export const adminAPI = {
       throw new Error(errorData.error?.message || "Failed to publish question");
     }
   },
-  
+
   unpublishQuestion: async (id: number): Promise<void> => {
     const response = await fetch(`/api/admin/questions/${id}/unpublish`, {
       method: "POST",
@@ -572,7 +610,7 @@ export const studentAPI = {
     const params = new URLSearchParams({ limit: limit.toString() });
     if (themeId) params.set("theme_id", themeId.toString());
     if (blockId) params.set("block_id", blockId);
-    
+
     const response = await fetch(`/api/questions?${params}`, {
       method: "GET",
       credentials: "include",
@@ -583,7 +621,7 @@ export const studentAPI = {
     }
     return response.json();
   },
-  
+
   createSession: async (data: {
     theme_id?: number;
     block_id?: string;
@@ -602,7 +640,7 @@ export const studentAPI = {
     }
     return response.json();
   },
-  
+
   getSession: async (id: number): Promise<Session> => {
     const response = await fetch(`/api/sessions/${id}`, {
       method: "GET",
@@ -614,7 +652,7 @@ export const studentAPI = {
     }
     return response.json();
   },
-  
+
   submitAnswer: async (
     sessionId: number,
     answer: AnswerSubmit,
@@ -631,7 +669,7 @@ export const studentAPI = {
     }
     return response.json();
   },
-  
+
   submitSession: async (
     sessionId: number,
   ): Promise<{ message: string; score: number; total: number; percentage: number }> => {
@@ -645,7 +683,7 @@ export const studentAPI = {
     }
     return response.json();
   },
-  
+
   getReview: async (sessionId: number): Promise<ReviewData> => {
     const response = await fetch(`/api/sessions/${sessionId}/review`, {
       method: "GET",
@@ -670,12 +708,12 @@ export const onboardingAPI = {
       method: "GET",
       credentials: "include",
     });
-    
+
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
       throw new Error(data.error?.message || "Failed to load options");
     }
-    
+
     return response.json();
   },
 

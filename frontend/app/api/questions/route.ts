@@ -9,16 +9,16 @@ export async function GET(request: NextRequest) {
   try {
     const cookies = request.headers.get("cookie") || "";
     const { searchParams } = new URL(request.url);
-    
+
     const params = new URLSearchParams();
     const themeId = searchParams.get("theme_id");
     const blockId = searchParams.get("block_id");
     const limit = searchParams.get("limit");
-    
+
     if (themeId) params.set("theme_id", themeId);
     if (blockId) params.set("block_id", blockId);
     if (limit) params.set("limit", limit);
-    
+
     const queryString = params.toString() ? `?${params.toString()}` : "";
 
     const { data } = await backendFetch<unknown>(`/questions${queryString}`, {

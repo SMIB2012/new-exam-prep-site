@@ -3,10 +3,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { authClient, type User } from "@/lib/authClient";
-import {
-  onboardingAPI,
-  type OnboardingYearOption,
-} from "@/lib/api";
+import { onboardingAPI, type OnboardingYearOption } from "@/lib/api";
 import { useUserStore } from "@/store/userStore";
 import { OnboardingWizardShell } from "@/components/auth/OnboardingWizardShell";
 import { StepContainer } from "@/components/auth/StepContainer";
@@ -225,10 +222,7 @@ export default function OnboardingPage() {
       await onboardingAPI.submitOnboarding({
         year_id: selections.yearId,
         block_ids: Array.from(selections.blockIds),
-        subject_ids:
-          selections.subjectIds.size > 0
-            ? Array.from(selections.subjectIds)
-            : undefined,
+        subject_ids: selections.subjectIds.size > 0 ? Array.from(selections.subjectIds) : undefined,
       });
 
       // Refresh user store to get updated onboarding status
@@ -266,9 +260,7 @@ export default function OnboardingPage() {
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <RefreshCw className="h-6 w-6 text-red-600" />
             </div>
-            <h2 className="mb-2 text-xl font-semibold text-slate-900">
-              Unable to load options
-            </h2>
+            <h2 className="mb-2 text-xl font-semibold text-slate-900">Unable to load options</h2>
             <p className="mb-6 text-slate-600">{error}</p>
             <Button onClick={loadOptions} className="gap-2">
               <RefreshCw className="h-4 w-4" />
@@ -286,10 +278,7 @@ export default function OnboardingPage() {
       totalSteps={totalSteps}
       stepLabels={stepLabels}
     >
-      <div
-        ref={contentRef}
-        className="rounded-2xl border border-slate-200 bg-white shadow-sm"
-      >
+      <div ref={contentRef} className="rounded-2xl border border-slate-200 bg-white shadow-sm">
         {/* Step Content */}
         <div className="p-8">
           <StepContainer stepKey={currentStep} direction={direction}>
@@ -323,9 +312,7 @@ export default function OnboardingPage() {
               <div className="space-y-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h2 className="text-xl font-semibold text-slate-900">
-                      Select your blocks
-                    </h2>
+                    <h2 className="text-xl font-semibold text-slate-900">Select your blocks</h2>
                     <p className="mt-1 text-sm text-slate-500">
                       These blocks will organize your practice and revision.
                     </p>
@@ -385,9 +372,7 @@ export default function OnboardingPage() {
             {currentStep === 3 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-900">
-                    Confirm your subjects
-                  </h2>
+                  <h2 className="text-xl font-semibold text-slate-900">Confirm your subjects</h2>
                   <p className="mt-1 text-sm text-slate-500">
                     These are set for your year. You can update later if needed.
                   </p>
@@ -416,17 +401,16 @@ export default function OnboardingPage() {
                   <h3 className="text-sm font-medium text-slate-900">Summary</h3>
                   <div className="space-y-1 text-sm text-slate-600">
                     <p>
-                      <span className="font-medium">Year:</span>{" "}
-                      {selectedYear?.display_name}
+                      <span className="font-medium">Year:</span> {selectedYear?.display_name}
                     </p>
                     <p>
-                      <span className="font-medium">Blocks:</span>{" "}
-                      {selections.blockIds.size} selected
+                      <span className="font-medium">Blocks:</span> {selections.blockIds.size}{" "}
+                      selected
                     </p>
                     {hasSubjects && (
                       <p>
-                        <span className="font-medium">Subjects:</span>{" "}
-                        {selections.subjectIds.size} selected
+                        <span className="font-medium">Subjects:</span> {selections.subjectIds.size}{" "}
+                        selected
                       </p>
                     )}
                   </div>
@@ -438,11 +422,7 @@ export default function OnboardingPage() {
           {/* Error */}
           {error && (
             <div className="mt-6">
-              <InlineAlert
-                variant="error"
-                message={error}
-                onDismiss={() => setError(null)}
-              />
+              <InlineAlert variant="error" message={error} onDismiss={() => setError(null)} />
             </div>
           )}
         </div>

@@ -11,27 +11,18 @@ import { isUnread } from "@/lib/notifications/utils";
 import { CheckCheck } from "lucide-react";
 
 export default function NotificationsPage() {
-  const {
-    items,
-    loading,
-    error,
-    refetch,
-    markAllRead,
-    markAllReadSupported,
-  } = useNotifications();
+  const { items, loading, error, refetch, markAllRead, markAllReadSupported } = useNotifications();
 
   const unreadCount = items.filter((item) => isUnread(item)).length;
   const hasUnread = unreadCount > 0;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Notifications</h1>
-          <p className="text-muted-foreground">
-            Important updates, announcements, and reminders
-          </p>
+          <p className="text-muted-foreground">Important updates, announcements, and reminders</p>
         </div>
         <Button
           variant="outline"
@@ -41,8 +32,8 @@ export default function NotificationsPage() {
             !markAllReadSupported
               ? "Coming soon"
               : !hasUnread
-              ? "No unread notifications"
-              : undefined
+                ? "No unread notifications"
+                : undefined
           }
         >
           <CheckCheck className="mr-2 h-4 w-4" />
@@ -64,7 +55,7 @@ export default function NotificationsPage() {
       {/* Footer hint */}
       <Card className="bg-muted/50">
         <CardContent className="pt-6">
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-center text-sm text-muted-foreground">
             In the future, practice reminders and syllabus updates will appear here.
           </p>
         </CardContent>

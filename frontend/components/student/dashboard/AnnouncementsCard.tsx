@@ -17,7 +17,7 @@ export function AnnouncementsCard({ announcements, loading, error }: Announcemen
       <Card className="col-span-full md:col-span-1">
         <CardHeader>
           <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent className="space-y-3">
           <Skeleton className="h-16 w-full" />
@@ -71,7 +71,7 @@ export function AnnouncementsCard({ announcements, loading, error }: Announcemen
           <div key={announcement.id} className="rounded-lg border p-3">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <p className="font-medium text-sm">{announcement.title}</p>
+                <p className="text-sm font-medium">{announcement.title}</p>
                 {announcement.body && (
                   <p className="mt-1 text-xs text-muted-foreground">{announcement.body}</p>
                 )}

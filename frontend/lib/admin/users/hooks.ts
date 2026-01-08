@@ -63,7 +63,7 @@ export function useAdminUsers(params: UseAdminUsersParams = {}): UseAdminUsersRe
   const loadUsers = useCallback(async () => {
     const currentState = stateRef.current;
     setState((prev) => ({ ...prev, loading: true, error: null }));
-    
+
     try {
       const data: UsersListResponse = await adminUsersAPI.listUsers({
         q: currentState.search || undefined,
@@ -109,8 +109,10 @@ export function useAdminUsers(params: UseAdminUsersParams = {}): UseAdminUsersRe
     setPage: (page: number) => setState((prev) => ({ ...prev, page })),
     setPageSize: (size: number) => setState((prev) => ({ ...prev, pageSize: size, page: 1 })),
     setSearch: (q: string) => setState((prev) => ({ ...prev, search: q, page: 1 })),
-    setRoleFilter: (role: string | undefined) => setState((prev) => ({ ...prev, roleFilter: role, page: 1 })),
-    setStatusFilter: (status: string | undefined) => setState((prev) => ({ ...prev, statusFilter: status, page: 1 })),
+    setRoleFilter: (role: string | undefined) =>
+      setState((prev) => ({ ...prev, roleFilter: role, page: 1 })),
+    setStatusFilter: (status: string | undefined) =>
+      setState((prev) => ({ ...prev, statusFilter: status, page: 1 })),
   };
 }
 

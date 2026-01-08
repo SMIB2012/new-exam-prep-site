@@ -44,9 +44,7 @@ export function useBlockData(blockId: number): UseBlockDataResult {
         try {
           const profile = await onboardingAPI.getProfile();
           if (profile.selected_year) {
-            const matchingYear = years.find(
-              (y) => y.name === profile.selected_year?.display_name
-            );
+            const matchingYear = years.find((y) => y.name === profile.selected_year?.display_name);
             if (matchingYear) {
               selectedYear = matchingYear;
             }

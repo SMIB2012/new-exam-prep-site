@@ -4,7 +4,12 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NotificationItem } from "@/lib/notifications/types";
-import { isUnread, formatRelativeTime, truncate, getTypeBadgeVariant } from "@/lib/notifications/utils";
+import {
+  isUnread,
+  formatRelativeTime,
+  truncate,
+  getTypeBadgeVariant,
+} from "@/lib/notifications/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface NotificationCardProps {
@@ -23,7 +28,7 @@ export function NotificationCard({ notification }: NotificationCardProps) {
 
   return (
     <Card
-      className={`transition-shadow hover:shadow-md cursor-pointer ${
+      className={`cursor-pointer transition-shadow hover:shadow-md ${
         unread ? "border-l-4 border-l-primary" : ""
       }`}
       onClick={() => setIsExpanded(!isExpanded)}
@@ -35,21 +40,19 @@ export function NotificationCard({ notification }: NotificationCardProps) {
               <Badge variant={getTypeBadgeVariant(notification.type)} className="text-xs">
                 {typeLabels[notification.type]}
               </Badge>
-              {unread && (
-                <span className="h-2 w-2 rounded-full bg-primary" aria-label="Unread" />
-              )}
+              {unread && <span className="h-2 w-2 rounded-full bg-primary" aria-label="Unread" />}
             </div>
             <h3 className={`text-base font-medium ${unread ? "font-semibold" : ""}`}>
               {notification.title}
             </h3>
             {!isExpanded && (
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="line-clamp-2 text-sm text-muted-foreground">
                 {truncate(notification.body, 150)}
               </p>
             )}
           </div>
           <div className="flex flex-col items-end gap-2">
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
+            <span className="whitespace-nowrap text-xs text-muted-foreground">
               {formatRelativeTime(notification.created_at)}
             </span>
             {isExpanded ? (
@@ -62,9 +65,7 @@ export function NotificationCard({ notification }: NotificationCardProps) {
       </CardHeader>
       {isExpanded && (
         <CardContent className="pt-0">
-          <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-            {notification.body}
-          </p>
+          <p className="whitespace-pre-wrap text-sm text-muted-foreground">{notification.body}</p>
         </CardContent>
       )}
     </Card>

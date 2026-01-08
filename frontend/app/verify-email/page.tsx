@@ -70,7 +70,7 @@ function VerifyEmailForm() {
         subtitle="Please wait..."
         footer={<AuthCardFooter />}
       >
-        <div className="flex flex-col items-center justify-center py-8 space-y-4">
+        <div className="flex flex-col items-center justify-center space-y-4 py-8">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <p className="text-sm text-slate-600">Verifying your email address...</p>
         </div>
@@ -90,7 +90,7 @@ function VerifyEmailForm() {
 
           <Button
             onClick={() => router.push("/login")}
-            className="w-full h-11 rounded-lg bg-primary font-semibold text-white hover:bg-primary/90"
+            className="h-11 w-full rounded-lg bg-primary font-semibold text-white hover:bg-primary/90"
           >
             Go to login
           </Button>
@@ -98,7 +98,7 @@ function VerifyEmailForm() {
           <div className="text-center text-sm text-slate-600">
             <Link
               href="/login"
-              className="font-medium text-primary hover:underline underline-offset-2"
+              className="font-medium text-primary underline-offset-2 hover:underline"
             >
               Sign in →
             </Link>
@@ -115,32 +115,23 @@ function VerifyEmailForm() {
       footer={<AuthCardFooter />}
     >
       <div className="space-y-4">
-        {error && (
-          <InlineAlert
-            variant="error"
-            message={error}
-            onDismiss={() => setError(null)}
-          />
-        )}
+        {error && <InlineAlert variant="error" message={error} onDismiss={() => setError(null)} />}
 
         <div className="space-y-3">
           <p className="text-sm text-slate-600">
-            The verification link may have expired or is invalid. You can request a new verification email.
+            The verification link may have expired or is invalid. You can request a new verification
+            email.
           </p>
 
-          <Button
-            onClick={handleResend}
-            variant="outline"
-            className="w-full"
-          >
+          <Button onClick={handleResend} variant="outline" className="w-full">
             Request new verification email
           </Button>
         </div>
 
-        <div className="text-center text-sm text-slate-600 pt-4 border-t">
+        <div className="border-t pt-4 text-center text-sm text-slate-600">
           <Link
             href="/login"
-            className="font-medium text-primary hover:underline underline-offset-2"
+            className="font-medium text-primary underline-offset-2 hover:underline"
           >
             Back to sign in
           </Link>

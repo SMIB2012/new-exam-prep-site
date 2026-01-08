@@ -18,7 +18,7 @@ export interface AttentionItem {
 export function computeAttentionItems(
   years: Year[],
   blocks: Block[],
-  themes: Theme[]
+  themes: Theme[],
 ): AttentionItem[] {
   const items: AttentionItem[] = [];
 

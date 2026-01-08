@@ -58,7 +58,7 @@ export function useAdminBlocks(yearId: number | null) {
       setError(null);
       return;
     }
-    
+
     // Only make API call if yearId is valid
     setLoading(true);
     setError(null);
@@ -124,7 +124,7 @@ export function useAdminThemes(blockId: number | null) {
       setError(null);
       return;
     }
-    
+
     // Only make API call if blockId is valid
     setLoading(true);
     setError(null);
@@ -176,9 +176,7 @@ export function useReorderYears() {
       // Note: Backend may not have a years reorder endpoint - using update for now
       // If backend has /years/reorder, use that instead
       await Promise.all(
-        orderedIds.map((id, index) =>
-          adminSyllabusAPI.updateYear(id, { order_no: index + 1 })
-        )
+        orderedIds.map((id, index) => adminSyllabusAPI.updateYear(id, { order_no: index + 1 })),
       );
       notify.success("Years reordered", "Order updated successfully");
       return true;
@@ -238,17 +236,20 @@ export function useReorderThemes() {
 
 // CRUD hooks
 export function useCrudYear() {
-  const createYear = useCallback(async (data: { name: string; order_no: number; is_active?: boolean }) => {
-    try {
-      const year = await adminSyllabusAPI.createYear(data);
-      notify.success("Year created", `Created "${year.name}"`);
-      return year;
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error("Failed to create year");
-      notify.error("Failed to create year", error.message);
-      throw error;
-    }
-  }, []);
+  const createYear = useCallback(
+    async (data: { name: string; order_no: number; is_active?: boolean }) => {
+      try {
+        const year = await adminSyllabusAPI.createYear(data);
+        notify.success("Year created", `Created "${year.name}"`);
+        return year;
+      } catch (err) {
+        const error = err instanceof Error ? err : new Error("Failed to create year");
+        notify.error("Failed to create year", error.message);
+        throw error;
+      }
+    },
+    [],
+  );
 
   const updateYear = useCallback(async (id: number, data: Partial<YearAdmin>) => {
     try {
@@ -280,17 +281,26 @@ export function useCrudYear() {
 }
 
 export function useCrudBlock() {
-  const createBlock = useCallback(async (data: { year_id: number; code: string; name: string; order_no: number; is_active?: boolean }) => {
-    try {
-      const block = await adminSyllabusAPI.createBlock(data);
-      notify.success("Block created", `Created "${block.code}"`);
-      return block;
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error("Failed to create block");
-      notify.error("Failed to create block", error.message);
-      throw error;
-    }
-  }, []);
+  const createBlock = useCallback(
+    async (data: {
+      year_id: number;
+      code: string;
+      name: string;
+      order_no: number;
+      is_active?: boolean;
+    }) => {
+      try {
+        const block = await adminSyllabusAPI.createBlock(data);
+        notify.success("Block created", `Created "${block.code}"`);
+        return block;
+      } catch (err) {
+        const error = err instanceof Error ? err : new Error("Failed to create block");
+        notify.error("Failed to create block", error.message);
+        throw error;
+      }
+    },
+    [],
+  );
 
   const updateBlock = useCallback(async (id: number, data: Partial<BlockAdmin>) => {
     try {
@@ -322,17 +332,26 @@ export function useCrudBlock() {
 }
 
 export function useCrudTheme() {
-  const createTheme = useCallback(async (data: { block_id: number; title: string; order_no: number; description?: string; is_active?: boolean }) => {
-    try {
-      const theme = await adminSyllabusAPI.createTheme(data);
-      notify.success("Theme created", `Created "${theme.title}"`);
-      return theme;
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error("Failed to create theme");
-      notify.error("Failed to create theme", error.message);
-      throw error;
-    }
-  }, []);
+  const createTheme = useCallback(
+    async (data: {
+      block_id: number;
+      title: string;
+      order_no: number;
+      description?: string;
+      is_active?: boolean;
+    }) => {
+      try {
+        const theme = await adminSyllabusAPI.createTheme(data);
+        notify.success("Theme created", `Created "${theme.title}"`);
+        return theme;
+      } catch (err) {
+        const error = err instanceof Error ? err : new Error("Failed to create theme");
+        notify.error("Failed to create theme", error.message);
+        throw error;
+      }
+    },
+    [],
+  );
 
   const updateTheme = useCallback(async (id: number, data: Partial<ThemeAdmin>) => {
     try {
@@ -367,42 +386,45 @@ export function useCrudTheme() {
 export function useCsvImport() {
   const [importing, setImporting] = useState(false);
 
-  const importCsv = useCallback(async (
-    type: "years" | "blocks" | "themes",
-    file: File,
-    dryRun: boolean = true,
-    autoCreate: boolean = false
-  ) => {
-    setImporting(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
+  const importCsv = useCallback(
+    async (
+      type: "years" | "blocks" | "themes",
+      file: File,
+      dryRun: boolean = true,
+      autoCreate: boolean = false,
+    ) => {
+      setImporting(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
 
-      const params = new URLSearchParams();
-      if (dryRun) params.set("dry_run", "true");
-      if (autoCreate) params.set("auto_create", "true");
+        const params = new URLSearchParams();
+        if (dryRun) params.set("dry_run", "true");
+        if (autoCreate) params.set("auto_create", "true");
 
-      const response = await fetch(`/api/admin/syllabus/import/${type}?${params.toString()}`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+        const response = await fetch(`/api/admin/syllabus/import/${type}?${params.toString()}`, {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || "Failed to import CSV");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error?.message || "Failed to import CSV");
+        }
+
+        const result = await response.json();
+        return result;
+      } catch (err) {
+        const error = err instanceof Error ? err : new Error("Failed to import CSV");
+        notify.error("Import failed", error.message);
+        throw error;
+      } finally {
+        setImporting(false);
       }
-
-      const result = await response.json();
-      return result;
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error("Failed to import CSV");
-      notify.error("Import failed", error.message);
-      throw error;
-    } finally {
-      setImporting(false);
-    }
-  }, []);
+    },
+    [],
+  );
 
   return { importCsv, importing };
 }

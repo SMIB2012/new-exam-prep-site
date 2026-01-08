@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     const err = error as { status?: number; error?: { code: string; message: string } };
     const status = err.status || 500;
-    const errorData = err.error || { code: "INTERNAL_ERROR", message: "Failed to process password reset request" };
+    const errorData = err.error || {
+      code: "INTERNAL_ERROR",
+      message: "Failed to process password reset request",
+    };
 
     return NextResponse.json({ error: errorData }, { status });
   }

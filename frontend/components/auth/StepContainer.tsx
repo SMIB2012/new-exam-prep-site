@@ -22,9 +22,7 @@ export function StepContainer({
   const prevKeyRef = useRef<string | number>(stepKey);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (!containerRef.current) return;
 
@@ -38,14 +36,14 @@ export function StepContainer({
         gsap.fromTo(
           containerRef.current,
           { opacity: 0 },
-          { opacity: 1, duration: 0.25, ease: "power2.out" }
+          { opacity: 1, duration: 0.25, ease: "power2.out" },
         );
       } else {
         // Full slide animation
         gsap.fromTo(
           containerRef.current,
           { x: fromX, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.3, ease: "power2.out" }
+          { x: 0, opacity: 1, duration: 0.3, ease: "power2.out" },
         );
       }
       prevKeyRef.current = stepKey;
@@ -54,7 +52,7 @@ export function StepContainer({
       gsap.fromTo(
         containerRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.25, ease: "power2.out" }
+        { opacity: 1, duration: 0.25, ease: "power2.out" },
       );
     }
   }, [stepKey, direction]);

@@ -26,7 +26,10 @@ export async function GET() {
   } catch (error: unknown) {
     const err = error as { status?: number; error?: { code: string; message: string } };
     const status = err.status || 500;
-    const errorData = err.error || { code: "INTERNAL_ERROR", message: "Failed to fetch dashboard summary" };
+    const errorData = err.error || {
+      code: "INTERNAL_ERROR",
+      message: "Failed to fetch dashboard summary",
+    };
 
     return NextResponse.json({ error: errorData }, { status });
   }

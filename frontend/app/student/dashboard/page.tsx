@@ -32,9 +32,7 @@ export default function StudentDashboard() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Welcome{user?.name ? ` ${user.name}` : ""}!
-          </p>
+          <p className="text-muted-foreground">Welcome{user?.name ? ` ${user.name}` : ""}!</p>
         </div>
         <Card className="border-destructive">
           <CardHeader>
@@ -51,17 +49,11 @@ export default function StudentDashboard() {
               {error.message || "An unexpected error occurred"}
             </p>
             <div className="flex gap-2">
-              <Button
-                onClick={() => router.refresh()}
-                variant="default"
-              >
+              <Button onClick={() => router.refresh()} variant="default">
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Retry
               </Button>
-              <Button
-                onClick={() => router.push("/student/blocks")}
-                variant="outline"
-              >
+              <Button onClick={() => router.push("/student/blocks")} variant="outline">
                 Go to Blocks
               </Button>
             </div>
@@ -81,18 +73,12 @@ export default function StudentDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome{user?.name ? ` ${user.name}` : ""}!
-        </p>
+        <p className="text-muted-foreground">Welcome{user?.name ? ` ${user.name}` : ""}!</p>
       </div>
 
       {/* Row 1: Next Best Action + Streak Summary */}
       <div className="grid gap-4 md:grid-cols-3">
-        <NextBestActionCard
-          nextAction={data.nextAction}
-          loading={false}
-          error={error}
-        />
+        <NextBestActionCard nextAction={data.nextAction} loading={false} error={error} />
         <StreakSummaryCard metrics={data.metrics} loading={false} error={null} />
       </div>
 

@@ -148,7 +148,8 @@ function LoginForm() {
         // Handle specific error codes
         if (result.error.code === "OAUTH_ONLY_ACCOUNT") {
           const provider = (result.error.details as { provider?: string })?.provider || "OAuth";
-          const providerDisplay = provider === "GOOGLE" ? "Google" : provider === "MICROSOFT" ? "Microsoft" : provider;
+          const providerDisplay =
+            provider === "GOOGLE" ? "Google" : provider === "MICROSOFT" ? "Microsoft" : provider;
           setOauthOnlyProvider(provider);
           setErrors({
             general: `This account was created with ${providerDisplay}. Please sign in with ${providerDisplay} instead.`,
@@ -259,18 +260,30 @@ function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* OAuth-only message */}
         {oauthOnlyProvider && (
-          <div data-animate className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800 font-medium mb-1">
-              Use {oauthOnlyProvider === "GOOGLE" ? "Google" : oauthOnlyProvider === "MICROSOFT" ? "Microsoft" : oauthOnlyProvider} to sign in
+          <div data-animate className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+            <p className="mb-1 text-sm font-medium text-blue-800">
+              Use{" "}
+              {oauthOnlyProvider === "GOOGLE"
+                ? "Google"
+                : oauthOnlyProvider === "MICROSOFT"
+                  ? "Microsoft"
+                  : oauthOnlyProvider}{" "}
+              to sign in
             </p>
             <p className="text-xs text-blue-700">
-              This account was created with {oauthOnlyProvider === "GOOGLE" ? "Google" : oauthOnlyProvider === "MICROSOFT" ? "Microsoft" : oauthOnlyProvider}. Please use the button above to sign in.
+              This account was created with{" "}
+              {oauthOnlyProvider === "GOOGLE"
+                ? "Google"
+                : oauthOnlyProvider === "MICROSOFT"
+                  ? "Microsoft"
+                  : oauthOnlyProvider}
+              . Please use the button above to sign in.
             </p>
           </div>
         )}
         {/* Email Field */}
         <div data-animate className="space-y-2">
-          <Label htmlFor="email" className="text-slate-700 font-medium">
+          <Label htmlFor="email" className="font-medium text-slate-700">
             Email
           </Label>
           <Input
@@ -290,11 +303,9 @@ function LoginForm() {
             disabled={loading || !!oauthOnlyProvider}
             className={`h-11 rounded-lg border-slate-200 bg-white focus:border-primary focus:ring-primary ${
               errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
-            } ${oauthOnlyProvider ? "opacity-50 cursor-not-allowed" : ""}`}
+            } ${oauthOnlyProvider ? "cursor-not-allowed opacity-50" : ""}`}
           />
-          {errors.email && (
-            <p className="text-sm text-red-600">{errors.email}</p>
-          )}
+          {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
         </div>
 
         {/* Password Field */}
@@ -318,7 +329,7 @@ function LoginForm() {
         <div data-animate className="flex justify-end">
           <Link
             href="/forgot-password"
-            className="text-sm text-primary hover:underline underline-offset-2"
+            className="text-sm text-primary underline-offset-2 hover:underline"
           >
             Forgot password?
           </Link>
@@ -340,7 +351,7 @@ function LoginForm() {
 
         {/* Resend Verification */}
         {showResendVerification && (
-          <div data-animate className="p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
+          <div data-animate className="space-y-2 rounded-lg border border-blue-200 bg-blue-50 p-3">
             <p className="text-sm text-blue-800">
               Your email hasn't been verified yet. Check your inbox or spam folder.
             </p>
@@ -368,7 +379,7 @@ function LoginForm() {
           <Button
             type="submit"
             disabled={loading || !!oauthOnlyProvider}
-            className="w-full h-11 rounded-lg bg-primary font-semibold text-white hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-11 w-full rounded-lg bg-primary font-semibold text-white transition-all duration-200 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? (
               <>
@@ -386,7 +397,7 @@ function LoginForm() {
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
-            className="font-medium text-primary hover:underline underline-offset-2"
+            className="font-medium text-primary underline-offset-2 hover:underline"
           >
             Create one
           </Link>

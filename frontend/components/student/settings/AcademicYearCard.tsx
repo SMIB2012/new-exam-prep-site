@@ -32,9 +32,7 @@ export function AcademicYearCard({
   onYearChange,
 }: AcademicYearCardProps) {
   const { toast } = useToast();
-  const [selectedYearId, setSelectedYearId] = useState<string>(
-    currentYearId?.toString() || ""
-  );
+  const [selectedYearId, setSelectedYearId] = useState<string>(currentYearId?.toString() || "");
   const [hasChanges, setHasChanges] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -50,9 +48,9 @@ export function AcademicYearCard({
   };
 
   const handleSave = async () => {
-      const confirmed = window.confirm(
-        "Change your academic year? This will update the blocks and themes shown in your navigation."
-      );
+    const confirmed = window.confirm(
+      "Change your academic year? This will update the blocks and themes shown in your navigation.",
+    );
     if (!confirmed) return;
 
     setSaving(true);
@@ -80,7 +78,7 @@ export function AcademicYearCard({
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-32" />
-          <Skeleton className="h-4 w-48 mt-2" />
+          <Skeleton className="mt-2 h-4 w-48" />
         </CardHeader>
         <CardContent>
           <Skeleton className="h-10 w-full" />

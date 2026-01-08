@@ -175,4 +175,3 @@ export async function redirectIfAuthed(to: string): Promise<void> {
   }
   // If not authenticated, do nothing (let page render)
 }
-

@@ -42,4 +42,3 @@ export const config = {
 
 // Re-export auth guard functions for backward compatibility
 export * from "@/lib/server/authGuard";
-

@@ -45,7 +45,7 @@ export function CsvToolsCard({ loading }: CsvToolsCardProps) {
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-4 w-64 mt-2" />
+          <Skeleton className="mt-2 h-4 w-64" />
         </CardHeader>
         <CardContent className="space-y-3">
           <Skeleton className="h-10 w-full" />
@@ -95,7 +95,7 @@ export function CsvToolsCard({ loading }: CsvToolsCardProps) {
           </div>
         </div>
 
-        <div className="pt-2 border-t">
+        <div className="border-t pt-2">
           <Button
             variant="default"
             onClick={() => router.push("/admin/syllabus#import")}

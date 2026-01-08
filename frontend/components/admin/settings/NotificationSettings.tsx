@@ -34,9 +34,7 @@ export function NotificationSettings({ settings, onChange }: NotificationSetting
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="password_reset_emails">Password Reset Emails</Label>
-              <p className="text-sm text-muted-foreground">
-                Send email when password is reset
-              </p>
+              <p className="text-sm text-muted-foreground">Send email when password is reset</p>
             </div>
             <Switch
               id="password_reset_emails"
@@ -50,11 +48,11 @@ export function NotificationSettings({ settings, onChange }: NotificationSetting
             <div className="space-y-0.5">
               <Label htmlFor="practice_reminders">
                 Practice Reminders
-                <Badge variant="secondary" className="ml-2">Coming soon</Badge>
+                <Badge variant="secondary" className="ml-2">
+                  Coming soon
+                </Badge>
               </Label>
-              <p className="text-sm text-muted-foreground">
-                Send reminders for practice sessions
-              </p>
+              <p className="text-sm text-muted-foreground">Send reminders for practice sessions</p>
             </div>
             <Switch
               id="practice_reminders"
@@ -69,7 +67,9 @@ export function NotificationSettings({ settings, onChange }: NotificationSetting
             <div className="space-y-0.5">
               <Label htmlFor="admin_alerts">
                 Admin Alerts
-                <Badge variant="secondary" className="ml-2">Coming soon</Badge>
+                <Badge variant="secondary" className="ml-2">
+                  Coming soon
+                </Badge>
               </Label>
               <p className="text-sm text-muted-foreground">
                 Send alerts to admins for system events
@@ -78,9 +78,7 @@ export function NotificationSettings({ settings, onChange }: NotificationSetting
             <Switch
               id="admin_alerts"
               checked={settings.notifications.admin_alerts_enabled}
-              onCheckedChange={(checked) =>
-                updateNotifications("admin_alerts_enabled", checked)
-              }
+              onCheckedChange={(checked) => updateNotifications("admin_alerts_enabled", checked)}
               disabled={true}
             />
           </div>

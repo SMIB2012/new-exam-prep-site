@@ -101,7 +101,8 @@ function LoginCardContent() {
         }
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "An error occurred. Please try again.";
+      const errorMessage =
+        error instanceof Error ? error.message : "An error occurred. Please try again.";
       setErrors({ general: errorMessage });
       notify.error("Login failed", errorMessage);
     } finally {

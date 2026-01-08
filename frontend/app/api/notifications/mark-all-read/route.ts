@@ -20,23 +20,17 @@ export async function POST(request: NextRequest) {
       // Backend not implemented
       const err = backendError as { status?: number };
       if (err.status === 404 || err.status === 501) {
-        return NextResponse.json(
-          { error: { message: "Coming soon" } },
-          { status: 501 }
-        );
+        return NextResponse.json({ error: { message: "Coming soon" } }, { status: 501 });
       }
 
       // Other errors
       return NextResponse.json(
         { error: { message: "Failed to mark all as read" } },
-        { status: 500 }
+        { status: 500 },
       );
     }
   } catch (error: unknown) {
     console.error("Error in mark-all-read BFF:", error);
-    return NextResponse.json(
-      { error: { message: "Failed to mark all as read" } },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: { message: "Failed to mark all as read" } }, { status: 500 });
   }
 }

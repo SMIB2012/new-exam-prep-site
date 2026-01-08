@@ -91,8 +91,8 @@ export function PracticeSettings({ settings, onChange }: PracticeSettingsProps) 
         <CardHeader>
           <CardTitle>Self-paced Learning (Defaults Only)</CardTitle>
           <CardDescription>
-            These settings define defaults. Students can still choose any block/theme unless
-            future restrictions are explicitly built (we are not building them).
+            These settings define defaults. Students can still choose any block/theme unless future
+            restrictions are explicitly built (we are not building them).
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

@@ -97,16 +97,10 @@ export function EditYearDialog({
             />
           </div>
           <div className="flex items-center space-x-2">
-            <Switch
-              id="year-active"
-              checked={isActive}
-              onCheckedChange={setIsActive}
-            />
+            <Switch id="year-active" checked={isActive} onCheckedChange={setIsActive} />
             <Label htmlFor="year-active">Active</Label>
           </div>
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -126,7 +120,13 @@ interface EditBlockDialogProps {
   onOpenChange: (open: boolean) => void;
   block?: { id: number; code: string; name: string; order_no: number; is_active: boolean };
   yearId: number;
-  onSave: (data: { year_id: number; code: string; name: string; order_no: number; is_active: boolean }) => Promise<void>;
+  onSave: (data: {
+    year_id: number;
+    code: string;
+    name: string;
+    order_no: number;
+    is_active: boolean;
+  }) => Promise<void>;
   maxOrderNo?: number;
 }
 
@@ -227,16 +227,10 @@ export function EditBlockDialog({
             />
           </div>
           <div className="flex items-center space-x-2">
-            <Switch
-              id="block-active"
-              checked={isActive}
-              onCheckedChange={setIsActive}
-            />
+            <Switch id="block-active" checked={isActive} onCheckedChange={setIsActive} />
             <Label htmlFor="block-active">Active</Label>
           </div>
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -256,7 +250,13 @@ interface EditThemeDialogProps {
   onOpenChange: (open: boolean) => void;
   theme?: { id: number; title: string; description?: string; order_no: number; is_active: boolean };
   blockId: number;
-  onSave: (data: { block_id: number; title: string; description?: string; order_no: number; is_active: boolean }) => Promise<void>;
+  onSave: (data: {
+    block_id: number;
+    title: string;
+    description?: string;
+    order_no: number;
+    is_active: boolean;
+  }) => Promise<void>;
   maxOrderNo?: number;
 }
 
@@ -354,16 +354,10 @@ export function EditThemeDialog({
             />
           </div>
           <div className="flex items-center space-x-2">
-            <Switch
-              id="theme-active"
-              checked={isActive}
-              onCheckedChange={setIsActive}
-            />
+            <Switch id="theme-active" checked={isActive} onCheckedChange={setIsActive} />
             <Label htmlFor="theme-active">Active</Label>
           </div>
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

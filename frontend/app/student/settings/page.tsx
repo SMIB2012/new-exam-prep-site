@@ -71,7 +71,7 @@ export default function SettingsPage() {
     try {
       const options = await onboardingAPI.getOptions();
       const academicYear = options.years.find((y) => y.display_name === year.name);
-      
+
       if (!academicYear) {
         throw new Error("Could not find matching academic year");
       }
@@ -91,25 +91,22 @@ export default function SettingsPage() {
     }
   };
 
-
   const loading = yearsLoading || profileLoading || userInfoLoading;
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto">
+      <div className="mx-auto max-w-5xl">
         <SettingsSkeleton />
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your curriculum and practice preferences
-        </p>
+        <p className="text-muted-foreground">Manage your curriculum and practice preferences</p>
       </div>
 
       {/* Section 1: Account */}
