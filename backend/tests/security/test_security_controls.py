@@ -15,13 +15,13 @@ class TestSecurityControls:
     """Security verification tests."""
 
     @pytest.fixture(autouse=True)
-    def setup(self):
+    async def setup(self):
         """Setup for each test."""
         self.client = httpx.AsyncClient(base_url=BASE_URL, timeout=30.0)
         self.request_ids: list[str] = []
         yield
         # Cleanup
-        self.client.close()
+        await self.client.aclose()
 
     def _extract_request_id(self, response: httpx.Response) -> str | None:
         """Extract request ID from response header."""

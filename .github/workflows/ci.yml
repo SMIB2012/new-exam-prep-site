@@ -33,8 +33,7 @@ jobs:
         run: npm ci
 
       - name: Run linter
-        working-directory: frontend
-        run: npx next lint
+        run: cd frontend && npm run lint
 
       - name: Check formatting
         working-directory: frontend
