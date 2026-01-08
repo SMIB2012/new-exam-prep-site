@@ -39,7 +39,13 @@ export function CsvImportDialog({
   const [file, setFile] = useState<File | null>(null);
   const [dryRun, setDryRun] = useState(true);
   const [autoCreate, setAutoCreate] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{
+    success: boolean;
+    message?: string;
+    rows_processed?: number;
+    rows_failed?: number;
+    errors?: Array<{ row: number; error: string }>;
+  } | null>(null);
 
   const { importCsv, importing } = useCsvImport();
 
@@ -60,7 +66,7 @@ export function CsvImportDialog({
       if (!dryRun && onSuccess) {
         onSuccess();
       }
-    } catch (error) {
+    } catch {
       // Error already handled in hook
     }
   };

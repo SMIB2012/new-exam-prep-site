@@ -18,7 +18,7 @@ interface PracticeSettingsProps {
 }
 
 export function PracticeSettings({ settings, onChange }: PracticeSettingsProps) {
-  const updatePractice = (field: string, value: any) => {
+  const updatePractice = (field: string, value: string | boolean) => {
     onChange({
       ...settings,
       practice_defaults: {

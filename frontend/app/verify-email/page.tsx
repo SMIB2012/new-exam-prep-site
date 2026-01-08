@@ -16,7 +16,6 @@ function VerifyEmailForm() {
 
   const [status, setStatus] = useState<"verifying" | "success" | "error" | "idle">("idle");
   const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
     if (token) {
@@ -61,11 +60,7 @@ function VerifyEmailForm() {
   };
 
   const handleResend = () => {
-    if (email) {
-      router.push(`/resend-verification?email=${encodeURIComponent(email)}`);
-    } else {
-      router.push("/resend-verification");
-    }
+    router.push("/resend-verification");
   };
 
   if (status === "verifying") {

@@ -41,7 +41,7 @@ export function GeneralSettings({ settings, onChange }: GeneralSettingsProps) {
     }
   }
 
-  const updateGeneral = (field: string, value: any) => {
+  const updateGeneral = (field: string, value: string | number | null) => {
     onChange({
       ...settings,
       general: {
@@ -51,7 +51,7 @@ export function GeneralSettings({ settings, onChange }: GeneralSettingsProps) {
     });
   };
 
-  const updateAcademic = (field: string, value: any) => {
+  const updateAcademic = (field: string, value: string | number | null) => {
     onChange({
       ...settings,
       academic_defaults: {

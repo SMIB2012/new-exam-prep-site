@@ -3,7 +3,6 @@
 import { KpiCard } from "./KpiCard";
 import { Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface SystemHealthCardProps {
   status: "ok" | "degraded" | "down" | null;

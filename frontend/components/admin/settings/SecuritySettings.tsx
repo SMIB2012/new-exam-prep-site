@@ -12,7 +12,7 @@ interface SecuritySettingsProps {
 }
 
 export function SecuritySettings({ settings, onChange }: SecuritySettingsProps) {
-  const updateSecurity = (field: string, value: any) => {
+  const updateSecurity = (field: string, value: number | boolean) => {
     onChange({
       ...settings,
       security: {

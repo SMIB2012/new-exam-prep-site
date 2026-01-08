@@ -12,7 +12,7 @@ interface NotificationSettingsProps {
 }
 
 export function NotificationSettings({ settings, onChange }: NotificationSettingsProps) {
-  const updateNotifications = (field: string, value: any) => {
+  const updateNotifications = (field: string, value: boolean) => {
     onChange({
       ...settings,
       notifications: {
