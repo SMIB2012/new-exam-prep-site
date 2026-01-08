@@ -245,7 +245,9 @@ class MicrosoftOAuthAdapter(OAuthProviderAdapter):
                     else "***"
                 )
                 logger.info(
-                    f"Microsoft token exchange: client_id={self.client_id}, secret_len={len(self.client_secret or '')}, secret_preview={secret_masked}, tenant={self.tenant}"
+                    f"Microsoft token exchange: client_id={self.client_id}, "
+                    f"secret_len={len(self.client_secret or '')}, "
+                    f"secret_preview={secret_masked}, tenant={self.tenant}"
                 )
 
                 response = await client.post(

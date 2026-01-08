@@ -38,8 +38,6 @@ from app.db.session import get_db
 from app.models.auth import EmailVerificationToken, PasswordResetToken, RefreshToken
 from app.models.oauth import OAuthIdentity
 from app.models.user import User, UserRole
-
-logger = get_logger(__name__)
 from app.schemas.auth import (
     EmailVerificationRequest,
     LoginRequest,
@@ -57,6 +55,8 @@ from app.schemas.auth import (
     TokensResponse,
     UserResponse,
 )
+
+logger = get_logger(__name__)
 
 router = APIRouter(tags=["Auth"])
 
@@ -321,7 +321,10 @@ async def resend_verification(
             # Still return success (security: don't reveal if email exists)
             return StatusResponse(
                 status="ok",
-                message="If an account exists and is unverified, you will receive an email shortly.",
+                message=(
+                    "If an account exists and is unverified, "
+                    "you will receive an email shortly."
+                ),
             )
 
         # Generate new verification token
@@ -351,7 +354,10 @@ async def resend_verification(
         try:
             from app.services.email.service import send_email
 
-            verify_link = f"{settings.FRONTEND_BASE_URL}{settings.EMAIL_VERIFY_PATH}?token={verification_token}"
+            verify_link = (
+                f"{settings.FRONTEND_BASE_URL}{settings.EMAIL_VERIFY_PATH}"
+                f"?token={verification_token}"
+            )
             email_subject = "Verify your email"
             email_body_text = f"""
 Welcome! Please verify your email address to complete your account setup.
@@ -468,7 +474,10 @@ async def login(
             raise_app_error(
                 status_code=status.HTTP_403_FORBIDDEN,
                 code="OAUTH_ONLY_ACCOUNT",
-                message=f"This account was created with {provider_display}. Please sign in with {provider_display} instead.",
+                message=(
+                    f"This account was created with {provider_display}. "
+                    f"Please sign in with {provider_display} instead."
+                ),
                 details={"provider": provider},
             )
 

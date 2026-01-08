@@ -1,4 +1,7 @@
-"""Authentication-related models (refresh tokens, password reset tokens, email verification tokens)."""
+"""Authentication-related models.
+
+Includes refresh tokens, password reset tokens, and email verification tokens.
+"""
 
 import uuid
 from datetime import UTC, datetime
