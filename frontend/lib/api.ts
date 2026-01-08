@@ -175,18 +175,6 @@ function getHeaders(): HeadersInit {
   };
 }
 
-async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  // Use fetcher wrapper for automatic token refresh
-  const { default: fetcher } = await import("./fetcher");
-  return fetcher<T>(`${API_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      ...getHeaders(),
-      ...options?.headers,
-    },
-  });
-}
-
 // Syllabus APIs (Student)
 export const syllabusAPI = {
   getYears: async (): Promise<Year[]> => {
@@ -230,9 +218,9 @@ export const syllabusAPI = {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       const errorMessage = errorData.error?.message || `Failed to load themes (${response.status})`;
-      const error = new Error(errorMessage);
-      (error as any).status = response.status;
-      (error as any).errorData = errorData;
+      const error = new Error(errorMessage) as Error & { status: number; errorData: unknown };
+      error.status = response.status;
+      error.errorData = errorData;
       throw error;
     }
 
@@ -315,9 +303,9 @@ export const adminSyllabusAPI = {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       const errorMessage = errorData.error?.message || `Failed to load blocks (${response.status})`;
-      const error = new Error(errorMessage);
-      (error as any).status = response.status;
-      (error as any).errorData = errorData;
+      const error = new Error(errorMessage) as Error & { status: number; errorData: unknown };
+      error.status = response.status;
+      error.errorData = errorData;
       throw error;
     }
     return response.json();
@@ -395,9 +383,9 @@ export const adminSyllabusAPI = {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       const errorMessage = errorData.error?.message || `Failed to load themes (${response.status})`;
-      const error = new Error(errorMessage);
-      (error as any).status = response.status;
-      (error as any).errorData = errorData;
+      const error = new Error(errorMessage) as Error & { status: number; errorData: unknown };
+      error.status = response.status;
+      error.errorData = errorData;
       throw error;
     }
     return response.json();
@@ -474,7 +462,18 @@ export const adminSyllabusAPI = {
     }
     return response.blob();
   },
-  importCSV: async (type: "years" | "blocks" | "themes", file: File, dryRun: boolean, autoCreate: boolean): Promise<any> => {
+  importCSV: async (
+    type: "years" | "blocks" | "themes",
+    file: File,
+    dryRun: boolean,
+    autoCreate: boolean
+  ): Promise<{
+    success: boolean;
+    message?: string;
+    rows_processed?: number;
+    rows_failed?: number;
+    errors?: Array<{ row: number; reason?: string; message?: string }>;
+  }> => {
     const formData = new FormData();
     formData.append("file", file);
     const response = await fetch(`/api/admin/syllabus/import/${type}?dry_run=${dryRun}&auto_create=${autoCreate}`, {
@@ -506,9 +505,9 @@ export const adminAPI = {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       const errorMessage = errorData.error?.message || `Failed to load questions (${response.status})`;
-      const error = new Error(errorMessage);
-      (error as any).status = response.status;
-      (error as any).errorData = errorData;
+      const error = new Error(errorMessage) as Error & { status: number; errorData: unknown };
+      error.status = response.status;
+      error.errorData = errorData;
       throw error;
     }
     return response.json();

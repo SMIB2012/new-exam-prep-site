@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { syllabusAPI } from "@/lib/api";
-import { Year, Block, Theme } from "@/lib/api";
+import { Block, Theme } from "@/lib/api";
 import { AttentionItem, computeAttentionItems } from "./attentionRules";
 
 interface UseAttentionItemsResult {
