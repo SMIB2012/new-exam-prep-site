@@ -149,8 +149,7 @@ async def oauth_start(
     "/{provider}/callback",
     summary="OAuth callback",
     description=(
-        "Handle OAuth callback - validates tokens and redirects "
-        "to frontend with exchange code."
+        "Handle OAuth callback - validates tokens and redirects " "to frontend with exchange code."
     ),
 )
 async def oauth_callback(
@@ -424,8 +423,7 @@ async def oauth_callback(
     status_code=status.HTTP_200_OK,
     summary="Exchange OAuth code for tokens",
     description=(
-        "Exchange a short-lived OAuth code for user data and tokens. "
-        "Called by frontend BFF."
+        "Exchange a short-lived OAuth code for user data and tokens. " "Called by frontend BFF."
     ),
 )
 async def oauth_exchange(

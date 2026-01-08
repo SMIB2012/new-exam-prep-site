@@ -150,8 +150,7 @@ async def complete_onboarding(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
-                "One or more blocks are invalid, inactive, "
-                "or do not belong to the selected year"
+                "One or more blocks are invalid, inactive, " "or do not belong to the selected year"
             ),
         )
 
@@ -170,9 +169,9 @@ async def complete_onboarding(
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=(
-                "One or more subjects are invalid, inactive, "
-                "or do not belong to the selected year"
-            ),
+                    "One or more subjects are invalid, inactive, "
+                    "or do not belong to the selected year"
+                ),
             )
 
     # Get or create user profile

@@ -322,8 +322,7 @@ async def resend_verification(
             return StatusResponse(
                 status="ok",
                 message=(
-                    "If an account exists and is unverified, "
-                    "you will receive an email shortly."
+                    "If an account exists and is unverified, " "you will receive an email shortly."
                 ),
             )
 
