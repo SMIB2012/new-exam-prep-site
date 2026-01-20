@@ -92,8 +92,7 @@ export function QuestionFilters({ filters, onChange, onReset }: QuestionFiltersP
   // Update filters when debounced search changes
   useEffect(() => {
     onChange({ ...filters, q: debouncedSearch || undefined });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch]);
+  }, [debouncedSearch, filters, onChange]);
 
   const handleFilterChange = (key: keyof QuestionListQuery, value: string | number | undefined) => {
     onChange({ ...filters, [key]: value, page: 1 });

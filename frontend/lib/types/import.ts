@@ -26,7 +26,7 @@ export interface ImportSchemaBase {
   rules_json: Record<string, any>;
 }
 
-export interface ImportSchemaCreate extends ImportSchemaBase {}
+export type ImportSchemaCreate = ImportSchemaBase;
 
 export interface ImportSchemaUpdate {
   name?: string;

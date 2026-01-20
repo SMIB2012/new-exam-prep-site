@@ -52,7 +52,7 @@ export interface MistakeItem {
     mark_for_review_used?: boolean;
     rule_fired?: string;
     thresholds?: Record<string, number>;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 

@@ -66,7 +66,7 @@ export function MFASetupDialog({ open, onOpenChange, onSuccess }: MFASetupDialog
       setSecret(response.secret);
       setBackupCodes(response.backup_codes);
       setStep("scan");
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err?.message || "Failed to start MFA setup");
     } finally {
       setLoading(false);
@@ -91,7 +91,7 @@ export function MFASetupDialog({ open, onOpenChange, onSuccess }: MFASetupDialog
         setError("Invalid code. Please try again.");
         setTotpCode("");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err?.message || "Failed to verify code");
       setTotpCode("");
     } finally {
@@ -113,7 +113,7 @@ export function MFASetupDialog({ open, onOpenChange, onSuccess }: MFASetupDialog
       notify.success("Two-factor authentication enabled", "Your account is now more secure");
       handleClose();
       onSuccess();
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err?.message || "Failed to complete MFA setup");
     } finally {
       setLoading(false);

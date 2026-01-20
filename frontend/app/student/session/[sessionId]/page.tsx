@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { AlertCircle, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { notify } from "@/lib/notify";
 import { getSession, submitAnswer, submitSession } from "@/lib/api/sessionsApi";
 import type { SessionState, SubmitAnswerRequest } from "@/lib/types/session";
@@ -30,7 +30,6 @@ export default function SessionPlayerPage() {
   const [currentPosition, setCurrentPosition] = useState(1);
   const [savingAnswer, setSavingAnswer] = useState(false);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [showMobileNav, setShowMobileNav] = useState(false);
 
   // Local answer state for optimistic updates
@@ -95,7 +94,7 @@ export default function SessionPlayerPage() {
         });
       });
       setLocalAnswers(answers);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load session:", err);
       
       if (err?.status === 404) {
@@ -144,7 +143,7 @@ export default function SessionPlayerPage() {
           ),
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to save answer:", err);
       notify.error("Failed to save answer", err?.message || "Please try again");
 
@@ -189,7 +188,7 @@ export default function SessionPlayerPage() {
           ),
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to update mark for review:", err);
 
       // Revert optimistic update
@@ -238,7 +237,7 @@ export default function SessionPlayerPage() {
       await submitSession(sessionId);
       notify.success("Session submitted", "Your test has been submitted successfully");
       router.push(`/student/session/${sessionId}/review`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to submit session:", err);
       notify.error("Failed to submit session", err?.message || "Please try again");
     } finally {

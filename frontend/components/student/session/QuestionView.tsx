@@ -2,7 +2,6 @@
  * Question view with stem, options, and answer selection
  */
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";

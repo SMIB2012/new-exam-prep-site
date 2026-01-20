@@ -63,5 +63,5 @@ export interface ThemeAnalytics {
   correct: number;
   accuracy_pct: number;
   trend: DailyTrend[];
-  common_mistakes: any[];
+  common_mistakes: unknown[];
 }

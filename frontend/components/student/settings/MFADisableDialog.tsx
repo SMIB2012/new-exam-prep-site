@@ -50,7 +50,7 @@ export function MFADisableDialog({ open, onOpenChange, onSuccess }: MFADisableDi
       notify.success("Two-factor authentication disabled", "Your account security settings have been updated");
       handleClose();
       onSuccess();
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err?.message || "Failed to disable MFA. Please check your code and try again.");
       setTotpCode("");
     } finally {

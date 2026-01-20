@@ -18,7 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { AlertTriangle, Info, TrendingDown, Target, ChevronRight } from "lucide-react";
+import { AlertTriangle, Info, Target, ChevronRight } from "lucide-react";
 import { notify } from "@/lib/notify";
 import {
   getMistakesSummary,
@@ -191,7 +191,7 @@ export default function MistakesPage() {
       setSummary(summaryData);
       setMistakes(mistakesData.items);
       setHasMore(mistakesData.items.length < mistakesData.total);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load mistakes:", err);
       setError(err?.message || "Failed to load mistakes");
     } finally {
@@ -217,7 +217,7 @@ export default function MistakesPage() {
       setMistakes((prev) => [...prev, ...mistakesData.items]);
       setPage(nextPage);
       setHasMore(prev.length + mistakesData.items.length < mistakesData.total);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load more mistakes:", err);
       notify.error("Failed to load more", err?.message || "Please try again");
     } finally {
@@ -225,7 +225,7 @@ export default function MistakesPage() {
     }
   }
 
-  function handlePracticeTheme(themeId: string, themeName: string) {
+  function handlePracticeTheme(themeId: string) {
     const params = new URLSearchParams({
       themeId,
       count: "15",

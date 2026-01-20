@@ -6,9 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft } from "lucide-react";
-import { notify } from "@/lib/notify";
 import { getSessionReview } from "@/lib/api/sessionsApi";
-import type { SessionReview, ReviewItem } from "@/lib/types/session";
+import type { SessionReview } from "@/lib/types/session";
 import { ReviewSummary } from "@/components/student/session/ReviewSummary";
 import { ReviewQuestionCard } from "@/components/student/session/ReviewQuestionCard";
 import { InlineAlert } from "@/components/auth/InlineAlert";
@@ -36,7 +35,7 @@ export default function SessionReviewPage() {
     try {
       const reviewData = await getSessionReview(sessionId);
       setReview(reviewData);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load review:", err);
 
       if (err?.status === 404) {

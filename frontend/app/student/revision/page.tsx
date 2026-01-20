@@ -165,7 +165,7 @@ export default function RevisionPage() {
       const scope = activeTab === "today" ? "today" : "week";
       const data = await getRevisionQueue(scope, "DUE");
       setItems(data.items);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load revision queue:", err);
       setError(err?.message || "Failed to load revision queue");
     } finally {
@@ -189,7 +189,7 @@ export default function RevisionPage() {
       await updateRevisionQueueItem(itemId, { action: "DONE" });
       setItems((prev) => prev.filter((item) => item.id !== itemId));
       notify.success("Marked as done", "This revision item has been completed");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to update item:", err);
       notify.error("Failed to update", err?.message || "Please try again");
     } finally {
@@ -204,7 +204,7 @@ export default function RevisionPage() {
       await updateRevisionQueueItem(itemId, { action: "SNOOZE", snooze_days: days });
       setItems((prev) => prev.filter((item) => item.id !== itemId));
       notify.success("Snoozed", `This revision will reappear in ${days} day${days !== 1 ? "s" : ""}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to snooze item:", err);
       notify.error("Failed to snooze", err?.message || "Please try again");
     } finally {

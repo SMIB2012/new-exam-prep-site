@@ -26,7 +26,7 @@ export interface RevisionQueueItem {
     mastery_score?: number;
     mastery_band?: string;
     days_since_last?: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 

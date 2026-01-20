@@ -32,7 +32,6 @@ export function ReviewQuestionCard({ item, showExplanation = true }: ReviewQuest
 
   const userAnswered = answer.selected_index !== null;
   const isCorrect = answer.is_correct === true;
-  const isIncorrect = answer.is_correct === false;
 
   // Bookmark state
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -71,7 +70,7 @@ export function ReviewQuestionCard({ item, showExplanation = true }: ReviewQuest
         setBookmarkId(newBookmark.id);
         notify.success("Bookmarked", "Question added to bookmarks");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to toggle bookmark:", err);
       notify.error("Failed to update bookmark", err?.message || "Please try again");
     } finally {
