@@ -2145,4 +2145,328 @@ Tests cover:
 
 ---
 
+## SRS (Spaced Repetition System) v1 — FSRS-based Forgetting Model
+
+### Purpose
+
+SRS v1 provides **production-grade spaced repetition** using the Free Spaced Repetition Scheduler (FSRS) algorithm with per-user tuning. Unlike simple interval-based schedulers, FSRS models the forgetting curve using a 19-parameter model optimized for each user's learning patterns.
+
+### Algorithm: FSRS-6
+
+FSRS (Free Spaced Repetition Scheduler) is a memory model that predicts when you will forget information and schedules reviews accordingly.
+
+**Key Concepts:**
+- **Stability (S)**: How long (in days) it takes for retrievability to decay to a target level
+- **Difficulty (D)**: Intrinsic difficulty of the concept [0, 10]
+- **Retrievability (R)**: Probability of successful recall at any given time [0, 1]
+- **Desired Retention**: Target retrievability (default 0.90 = 90%)
+
+**FSRS-6 Parameters:**
+- 19 global weights (learned from population data)
+- Per-user weights (learned from individual review history)
+- Desired retention (configurable per user)
+
+### Cold Start Strategy
+
+**New users:**
+- Use global FSRS-6 default weights
+- No blocking if personalized weights unavailable
+- System tracks review logs in background
+
+**Tuning Threshold:**
+- Minimum 300 review logs required for training
+- Training uses EM (Expectation-Maximization) via py-fsrs
+- Shrinkage toward global weights (prevents overfitting)
+
+**Transition:**
+- Seamless switch from global to personalized weights
+- No disruption to existing schedules
+- All state updates remain consistent
+
+### Rating Mapping from MCQ Attempts
+
+Each MCQ attempt is converted to an FSRS rating (1-4) based on correctness and telemetry:
+
+**Rating Scale:**
+1. **Again (1)**: Failed to recall
+2. **Hard (2)**: Recalled with difficulty
+3. **Good (3)**: Recalled correctly
+4. **Easy (4)**: Recalled easily and quickly
+
+**Mapping Rules:**
+
+| Condition | Rating | Explanation |
+|-----------|--------|-------------|
+| Incorrect | 1 (Again) | Always, regardless of time or changes |
+| Correct + marked for review | 2 (Hard) | Student flagged uncertainty |
+| Correct + many answer changes (>0) | 2 (Hard) | Multiple changes indicate uncertainty |
+| Correct + very slow (>90s) | 2 (Hard) | Taking too long indicates struggle |
+| Correct + fast (<15s) + no changes | 4 (Easy) | Quick answer indicates mastery |
+| Correct (default) | 3 (Good) | Standard correct answer |
+
+**Telemetry Used:**
+- `time_spent_ms`: Time spent on question (milliseconds)
+- `change_count`: Number of answer changes
+- `marked_for_review`: Whether student flagged for review
+
+**Determinism:**
+- Mapping is deterministic (no randomness)
+- Same inputs always produce same rating
+- Thresholds are configurable
+
+### Database Schema
+
+#### `srs_user_params`
+
+Stores per-user FSRS parameters and training metadata.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `user_id` | UUID | Primary key, FK to users |
+| `fsrs_version` | string | FSRS version (default "fsrs-6") |
+| `weights_json` | jsonb | Personalized 19-parameter weights (nullable) |
+| `desired_retention` | float | Target retention probability (default 0.90) |
+| `n_review_logs` | int | Total review logs for this user |
+| `last_trained_at` | timestamp | Last training timestamp |
+| `metrics_json` | jsonb | Training metrics (logloss, brier, ece, etc.) |
+
+#### `srs_concept_state`
+
+Tracks per-user per-concept memory state using FSRS.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `user_id`, `concept_id` | UUID | Composite primary key |
+| `stability` | float | Memory stability (days) |
+| `difficulty` | float | Item difficulty [0, 10] |
+| `last_reviewed_at` | timestamp | Last review timestamp |
+| `due_at` | timestamp | Next review due date |
+| `last_retrievability` | float | Retrievability at last review [0, 1] |
+
+**Indexes:**
+- `(user_id, due_at)` for queue queries
+- `due_at` for global due queries
+- `(user_id, concept_id)` for lookups
+
+#### `srs_review_log`
+
+Append-only log of all review attempts (for training).
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | UUID | Primary key |
+| `user_id`, `concept_id` | UUID | User and concept identifiers |
+| `reviewed_at` | timestamp | Review timestamp |
+| `rating` | int | FSRS rating 1-4 |
+| `correct` | bool | Whether answer was correct |
+| `delta_days` | float | Days since last review |
+| `time_spent_ms` | int | Time spent (ms, optional) |
+| `change_count` | int | Answer changes (optional) |
+| `predicted_retrievability` | float | R at review time (optional) |
+| `raw_attempt_id`, `session_id` | UUID | Traceability to source data |
+
+**Indexes:**
+- `(user_id, reviewed_at)` for training queries
+- `(user_id, concept_id, reviewed_at)` for concept history
+- `session_id` for session linkage
+
+### State Update Flow
+
+When a student answers an MCQ:
+
+1. **Extract concept IDs** from question (single or multiple)
+2. **Load current state** (or create new with cold start)
+3. **Compute delta_days** since last review
+4. **Extract telemetry** (time_spent, changes, marked_for_review)
+5. **Map to FSRS rating** (1-4) using deterministic rules
+6. **Compute new state** using FSRS algorithm:
+   - Predict retrievability at review time
+   - Update stability and difficulty
+   - Compute next due_at
+7. **Upsert concept_state** (PostgreSQL upsert)
+8. **Append review_log** (append-only, for training)
+9. **Increment user's n_review_logs** counter
+
+**Integration:**
+- Runs after session submission (best-effort)
+- Non-blocking (doesn't fail submission)
+- Handles missing concept_id gracefully
+- Logs warnings, not errors
+
+### API Endpoints
+
+All endpoints are under `/v1/learning/srs`.
+
+#### `GET /v1/learning/srs/queue`
+
+Get concepts due for review.
+
+**Query Params:**
+- `scope`: "today" (due now) or "week" (due in next 7 days)
+- `limit`: Max concepts (1-500, default 100)
+
+**Response:**
+```json
+{
+  "scope": "today",
+  "total_due": 15,
+  "items": [
+    {
+      "concept_id": "<uuid>",
+      "due_at": "2026-01-21T10:00:00Z",
+      "stability": 3.5,
+      "difficulty": 6.2,
+      "retrievability": 0.65,
+      "priority_score": 0.35,
+      "is_overdue": true,
+      "days_overdue": 1.5,
+      "bucket": "overdue"
+    }
+  ]
+}
+```
+
+**Features:**
+- Ordered by due_at (overdue first)
+- Priority from retrievability (lower R = higher priority)
+- Time buckets: overdue, today, tomorrow, day_N, later
+- Student scope (own concepts only)
+
+#### `GET /v1/learning/srs/stats`
+
+Get user's SRS statistics.
+
+**Response:**
+```json
+{
+  "total_concepts": 150,
+  "due_today": 15,
+  "due_this_week": 42,
+  "total_reviews": 450,
+  "has_personalized_weights": true,
+  "last_trained_at": "2026-01-20T12:00:00Z"
+}
+```
+
+#### `GET /v1/learning/srs/concepts/{concept_id}`
+
+Get SRS state for a specific concept.
+
+**Response:**
+```json
+{
+  "user_id": "<uuid>",
+  "concept_id": "<uuid>",
+  "stability": 3.5,
+  "difficulty": 6.2,
+  "last_reviewed_at": "2026-01-20T10:00:00Z",
+  "due_at": "2026-01-24T10:00:00Z",
+  "last_retrievability": 0.75,
+  "updated_at": "2026-01-20T10:00:05Z"
+}
+```
+
+### Per-User Training Pipeline
+
+**Status:** Planned for Phase 2C (not yet implemented)
+
+**Planned Features:**
+- Build training dataset from `srs_review_log`
+- Minimum 300 logs threshold
+- Train/val split (last 20% for validation)
+- Run FSRS Optimizer EM algorithm (py-fsrs)
+- Apply shrinkage toward global weights:
+  - `alpha = min(0.8, log(n_logs)/log(5000))`
+  - `final_weights = alpha * user_weights + (1-alpha) * global_weights`
+- Evaluate metrics (logloss, Brier score)
+- Reject if worse than baseline
+- Persist weights + metrics to `srs_user_params`
+- Log training run in `algo_runs`
+
+**Admin Endpoints (Planned):**
+- `POST /v1/admin/learning/srs/train-user/{user_id}`
+- `POST /v1/admin/learning/srs/train-batch`
+
+### Numerical Stability
+
+All FSRS computations include guards:
+
+1. **Finite checks**: All outputs validated with `isfinite()`
+2. **Bounds validation**: Stability > 0, Difficulty ∈ [0,10], R ∈ [0,1]
+3. **Fallbacks**: Invalid outputs replaced with safe defaults
+4. **Due date enforcement**: Always in future
+5. **Telemetry sanitization**: Validate time/changes, cap extremes
+
+### Invariants
+
+1. **Stability positive:** S > 0 always
+2. **Difficulty in range:** 0 ≤ D ≤ 10 always
+3. **Retrievability in range:** 0 ≤ R ≤ 1 always
+4. **Due date in future:** due_at > reviewed_at always
+5. **Rating affects stability:** Higher rating → longer stability
+6. **Deterministic mapping:** Same inputs → same rating
+
+### Auditability
+
+- Every state change logged in `srs_review_log` (append-only)
+- Training runs logged in `algo_runs` (when implemented)
+- Reproducible computations (deterministic)
+- Full traceability to source sessions
+
+### Integration Points
+
+**Session Submission:**
+- Hook in `POST /v1/sessions/{id}/submit`
+- Runs after session scored and committed
+- Best-effort (non-blocking)
+- Extracts concept_id from `snapshot_json`
+- Handles multiple concepts per question
+- Logs warnings on failure
+
+**Revision Queue Sync:**
+- Updates `revision_queue` table (materialized view)
+- Maintains compatibility with existing UI
+- Placeholder for concept→theme mapping
+
+### Testing
+
+Tests cover:
+
+- **Rating mapper**: Deterministic mapping, all rules, telemetry validation
+- **FSRS adapter**: State validity, finite outputs, rating effects, invariants
+- **Integration**: Multiple concepts, telemetry features, property tests
+- **Invariants**: Stability > 0, D ∈ [0,10], R ∈ [0,1], due_at in future
+
+**Test file:** `backend/tests/test_srs.py`
+
+### References
+
+- **Models:** `backend/app/models/srs.py`
+- **Rating mapper:** `backend/app/learning_engine/srs/rating_mapper.py`
+- **FSRS adapter:** `backend/app/learning_engine/srs/fsrs_adapter.py`
+- **Service layer:** `backend/app/learning_engine/srs/service.py`
+- **API:** `backend/app/api/v1/endpoints/srs.py`
+- **Schemas:** `backend/app/schemas/srs.py`
+- **Tests:** `backend/tests/test_srs.py`
+- **Training (planned):** `backend/app/learning_engine/srs/training.py`
+
+### Implementation Status
+
+**✅ Completed (Phase 1 + 2A + 2B):**
+- Database schema (3 tables)
+- FSRS adapter (state computation, scheduling)
+- Rating mapper (MCQ → FSRS rating)
+- Service layer (update_from_attempt)
+- Queue API (3 endpoints)
+- Session integration
+- Comprehensive tests
+
+**🚧 Planned (Phase 2C):**
+- Per-user training pipeline (EM optimizer)
+- Admin training endpoints
+- Shrinkage toward global weights
+- Training metrics and validation
+
+---
+
 **END OF ALGORITHMS DOCUMENTATION**
