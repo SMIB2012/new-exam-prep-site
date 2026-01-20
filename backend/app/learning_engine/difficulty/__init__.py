@@ -1,5 +1,6 @@
-"""Difficulty assessment algorithm."""
+"""
+Difficulty Calibration Engine (Elo v1).
 
-from app.learning_engine.difficulty.v0 import compute_difficulty_v0
-
-__all__ = ["compute_difficulty_v0"]
+Production-grade online difficulty calibration using Elo rating system
+with uncertainty-aware dynamic K and MCQ guess floor.
+"""

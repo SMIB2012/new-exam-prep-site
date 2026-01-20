@@ -398,6 +398,167 @@ def validate_all_constants():
 validate_all_constants()
 
 
+# === 7. Difficulty Calibration (Elo v1) Constants ===
+
+# Probability Model Parameters
+ELO_GUESS_FLOOR = SourcedValue(
+    value=0.20,
+    sources=[
+        "5-option MCQ: random guessing yields 1/5 = 0.20 probability",
+        "Standard multiple-choice testing theory: P(guess) = 1 / number_of_options"
+    ]
+)
+
+ELO_SCALE = SourcedValue(
+    value=400.0,
+    sources=[
+        "Standard Elo scaling factor: 400 points ≈ 10x performance difference",
+        "Derived from chess Elo where 400-point difference implies ~91% expected score",
+        "Equivalent to logistic scale: 400 / ln(10) ≈ 173.7 (but 400 is conventional)"
+    ]
+)
+
+# Base K Values (before uncertainty modulation)
+ELO_K_BASE_USER = SourcedValue(
+    value=32.0,
+    sources=[
+        "Standard Elo K-factor for active players (FIDE uses 10-40 range)",
+        "Higher than chess default (16) due to MCQ noise and learning effects",
+        "Placeholder - to be tuned via cross-validation on historical data"
+    ]
+)
+
+ELO_K_BASE_QUESTION = SourcedValue(
+    value=24.0,
+    sources=[
+        "Slightly lower than user K to prioritize user ability adaptation",
+        "Questions are more stable than users (no learning curve for items)",
+        "Placeholder - to be tuned from data; initial heuristic is 75% of user K"
+    ]
+)
+
+ELO_K_MIN = SourcedValue(
+    value=8.0,
+    sources=[
+        "Minimum K for mature ratings with low uncertainty",
+        "Prevents complete stagnation while maintaining stability",
+        "Heuristic: 25% of base K for well-established ratings"
+    ]
+)
+
+ELO_K_MAX = SourcedValue(
+    value=64.0,
+    sources=[
+        "Maximum K for new items with high uncertainty",
+        "Enables fast adaptation in early stages",
+        "Heuristic: 2x base K for maximum learning rate"
+    ]
+)
+
+# Uncertainty Dynamics
+ELO_UNC_INIT_USER = SourcedValue(
+    value=350.0,
+    sources=[
+        "Initial rating deviation for new users",
+        "Similar to Glicko-2 RD_0 = 350 (standard for online rating systems)",
+        "Represents ~87% confidence interval of ±1.4 * 350 ≈ ±490 rating points"
+    ]
+)
+
+ELO_UNC_INIT_QUESTION = SourcedValue(
+    value=250.0,
+    sources=[
+        "Lower initial uncertainty for questions (assumed more stable than users)",
+        "Heuristic: ~70% of user initial uncertainty",
+        "Questions don't learn, so uncertainty primarily reflects estimation noise"
+    ]
+)
+
+ELO_UNC_FLOOR = SourcedValue(
+    value=50.0,
+    sources=[
+        "Minimum uncertainty floor (never fully certain)",
+        "Represents irreducible measurement noise in MCQ performance",
+        "Glicko-2 typically converges to RD ≈ 30-50 for active players"
+    ]
+)
+
+ELO_UNC_DECAY_PER_ATTEMPT = SourcedValue(
+    value=0.9,
+    sources=[
+        "Uncertainty multiplier per attempt: unc *= 0.9 each time",
+        "Geometric decay toward floor: after 20 attempts, unc ≈ 0.9^20 ≈ 0.12 of initial",
+        "Heuristic - to be calibrated from variance of rating changes over time"
+    ]
+)
+
+ELO_UNC_AGE_INCREASE_PER_DAY = SourcedValue(
+    value=1.0,
+    sources=[
+        "Uncertainty increase per day of inactivity",
+        "Models drift and forgetting (user ability may change; question difficulty may shift due to curriculum changes)",
+        "Heuristic: ~1 point/day; 90 days inactivity adds ~90 points RD (modest drift)"
+    ]
+)
+
+# Theme Rating Activation Thresholds
+ELO_MIN_ATTEMPTS_THEME_USER = SourcedValue(
+    value=5,
+    sources=[
+        "Minimum attempts in a theme before creating theme-specific user rating",
+        "Heuristic: Require some exposure before splitting from global rating",
+        "Prevents noisy theme ratings with insufficient data"
+    ]
+)
+
+ELO_MIN_ATTEMPTS_THEME_QUESTION = SourcedValue(
+    value=3,
+    sources=[
+        "Minimum attempts on a question in a theme before theme-specific difficulty",
+        "Lower than user threshold (questions more stable)",
+        "Heuristic - to be validated with hierarchical model evaluation"
+    ]
+)
+
+ELO_THEME_UPDATE_WEIGHT = SourcedValue(
+    value=0.5,
+    sources=[
+        "Weight for theme rating update relative to global",
+        "0.5 = equal update to both global and theme ratings",
+        "Hierarchical model: total update split between levels",
+        "Placeholder - to be tuned via nested cross-validation"
+    ]
+)
+
+# Drift Control (Recenter)
+ELO_RECENTER_ENABLED = SourcedValue(
+    value=True,
+    sources=[
+        "Enable periodic recentering to prevent rating inflation/deflation",
+        "Standard practice in Elo systems (FIDE periodically adjusts baselines)",
+        "Preserves relative differences while normalizing absolute scale"
+    ]
+)
+
+ELO_RECENTER_EVERY_N_UPDATES = SourcedValue(
+    value=10000,
+    sources=[
+        "Recenter after every 10,000 updates (global)",
+        "Heuristic: Frequent enough to prevent drift, infrequent enough to avoid instability",
+        "Typical platform with 1,000 students × 50 questions/month ⇒ recenter ~monthly"
+    ]
+)
+
+ELO_RATING_INIT = SourcedValue(
+    value=0.0,
+    sources=[
+        "Initial rating for new users and questions (mean-centered)",
+        "Elo convention: start at system average (often 1500 in chess, but 0 for normalized scale)",
+        "0-centered scale simplifies interpretation: positive = above average, negative = below average"
+    ]
+)
+
+
 # =============================================================================
 # Convenience Accessors
 # =============================================================================
@@ -426,4 +587,27 @@ def get_rating_thresholds() -> dict:
         "fast_answer_ms": RATING_FAST_ANSWER_MS.value,
         "slow_answer_ms": RATING_SLOW_ANSWER_MS.value,
         "max_changes_for_confident": RATING_MAX_CHANGES_FOR_CONFIDENT.value,
+    }
+
+
+def get_elo_defaults() -> dict:
+    """Get Elo difficulty calibration defaults as a dict."""
+    return {
+        "guess_floor": ELO_GUESS_FLOOR.value,
+        "scale": ELO_SCALE.value,
+        "k_base_user": ELO_K_BASE_USER.value,
+        "k_base_question": ELO_K_BASE_QUESTION.value,
+        "k_min": ELO_K_MIN.value,
+        "k_max": ELO_K_MAX.value,
+        "unc_init_user": ELO_UNC_INIT_USER.value,
+        "unc_init_question": ELO_UNC_INIT_QUESTION.value,
+        "unc_floor": ELO_UNC_FLOOR.value,
+        "unc_decay_per_attempt": ELO_UNC_DECAY_PER_ATTEMPT.value,
+        "unc_age_increase_per_day": ELO_UNC_AGE_INCREASE_PER_DAY.value,
+        "min_attempts_theme_user": ELO_MIN_ATTEMPTS_THEME_USER.value,
+        "min_attempts_theme_question": ELO_MIN_ATTEMPTS_THEME_QUESTION.value,
+        "theme_update_weight": ELO_THEME_UPDATE_WEIGHT.value,
+        "recenter_enabled": ELO_RECENTER_ENABLED.value,
+        "recenter_every_n_updates": ELO_RECENTER_EVERY_N_UPDATES.value,
+        "rating_init": ELO_RATING_INIT.value,
     }

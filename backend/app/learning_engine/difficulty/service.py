@@ -1,289 +1,459 @@
-"""Difficulty Calibration v0 service (ELO-lite)."""
+"""
+Difficulty calibration service layer.
+
+Handles database operations and orchestrates rating updates.
+Supports both global and theme-scoped ratings with uncertainty tracking.
+"""
 
 import logging
-from datetime import datetime
-from typing import Any
+from datetime import UTC, datetime
+from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.dialects.postgresql import insert
 
+from app.learning_engine.config import (
+    ELO_GUESS_FLOOR,
+    ELO_K_BASE_QUESTION,
+    ELO_K_BASE_USER,
+    ELO_K_MAX,
+    ELO_K_MIN,
+    ELO_MIN_ATTEMPTS_THEME_QUESTION,
+    ELO_MIN_ATTEMPTS_THEME_USER,
+    ELO_RATING_INIT,
+    ELO_SCALE,
+    ELO_THEME_UPDATE_WEIGHT,
+    ELO_UNC_AGE_INCREASE_PER_DAY,
+    ELO_UNC_DECAY_PER_ATTEMPT,
+    ELO_UNC_FLOOR,
+    ELO_UNC_INIT_QUESTION,
+    ELO_UNC_INIT_USER,
+)
 from app.learning_engine.constants import AlgoKey
+from app.learning_engine.difficulty.core import (
+    apply_update,
+    compute_delta,
+    compute_dynamic_k,
+    p_correct,
+    update_uncertainty,
+    validate_rating_finite,
+)
 from app.learning_engine.registry import resolve_active
-from app.learning_engine.runs import log_run_failure, log_run_start, log_run_success
-from app.models.learning_difficulty import QuestionDifficulty
-from app.models.learning_mastery import UserThemeMastery
-from app.models.session import SessionAnswer, SessionQuestion, TestSession
+from app.models.difficulty import (
+    DifficultyQuestionRating,
+    DifficultyUpdateLog,
+    DifficultyUserRating,
+    RatingScope,
+)
 
 logger = logging.getLogger(__name__)
 
 
-def compute_student_rating(
-    strategy: str,
-    params: dict[str, Any],
-    mastery_score: float | None = None,
-) -> float:
-    """
-    Compute student rating based on strategy.
-    
-    Args:
-        strategy: "fixed" or "mastery_mapped"
-        params: Algorithm parameters
-        mastery_score: User's mastery score for theme (if available)
-    
-    Returns:
-        Student rating
-    """
-    baseline = params.get("baseline_rating", 1000)
-    
-    if strategy == "fixed":
-        return baseline
-    
-    elif strategy == "mastery_mapped":
-        if mastery_score is None:
-            return baseline
-        
-        rating_map = params.get("mastery_rating_map", {"min": 800, "max": 1200})
-        min_rating = rating_map["min"]
-        max_rating = rating_map["max"]
-        
-        # Map mastery_score (0..1) to rating range
-        student_rating = min_rating + (mastery_score * (max_rating - min_rating))
-        return student_rating
-    
-    return baseline
-
-
-def compute_elo_update(
-    question_rating: float,
-    student_rating: float,
-    actual: int,  # 0 or 1
-    k_factor: float,
-    rating_scale: float,
-) -> tuple[float, float, float]:
-    """
-    Compute ELO-lite rating update.
-    
-    Args:
-        question_rating: Current question rating
-        student_rating: Student's rating
-        actual: 1 if correct, 0 if incorrect
-        k_factor: ELO k-factor
-        rating_scale: Rating scale constant
-    
-    Returns:
-        Tuple of (new_rating, delta, expected)
-    """
-    # Expected probability (logistic function)
-    expected = 1.0 / (1.0 + 10.0 ** ((question_rating - student_rating) / rating_scale))
-    
-    # Delta
-    delta = k_factor * (actual - expected)
-    
-    # New rating
-    new_rating = question_rating + delta
-    
-    return new_rating, delta, expected
-
-
-async def update_question_difficulty_v0_for_session(
+async def get_or_create_user_rating(
     db: AsyncSession,
-    session_id: UUID,
-    trigger: str = "submit",
-) -> dict[str, Any]:
+    user_id: UUID,
+    scope_type: RatingScope,
+    scope_id: Optional[UUID],
+    params: dict,
+) -> DifficultyUserRating:
     """
-    Update question difficulty ratings for all answered questions in a session.
-    
-    Uses ELO-lite algorithm with configurable student rating strategies.
+    Get or create user rating for given scope.
     
     Args:
         db: Database session
-        session_id: Session ID
-        trigger: Run trigger source
+        user_id: User ID
+        scope_type: GLOBAL or THEME
+        scope_id: None for GLOBAL, theme_id for THEME
+        params: Algorithm parameters
+        
+    Returns:
+        User rating object
+    """
+    # Try to fetch existing
+    stmt = select(DifficultyUserRating).where(
+        DifficultyUserRating.user_id == user_id,
+        DifficultyUserRating.scope_type == scope_type.value,
+        DifficultyUserRating.scope_id == scope_id,
+    )
+    result = await db.execute(stmt)
+    rating_obj = result.scalar_one_or_none()
+    
+    if rating_obj:
+        return rating_obj
+    
+    # Create new
+    rating_obj = DifficultyUserRating(
+        user_id=user_id,
+        scope_type=scope_type.value,
+        scope_id=scope_id,
+        rating=params.get("rating_init", ELO_RATING_INIT.value),
+        uncertainty=params.get("unc_init_user", ELO_UNC_INIT_USER.value),
+        n_attempts=0,
+        last_seen_at=None,
+    )
+    db.add(rating_obj)
+    await db.flush()
+    
+    return rating_obj
+
+
+async def get_or_create_question_rating(
+    db: AsyncSession,
+    question_id: UUID,
+    scope_type: RatingScope,
+    scope_id: Optional[UUID],
+    params: dict,
+) -> DifficultyQuestionRating:
+    """
+    Get or create question rating for given scope.
+    
+    Args:
+        db: Database session
+        question_id: Question ID
+        scope_type: GLOBAL or THEME
+        scope_id: None for GLOBAL, theme_id for THEME
+        params: Algorithm parameters
+        
+    Returns:
+        Question rating object
+    """
+    # Try to fetch existing
+    stmt = select(DifficultyQuestionRating).where(
+        DifficultyQuestionRating.question_id == question_id,
+        DifficultyQuestionRating.scope_type == scope_type.value,
+        DifficultyQuestionRating.scope_id == scope_id,
+    )
+    result = await db.execute(stmt)
+    rating_obj = result.scalar_one_or_none()
+    
+    if rating_obj:
+        return rating_obj
+    
+    # Create new
+    rating_obj = DifficultyQuestionRating(
+        question_id=question_id,
+        scope_type=scope_type.value,
+        scope_id=scope_id,
+        rating=params.get("rating_init", ELO_RATING_INIT.value),
+        uncertainty=params.get("unc_init_question", ELO_UNC_INIT_QUESTION.value),
+        n_attempts=0,
+        last_seen_at=None,
+    )
+    db.add(rating_obj)
+    await db.flush()
+    
+    return rating_obj
+
+
+async def update_difficulty_from_attempt(
+    db: AsyncSession,
+    *,
+    user_id: UUID,
+    question_id: UUID,
+    theme_id: Optional[UUID],
+    score: bool,
+    attempt_id: Optional[UUID] = None,
+    occurred_at: Optional[datetime] = None,
+) -> dict:
+    """
+    Update difficulty ratings from a single attempt.
+    
+    Performs:
+    1. Load/create GLOBAL user and question ratings
+    2. Compute predicted probability
+    3. Update GLOBAL ratings with dynamic K
+    4. Conditionally update THEME ratings (if enough data)
+    5. Log update with pre/post snapshots
+    
+    Args:
+        db: Database session
+        user_id: User ID
+        question_id: Question ID
+        theme_id: Theme ID (optional, for theme-scoped updates)
+        score: True if correct, False if incorrect
+        attempt_id: Unique attempt ID (for idempotency)
+        occurred_at: Timestamp of attempt (defaults to now)
+        
+    Returns:
+        Summary dict with p_pred, updated ratings, scope info
+    """
+    if occurred_at is None:
+        occurred_at = datetime.now(UTC)
+    
+    # Resolve active algorithm version and params
+    algo_version, algo_params = await resolve_active(db, AlgoKey.DIFFICULTY)
+    if not algo_version or not algo_params:
+        raise ValueError("Difficulty algorithm not configured (no active version/params)")
+    
+    params = algo_params.params_json or {}
+    
+    # Extract params with fallbacks
+    guess_floor = params.get("guess_floor", ELO_GUESS_FLOOR.value)
+    scale = params.get("scale", ELO_SCALE.value)
+    k_base_user = params.get("k_base_user", ELO_K_BASE_USER.value)
+    k_base_question = params.get("k_base_question", ELO_K_BASE_QUESTION.value)
+    k_min = params.get("k_min", ELO_K_MIN.value)
+    k_max = params.get("k_max", ELO_K_MAX.value)
+    unc_floor = params.get("unc_floor", ELO_UNC_FLOOR.value)
+    unc_decay = params.get("unc_decay_per_attempt", ELO_UNC_DECAY_PER_ATTEMPT.value)
+    unc_age_rate = params.get("unc_age_increase_per_day", ELO_UNC_AGE_INCREASE_PER_DAY.value)
+    min_attempts_theme_user = params.get("min_attempts_theme_user", ELO_MIN_ATTEMPTS_THEME_USER.value)
+    min_attempts_theme_question = params.get("min_attempts_theme_question", ELO_MIN_ATTEMPTS_THEME_QUESTION.value)
+    theme_weight = params.get("theme_update_weight", ELO_THEME_UPDATE_WEIGHT.value)
+    
+    # Check for duplicate attempt_id (idempotency)
+    if attempt_id:
+        stmt = select(DifficultyUpdateLog).where(DifficultyUpdateLog.attempt_id == attempt_id)
+        result = await db.execute(stmt)
+        existing_log = result.scalar_one_or_none()
+        if existing_log:
+            logger.info(f"Skipping duplicate attempt {attempt_id}")
+            return {
+                "duplicate": True,
+                "p_pred": existing_log.p_pred,
+                "scope_updated": existing_log.scope_used,
+            }
+    
+    # === STEP 1: Load GLOBAL ratings ===
+    user_global = await get_or_create_user_rating(
+        db, user_id, RatingScope.GLOBAL, None, params
+    )
+    question_global = await get_or_create_question_rating(
+        db, question_id, RatingScope.GLOBAL, None, params
+    )
+    
+    # Capture pre-update state
+    user_rating_pre = user_global.rating
+    user_unc_pre = user_global.uncertainty
+    q_rating_pre = question_global.rating
+    q_unc_pre = question_global.uncertainty
+    
+    # === STEP 2: Compute predicted probability ===
+    p_pred = p_correct(user_global.rating, question_global.rating, guess_floor, scale)
+    
+    # === STEP 3: Compute error ===
+    delta = compute_delta(score, p_pred)
+    
+    # === STEP 4: Update uncertainties ===
+    user_global.uncertainty = update_uncertainty(
+        user_global.uncertainty,
+        user_global.n_attempts,
+        user_global.last_seen_at,
+        occurred_at,
+        unc_floor,
+        unc_decay,
+        unc_age_rate,
+    )
+    question_global.uncertainty = update_uncertainty(
+        question_global.uncertainty,
+        question_global.n_attempts,
+        question_global.last_seen_at,
+        occurred_at,
+        unc_floor,
+        unc_decay,
+        unc_age_rate,
+    )
+    
+    # === STEP 5: Compute dynamic K ===
+    k_u = compute_dynamic_k(k_base_user, user_global.uncertainty, k_min, k_max)
+    k_q = compute_dynamic_k(k_base_question, question_global.uncertainty, k_min, k_max)
+    
+    # === STEP 6: Apply GLOBAL rating updates ===
+    theta_new, b_new = apply_update(
+        user_global.rating,
+        question_global.rating,
+        k_u,
+        k_q,
+        delta,
+    )
+    
+    # Validate finite
+    validate_rating_finite(theta_new, "user_rating_global")
+    validate_rating_finite(b_new, "question_rating_global")
+    
+    user_global.rating = theta_new
+    question_global.rating = b_new
+    user_global.n_attempts += 1
+    question_global.n_attempts += 1
+    user_global.last_seen_at = occurred_at
+    question_global.last_seen_at = occurred_at
+    user_global.updated_at = occurred_at
+    question_global.updated_at = occurred_at
+    
+    # Mark for update
+    db.add(user_global)
+    db.add(question_global)
+    
+    # Capture post-update state
+    user_rating_post = user_global.rating
+    user_unc_post = user_global.uncertainty
+    q_rating_post = question_global.rating
+    q_unc_post = question_global.uncertainty
+    
+    scope_updated = "GLOBAL"
+    
+    # === STEP 7: Conditionally update THEME ratings ===
+    if theme_id:
+        # Check if we have enough data for theme-specific ratings
+        user_has_theme_data = user_global.n_attempts >= min_attempts_theme_user
+        question_has_theme_data = question_global.n_attempts >= min_attempts_theme_question
+        
+        if user_has_theme_data and question_has_theme_data:
+            # Load/create theme ratings
+            user_theme = await get_or_create_user_rating(
+                db, user_id, RatingScope.THEME, theme_id, params
+            )
+            question_theme = await get_or_create_question_rating(
+                db, question_id, RatingScope.THEME, theme_id, params
+            )
+            
+            # Update theme uncertainties
+            user_theme.uncertainty = update_uncertainty(
+                user_theme.uncertainty,
+                user_theme.n_attempts,
+                user_theme.last_seen_at,
+                occurred_at,
+                unc_floor,
+                unc_decay,
+                unc_age_rate,
+            )
+            question_theme.uncertainty = update_uncertainty(
+                question_theme.uncertainty,
+                question_theme.n_attempts,
+                question_theme.last_seen_at,
+                occurred_at,
+                unc_floor,
+                unc_decay,
+                unc_age_rate,
+            )
+            
+            # Compute theme-specific K (weighted by theme_weight)
+            k_u_theme = compute_dynamic_k(k_base_user, user_theme.uncertainty, k_min, k_max) * theme_weight
+            k_q_theme = compute_dynamic_k(k_base_question, question_theme.uncertainty, k_min, k_max) * theme_weight
+            
+            # Apply theme updates
+            theta_theme_new, b_theme_new = apply_update(
+                user_theme.rating,
+                question_theme.rating,
+                k_u_theme,
+                k_q_theme,
+                delta,
+            )
+            
+            # Validate finite
+            validate_rating_finite(theta_theme_new, "user_rating_theme")
+            validate_rating_finite(b_theme_new, "question_rating_theme")
+            
+            user_theme.rating = theta_theme_new
+            question_theme.rating = b_theme_new
+            user_theme.n_attempts += 1
+            question_theme.n_attempts += 1
+            user_theme.last_seen_at = occurred_at
+            question_theme.last_seen_at = occurred_at
+            user_theme.updated_at = occurred_at
+            question_theme.updated_at = occurred_at
+            
+            db.add(user_theme)
+            db.add(question_theme)
+            
+            scope_updated = "BOTH"
+    
+    # === STEP 8: Log update ===
+    update_log = DifficultyUpdateLog(
+        attempt_id=attempt_id,
+        user_id=user_id,
+        question_id=question_id,
+        theme_id=theme_id,
+        scope_used=scope_updated,
+        score=score,
+        p_pred=p_pred,
+        user_rating_pre=user_rating_pre,
+        user_rating_post=user_rating_post,
+        user_unc_pre=user_unc_pre,
+        user_unc_post=user_unc_post,
+        q_rating_pre=q_rating_pre,
+        q_rating_post=q_rating_post,
+        q_unc_pre=q_unc_pre,
+        q_unc_post=q_unc_post,
+        k_u_used=k_u,
+        k_q_used=k_q,
+        guess_floor_used=guess_floor,
+        scale_used=scale,
+        algo_version_id=algo_version.id,
+        params_id=algo_params.id,
+        run_id=None,  # For per-attempt updates, run_id is None
+        created_at=occurred_at,
+    )
+    db.add(update_log)
+    
+    # Commit all changes
+    await db.commit()
+    
+    # Return summary
+    return {
+        "p_pred": p_pred,
+        "user_rating_global": user_rating_post,
+        "question_rating_global": q_rating_post,
+        "scope_updated": scope_updated,
+        "k_u_used": k_u,
+        "k_q_used": k_q,
+        "algo_version": algo_version.version,
+        "params_id": str(algo_params.id),
+    }
+
+
+async def update_difficulty_for_session(
+    db: AsyncSession,
+    session_id: UUID,
+    user_id: UUID,
+    attempts: list[dict],
+) -> dict:
+    """
+    Update difficulty ratings for all attempts in a session.
+    
+    Args:
+        db: Database session
+        session_id: Test session ID
+        user_id: User ID
+        attempts: List of attempt dicts with keys:
+            - attempt_id (optional)
+            - question_id
+            - theme_id (optional)
+            - score (bool)
+            - occurred_at (optional)
     
     Returns:
-        Summary dictionary with update counts
+        Summary dict with counts and average p_pred
     """
-    try:
-        # Resolve active version and params
-        version, params_obj = await resolve_active(db, AlgoKey.DIFFICULTY.value)
-        if not version or not params_obj:
-            logger.warning("No active difficulty algorithm version or params found")
-            return {"questions_updated": 0, "error": "no_active_algo"}
-        
-        params = params_obj.params_json
-        
-        # Get session
-        session = await db.get(TestSession, session_id)
-        if not session:
-            logger.warning(f"Session not found: {session_id}")
-            return {"questions_updated": 0, "error": "session_not_found"}
-        
-        # Start run logging
-        run = await log_run_start(
-            db,
-            algo_version_id=version.id,
-            params_id=params_obj.id,
-            user_id=session.user_id,
-            session_id=session_id,
-            trigger=trigger,
-            input_summary={"session_id": str(session_id)},
-        )
-        
-        # Get all answers for this session
-        answers_stmt = select(SessionAnswer).where(SessionAnswer.session_id == session_id)
-        answers_result = await db.execute(answers_stmt)
-        answers = answers_result.scalars().all()
-        
-        if not answers:
-            await log_run_success(
-                db,
-                run_id=run.id,
-                output_summary={"questions_updated": 0, "reason": "no_answers"},
-            )
-            return {"questions_updated": 0, "avg_delta": 0.0}
-        
-        # Get session questions (for theme info)
-        questions_stmt = select(SessionQuestion).where(SessionQuestion.session_id == session_id)
-        questions_result = await db.execute(questions_stmt)
-        session_questions = {sq.question_id: sq for sq in questions_result.scalars().all()}
-        
-        # Get mastery scores for user (if mastery_mapped strategy)
-        strategy = params.get("student_rating_strategy", "fixed")
-        mastery_scores = {}
-        if strategy == "mastery_mapped":
-            mastery_stmt = select(UserThemeMastery).where(
-                UserThemeMastery.user_id == session.user_id
-            )
-            mastery_result = await db.execute(mastery_stmt)
-            for mastery in mastery_result.scalars().all():
-                mastery_scores[mastery.theme_id] = float(mastery.mastery_score)
-        
-        # Get existing difficulty ratings
-        question_ids = [a.question_id for a in answers]
-        difficulty_stmt = select(QuestionDifficulty).where(
-            QuestionDifficulty.question_id.in_(question_ids)
-        )
-        difficulty_result = await db.execute(difficulty_stmt)
-        existing_difficulties = {d.question_id: d for d in difficulty_result.scalars().all()}
-        
-        # Compute updates
-        k_factor = params.get("k_factor", 16)
-        rating_scale = params.get("rating_scale", 400)
-        baseline_rating = params.get("baseline_rating", 1000)
-        
-        updates = []
-        total_delta = 0.0
-        
-        for answer in answers:
-            # Skip if no selected answer
-            if answer.selected_index is None:
-                continue
-            
-            # Determine actual (1 if correct, 0 if incorrect)
-            actual = 1 if answer.is_correct else 0
-            
-            # Get theme from session question
-            sq = session_questions.get(answer.question_id)
-            theme_id = None
-            if sq:
-                if sq.question_version:
-                    theme_id = sq.question_version.theme_id
-                elif sq.snapshot_json:
-                    theme_id = sq.snapshot_json.get("theme_id")
-            
-            # Compute student rating
-            mastery_score = mastery_scores.get(theme_id) if theme_id else None
-            student_rating = compute_student_rating(strategy, params, mastery_score)
-            
-            # Get current question rating
-            existing = existing_difficulties.get(answer.question_id)
-            current_rating = float(existing.rating) if existing else baseline_rating
-            
-            # Compute ELO update
-            new_rating, delta, expected = compute_elo_update(
-                current_rating,
-                student_rating,
-                actual,
-                k_factor,
-                rating_scale,
-            )
-            
-            total_delta += abs(delta)
-            
-            # Compute new aggregates
-            if existing:
-                new_attempts = existing.attempts + 1
-                new_correct = existing.correct + actual
-            else:
-                new_attempts = 1
-                new_correct = actual
-            
-            new_p_correct = new_correct / new_attempts if new_attempts > 0 else None
-            
-            # Build breakdown
-            breakdown = {
-                "actual": actual,
-                "expected": round(expected, 4),
-                "delta": round(delta, 2),
-                "student_rating": round(student_rating, 2),
-                "theme_id": theme_id,
-                "mastery_score": round(mastery_score, 4) if mastery_score is not None else None,
-            }
-            
-            updates.append({
-                "question_id": answer.question_id,
-                "rating": round(new_rating, 2),
-                "attempts": new_attempts,
-                "correct": new_correct,
-                "p_correct": round(new_p_correct, 4) if new_p_correct is not None else None,
-                "last_updated_at": datetime.utcnow(),
-                "algo_version_id": version.id,
-                "params_id": params_obj.id,
-                "run_id": run.id,
-                "breakdown_json": breakdown,
-            })
-        
-        # Bulk upsert
-        if updates:
-            stmt = insert(QuestionDifficulty).values(updates)
-            stmt = stmt.on_conflict_do_update(
-                index_elements=["question_id"],
-                set_={
-                    "rating": stmt.excluded.rating,
-                    "attempts": stmt.excluded.attempts,
-                    "correct": stmt.excluded.correct,
-                    "p_correct": stmt.excluded.p_correct,
-                    "last_updated_at": stmt.excluded.last_updated_at,
-                    "algo_version_id": stmt.excluded.algo_version_id,
-                    "params_id": stmt.excluded.params_id,
-                    "run_id": stmt.excluded.run_id,
-                    "breakdown_json": stmt.excluded.breakdown_json,
-                }
-            )
-            await db.execute(stmt)
-            await db.commit()
-        
-        avg_delta = total_delta / len(updates) if updates else 0.0
-        
-        # Log success
-        await log_run_success(
-            db,
-            run_id=run.id,
-            output_summary={
-                "questions_updated": len(updates),
-                "avg_delta": round(avg_delta, 2),
-            },
-        )
-        
-        return {
-            "questions_updated": len(updates),
-            "avg_delta": round(avg_delta, 2),
-            "run_id": str(run.id),
-        }
+    updates_count = 0
+    p_pred_sum = 0.0
+    errors = []
     
-    except Exception as e:
-        logger.error(f"Failed to update difficulty for session {session_id}: {e}")
-        # Best effort - don't block session submission
-        return {"questions_updated": 0, "error": str(e)}
+    for attempt in attempts:
+        try:
+            result = await update_difficulty_from_attempt(
+                db,
+                user_id=user_id,
+                question_id=attempt["question_id"],
+                theme_id=attempt.get("theme_id"),
+                score=attempt["score"],
+                attempt_id=attempt.get("attempt_id"),
+                occurred_at=attempt.get("occurred_at"),
+            )
+            
+            if not result.get("duplicate"):
+                updates_count += 1
+                p_pred_sum += result["p_pred"]
+        except Exception as e:
+            logger.warning(f"Failed to update difficulty for attempt {attempt.get('attempt_id')}: {e}")
+            errors.append(str(e))
+    
+    avg_p_pred = p_pred_sum / updates_count if updates_count > 0 else 0.0
+    
+    return {
+        "session_id": str(session_id),
+        "updates_count": updates_count,
+        "avg_p_pred": avg_p_pred,
+        "errors": errors,
+    }

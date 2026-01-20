@@ -13,6 +13,12 @@ from app.models.attempt import AttemptAnswer, AttemptSession
 from app.models.auth import EmailVerificationToken, PasswordResetToken, RefreshToken
 from app.models.bkt import BKTSkillParams, BKTUserSkillState, MasterySnapshot
 from app.models.bookmark import Bookmark
+from app.models.difficulty import (
+    DifficultyQuestionRating,
+    DifficultyUpdateLog,
+    DifficultyUserRating,
+    RatingScope,
+)
 from app.models.learning import AlgoParams, AlgoRun, AlgoVersion
 from app.models.srs import SRSConceptState, SRSReviewLog, SRSUserParams
 from app.models.learning_difficulty import QuestionDifficulty
@@ -104,6 +110,13 @@ __all__ = [
     "BKTSkillParams",
     "BKTUserSkillState",
     "MasterySnapshot",
+    "DifficultyUserRating",
+    "DifficultyQuestionRating",
+    "DifficultyUpdateLog",
+    "RatingScope",
+    "SRSUserParams",
+    "SRSConceptState",
+    "SRSReviewLog",
     "AcademicYear",
     "AcademicBlock",
     "AcademicSubject",

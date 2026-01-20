@@ -18,6 +18,7 @@ from app.api.v1.endpoints import (
     auth,
     bkt,
     bookmarks,
+    difficulty,
     health,
     learning,
     mfa,
@@ -58,6 +59,7 @@ api_router.include_router(analytics.router, prefix="/v1", tags=["Analytics"])
 api_router.include_router(learning.router, prefix="/v1/learning", tags=["Learning Engine"])
 api_router.include_router(bkt.router, prefix="/v1/learning/bkt", tags=["BKT Mastery"])
 api_router.include_router(srs.router, prefix="/v1/learning/srs", tags=["SRS Queue"])
+api_router.include_router(difficulty.router, prefix="/v1/learning/difficulty", tags=["Difficulty Calibration"])
 api_router.include_router(revision.router, prefix="/v1", tags=["Revision"])
 api_router.include_router(mistakes.router, prefix="/v1", tags=["Mistakes"])
 
