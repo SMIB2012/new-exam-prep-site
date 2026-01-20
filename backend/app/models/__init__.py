@@ -14,6 +14,7 @@ from app.models.auth import EmailVerificationToken, PasswordResetToken, RefreshT
 from app.models.bkt import BKTSkillParams, BKTUserSkillState, MasterySnapshot
 from app.models.bookmark import Bookmark
 from app.models.learning import AlgoParams, AlgoRun, AlgoVersion
+from app.models.srs import SRSConceptState, SRSReviewLog, SRSUserParams
 from app.models.learning_difficulty import QuestionDifficulty
 from app.models.learning_mastery import UserThemeMastery
 from app.models.learning_revision import RevisionQueue
