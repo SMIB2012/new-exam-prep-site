@@ -5,14 +5,13 @@ from datetime import datetime, timedelta
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.api.deps import get_current_user, get_db
 from app.models.mistakes import MistakeLog
-from app.models.question_cms import Question
 from app.models.syllabus import Block, Theme
 from app.models.user import User
 from app.schemas.mistakes import (

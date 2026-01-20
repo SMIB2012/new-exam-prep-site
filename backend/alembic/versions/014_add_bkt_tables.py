@@ -6,9 +6,10 @@ Create Date: 2026-01-21
 
 """
 
-from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "014_add_bkt_tables"
@@ -191,7 +192,7 @@ def upgrade() -> None:
     op.execute(
         """
         INSERT INTO algo_params (algo_version_id, params_json, is_active, created_at, updated_at)
-        SELECT 
+        SELECT
             av.id,
             '{
                 "default_L0": 0.1,

@@ -7,7 +7,6 @@ Supports both global and theme-scoped ratings with uncertainty tracking.
 
 import logging
 from datetime import UTC, datetime
-from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import select
@@ -54,7 +53,7 @@ async def get_or_create_user_rating(
     db: AsyncSession,
     user_id: UUID,
     scope_type: RatingScope,
-    scope_id: Optional[UUID],
+    scope_id: UUID | None,
     params: dict,
 ) -> DifficultyUserRating:
     """
@@ -102,7 +101,7 @@ async def get_or_create_question_rating(
     db: AsyncSession,
     question_id: UUID,
     scope_type: RatingScope,
-    scope_id: Optional[UUID],
+    scope_id: UUID | None,
     params: dict,
 ) -> DifficultyQuestionRating:
     """
@@ -151,10 +150,10 @@ async def update_difficulty_from_attempt(
     *,
     user_id: UUID,
     question_id: UUID,
-    theme_id: Optional[UUID],
+    theme_id: UUID | None,
     score: bool,
-    attempt_id: Optional[UUID] = None,
-    occurred_at: Optional[datetime] = None,
+    attempt_id: UUID | None = None,
+    occurred_at: datetime | None = None,
 ) -> dict:
     """
     Update difficulty ratings from a single attempt.

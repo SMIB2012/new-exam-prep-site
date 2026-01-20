@@ -14,6 +14,16 @@ ignore = []
 "**/endpoints/*.py" = ["B008"]  # FastAPI Depends() in function defaults is standard practice
 "**/dependencies.py" = ["B008"]  # FastAPI Depends() in function defaults is standard practice
 "**/health.py" = ["B008"]  # FastAPI Depends() in function defaults is standard practice
+"**/learning_engine/bkt/*.py" = ["N802", "N803", "N806", "N815"]  # Math notation (p_L, p_T, etc.) is standard
+"**/learning_engine/srs/*.py" = ["N803", "N806"]  # FSRS uses standard academic notation
+"**/learning_engine/difficulty/*.py" = ["N803", "N806"]  # Elo uses standard notation (theta, etc.)
+"**/models/bkt.py" = ["N815"]  # BKT model uses math notation in class scope
+"**/schemas/bkt.py" = ["N815"]  # BKT schema uses math notation in class scope
+"**/endpoints/sessions.py" = ["N811"]  # UUID as UUIDType is intentional for clarity
+"alembic/versions/*.py" = ["E501"]  # Migration SQL strings can be long
+"tests/test_bkt.py" = ["N802", "N803", "N806"]  # Test functions use math notation
+"tests/test_srs.py" = ["N803", "N806"]  # Test functions use FSRS notation
+"tests/test_difficulty_elo.py" = ["N803", "N806"]  # Test functions use Elo notation
 
 [tool.black]
 line-length = 100

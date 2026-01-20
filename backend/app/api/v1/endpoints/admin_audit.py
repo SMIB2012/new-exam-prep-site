@@ -4,6 +4,7 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -11,7 +12,6 @@ from app.core.dependencies import require_roles
 from app.db.session import get_db
 from app.models.question_cms import AuditLog
 from app.models.user import User, UserRole
-from pydantic import BaseModel
 
 router = APIRouter(prefix="/admin/audit", tags=["Admin - Audit"])
 

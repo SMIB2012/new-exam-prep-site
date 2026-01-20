@@ -1,18 +1,19 @@
 """Tests for SRS (Spaced Repetition System) implementation."""
 
-import pytest
-from datetime import datetime, timedelta
+from datetime import datetime
 from uuid import uuid4
 
-from app.learning_engine.srs.rating_mapper import (
-    map_attempt_to_rating,
-    explain_rating,
-    validate_telemetry,
-)
+import pytest
+
 from app.learning_engine.srs.fsrs_adapter import (
-    get_default_parameters,
     compute_next_state_and_due,
+    get_default_parameters,
     validate_weights,
+)
+from app.learning_engine.srs.rating_mapper import (
+    explain_rating,
+    map_attempt_to_rating,
+    validate_telemetry,
 )
 
 

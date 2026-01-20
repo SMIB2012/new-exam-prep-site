@@ -6,8 +6,8 @@ from typing import Any
 from uuid import UUID
 
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.learning_engine.constants import AlgoKey
 from app.learning_engine.registry import resolve_active
@@ -382,7 +382,7 @@ async def generate_revision_queue_v0(
         due_today = sum(1 for item in items if item["due_date"] == current_date)
 
         # Upsert items
-        num_upserted = await upsert_revision_queue(db, items, version.id, params_obj.id, run.id)
+        await upsert_revision_queue(db, items, version.id, params_obj.id, run.id)
 
         # Log success
         await log_run_success(

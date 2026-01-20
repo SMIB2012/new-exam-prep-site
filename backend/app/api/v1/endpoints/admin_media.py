@@ -1,7 +1,6 @@
 """Admin media endpoints for question attachments."""
 
 import hashlib
-import os
 from pathlib import Path
 from uuid import UUID
 
@@ -10,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.core.dependencies import require_roles
 from app.db.session import get_db
-from app.models.question_cms import MediaAsset, MediaRole, Question, QuestionMedia, StorageProvider
+from app.models.question_cms import MediaAsset, Question, QuestionMedia, StorageProvider
 from app.models.user import User, UserRole
 from app.schemas.question_cms import MediaAttachIn, MediaOut
 

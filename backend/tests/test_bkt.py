@@ -1,17 +1,15 @@
 """Tests for BKT (Bayesian Knowledge Tracing) implementation."""
 
-import pytest
-from datetime import datetime, timedelta
 from uuid import uuid4
 
 from app.learning_engine.bkt.core import (
-    clamp_probability,
-    predict_correct,
-    posterior_given_obs,
     apply_learning_transition,
+    check_degeneracy,
+    clamp_probability,
+    posterior_given_obs,
+    predict_correct,
     update_mastery,
     validate_bkt_params,
-    check_degeneracy,
 )
 from app.learning_engine.bkt.training import TrainingDataset, apply_parameter_constraints
 

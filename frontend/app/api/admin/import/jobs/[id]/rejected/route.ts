@@ -37,7 +37,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         "Content-Disposition": contentDisposition,
       },
     });
-  } catch (error: unknown) {
+  } catch {
     return NextResponse.json(
       { error: { code: "INTERNAL_ERROR", message: "Failed to download rejected rows" } },
       { status: 500 },

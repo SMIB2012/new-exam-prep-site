@@ -15,15 +15,14 @@ Mapping Rules:
 """
 
 import logging
-from typing import Optional, Tuple
 
 from app.learning_engine.config import (
     RATING_FAST_ANSWER_MS,
-    RATING_SLOW_ANSWER_MS,
     RATING_MAX_CHANGES_FOR_CONFIDENT,
+    RATING_SLOW_ANSWER_MS,
+    TELEMETRY_MAX_CHANGES,
     TELEMETRY_MAX_TIME_MS,
     TELEMETRY_MIN_TIME_MS,
-    TELEMETRY_MAX_CHANGES,
 )
 
 logger = logging.getLogger(__name__)
@@ -31,8 +30,8 @@ logger = logging.getLogger(__name__)
 
 def map_attempt_to_rating(
     correct: bool,
-    time_spent_ms: Optional[int] = None,
-    change_count: Optional[int] = None,
+    time_spent_ms: int | None = None,
+    change_count: int | None = None,
     marked_for_review: bool = False,
 ) -> int:
     """
@@ -91,8 +90,8 @@ def map_attempt_to_rating(
 def explain_rating(
     rating: int,
     correct: bool,
-    time_spent_ms: Optional[int] = None,
-    change_count: Optional[int] = None,
+    time_spent_ms: int | None = None,
+    change_count: int | None = None,
     marked_for_review: bool = False,
 ) -> str:
     """
@@ -150,9 +149,9 @@ def get_rating_thresholds() -> dict:
 
 
 def validate_telemetry(
-    time_spent_ms: Optional[int],
-    change_count: Optional[int],
-) -> Tuple[Optional[int], Optional[int], list[str]]:
+    time_spent_ms: int | None,
+    change_count: int | None,
+) -> tuple[int | None, int | None, list[str]]:
     """
     Validate and sanitize telemetry data.
 

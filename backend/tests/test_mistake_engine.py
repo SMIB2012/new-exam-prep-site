@@ -1,17 +1,15 @@
 """Tests for Mistake Engine v0."""
 
-import pytest
 from datetime import datetime, timedelta
 from uuid import uuid4
 
+import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.learning_engine.mistakes.features import (
-    build_features_for_session,
     compute_blur_count,
     compute_change_count,
-    compute_mark_for_review,
     compute_time_spent_by_question,
 )
 from app.learning_engine.mistakes.service import classify_mistakes_v0_for_session
@@ -30,7 +28,6 @@ from app.models.question_cms import Question
 from app.models.session import AttemptEvent, SessionAnswer, SessionQuestion, TestSession
 from app.models.syllabus import AcademicYear, Block, Theme
 from app.models.user import User
-
 
 # ============================================================================
 # FEATURE EXTRACTION TESTS
@@ -173,7 +170,7 @@ async def test_compute_blur_count(db: AsyncSession):
     q_id = uuid4()
 
     # 3 blur events
-    for i in range(3):
+    for _i in range(3):
         event = AttemptEvent(
             id=uuid4(),
             session_id=session.id,
@@ -581,7 +578,7 @@ async def test_classify_mistakes_service_integration(db: AsyncSession):
 
     assert mistake is not None
     assert mistake.mistake_type == MISTAKE_TYPE_KNOWLEDGE_GAP  # No telemetry → fallback
-    assert mistake.is_correct == False
+    assert not mistake.is_correct
 
     # Check algo_run logged
     run_id = result["run_id"]

@@ -1,13 +1,11 @@
 """Pydantic schemas for test sessions."""
 
 from datetime import datetime
-from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field
 
 from app.models.session import SessionMode, SessionStatus
-
 
 # ============================================================================
 # Session Schemas

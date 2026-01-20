@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Bookmark, Trash2, Search, ExternalLink } from "lucide-react";
+import { Bookmark, Trash2, Search } from "lucide-react";
 import { notify } from "@/lib/notify";
 import { listBookmarks, deleteBookmark } from "@/lib/api/bookmarksApi";
 import type { BookmarkWithQuestion } from "@/lib/types/bookmark";
@@ -15,7 +14,6 @@ import { InlineAlert } from "@/components/auth/InlineAlert";
 import { format } from "date-fns";
 
 export default function BookmarksPage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bookmarks, setBookmarks] = useState<BookmarkWithQuestion[]>([]);

@@ -2,9 +2,11 @@
 Tests for Mastery v0 algorithm.
 """
 
-import pytest
 from datetime import datetime, timedelta
 from uuid import uuid4
+
+import pytest
+from sqlalchemy import select
 
 from app.learning_engine.mastery.service import (
     collect_theme_attempts,
@@ -23,7 +25,6 @@ from app.models.session import (
 )
 from app.models.syllabus import Block, Theme
 from app.models.user import User, UserRole
-from sqlalchemy import select
 
 
 @pytest.fixture

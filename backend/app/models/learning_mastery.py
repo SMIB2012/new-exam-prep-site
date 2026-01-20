@@ -1,7 +1,6 @@
 """Mastery tracking database models."""
 
 import uuid
-from datetime import datetime
 
 from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, Numeric, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB, UUID

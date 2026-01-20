@@ -1,9 +1,8 @@
 """Bookmark models for saving questions for later review."""
 
 import uuid
-from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, String, Text, UniqueConstraint
+from sqlalchemy import Column, DateTime, ForeignKey, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 

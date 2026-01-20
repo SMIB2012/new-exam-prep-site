@@ -24,7 +24,6 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 from uuid import UUID
 
 # Add backend to path for imports
@@ -34,13 +33,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import AsyncSessionLocal
-from app.models.learning import AlgoVersion
-from app.learning_engine.constants import AlgoKey, AlgoStatus
 from app.learning_engine.bkt.training import (
     build_training_dataset,
     fit_bkt_parameters,
     persist_fitted_params,
 )
+from app.learning_engine.constants import AlgoKey, AlgoStatus
+from app.models.learning import AlgoVersion
 
 # Configure logging
 logging.basicConfig(
@@ -51,7 +50,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-async def get_active_bkt_version(db: AsyncSession) -> Optional[AlgoVersion]:
+async def get_active_bkt_version(db: AsyncSession) -> AlgoVersion | None:
     """Get the active BKT algorithm version."""
     result = await db.execute(
         select(AlgoVersion).where(
@@ -64,11 +63,11 @@ async def get_active_bkt_version(db: AsyncSession) -> Optional[AlgoVersion]:
 async def fit_concept(
     db: AsyncSession,
     concept_id: UUID,
-    from_date: Optional[datetime],
-    to_date: Optional[datetime],
+    from_date: datetime | None,
+    to_date: datetime | None,
     min_attempts: int,
     activate: bool,
-    constraints: Optional[dict],
+    constraints: dict | None,
 ) -> tuple[bool, str]:
     """
     Fit BKT parameters for a single concept.
@@ -84,7 +83,7 @@ async def fit_concept(
         return False, "No active BKT algorithm version found"
 
     # Build training dataset
-    logger.info(f"Building training dataset...")
+    logger.info("Building training dataset...")
     dataset = await build_training_dataset(
         db,
         concept_id,
@@ -144,11 +143,11 @@ async def fit_concept(
 
 async def fit_all_concepts(
     db: AsyncSession,
-    from_date: Optional[datetime],
-    to_date: Optional[datetime],
+    from_date: datetime | None,
+    to_date: datetime | None,
     min_attempts: int,
     activate: bool,
-    constraints: Optional[dict],
+    constraints: dict | None,
 ) -> dict:
     """
     Fit BKT parameters for all concepts with sufficient data.

@@ -2,9 +2,10 @@
 Tests for analytics endpoints and service.
 """
 
-import pytest
 from datetime import datetime, timedelta
 from uuid import uuid4
+
+import pytest
 
 from app.models.question_cms import Question, QuestionStatus
 from app.models.session import (
@@ -16,7 +17,7 @@ from app.models.session import (
 )
 from app.models.syllabus import Block, Theme
 from app.models.user import User, UserRole
-from app.services.analytics_service import get_overview, get_block_analytics, get_theme_analytics
+from app.services.analytics_service import get_block_analytics, get_overview, get_theme_analytics
 
 
 @pytest.fixture

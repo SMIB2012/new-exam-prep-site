@@ -11,21 +11,19 @@ All functions include numerical stability guards to prevent NaN/Inf and
 ensure probabilities remain in valid range [0, 1].
 """
 
-import math
-from typing import Tuple
 
 from app.learning_engine.config import (
-    BKT_L0_MIN,
-    BKT_L0_MAX,
-    BKT_T_MIN,
-    BKT_T_MAX,
-    BKT_S_MIN,
-    BKT_S_MAX,
-    BKT_G_MIN,
     BKT_G_MAX,
-    BKT_STABILITY_EPSILON,
-    BKT_MIN_PROB,
+    BKT_G_MIN,
+    BKT_L0_MAX,
+    BKT_L0_MIN,
     BKT_MAX_PROB,
+    BKT_MIN_PROB,
+    BKT_S_MAX,
+    BKT_S_MIN,
+    BKT_STABILITY_EPSILON,
+    BKT_T_MAX,
+    BKT_T_MIN,
 )
 
 
@@ -150,7 +148,7 @@ def apply_learning_transition(p_L_given_obs: float, p_T: float) -> float:
 
 def update_mastery(
     p_L_current: float, correct: bool, p_T: float, p_S: float, p_G: float
-) -> Tuple[float, dict]:
+) -> tuple[float, dict]:
     """
     Complete BKT update: observation + learning transition.
 
@@ -198,7 +196,7 @@ def update_mastery(
     return p_L_next, metadata
 
 
-def validate_bkt_params(p_L0: float, p_T: float, p_S: float, p_G: float) -> Tuple[bool, str]:
+def validate_bkt_params(p_L0: float, p_T: float, p_S: float, p_G: float) -> tuple[bool, str]:
     """
     Validate BKT parameters for conceptual soundness.
 
@@ -248,7 +246,7 @@ def validate_bkt_params(p_L0: float, p_T: float, p_S: float, p_G: float) -> Tupl
 
 def check_degeneracy(
     p_L0: float, p_T: float, p_S: float, p_G: float, min_learning_gain: float = 0.05
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """
     Check for BKT parameter degeneracy.
 

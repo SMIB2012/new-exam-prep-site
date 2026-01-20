@@ -1,14 +1,13 @@
 """Analytics service for computing student performance metrics."""
 
 import logging
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import and_, cast, Date, func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.question_cms import Question
 from app.models.session import SessionAnswer, SessionQuestion, SessionStatus, TestSession
 from app.models.syllabus import Block, Theme
 

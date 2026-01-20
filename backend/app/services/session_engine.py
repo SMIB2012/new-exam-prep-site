@@ -8,14 +8,12 @@ from typing import Any
 from uuid import UUID
 
 from fastapi import HTTPException
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.models.question_cms import Question, QuestionStatus
 from app.models.session import (
     SessionAnswer,
-    SessionMode,
     SessionQuestion,
     SessionStatus,
     TestSession,

@@ -10,15 +10,14 @@ Provides:
 import logging
 import math
 from datetime import datetime, timedelta
-from typing import Optional, Tuple
 
 from fsrs import FSRS, Card, Rating, ReviewLog
 
 from app.learning_engine.config import (
     FSRS_DEFAULT_WEIGHTS,
     FSRS_DESIRED_RETENTION,
-    FSRS_RETENTION_MIN,
     FSRS_RETENTION_MAX,
+    FSRS_RETENTION_MIN,
 )
 
 logger = logging.getLogger(__name__)
@@ -44,14 +43,14 @@ def get_default_parameters(fsrs_version: str = "fsrs-6") -> dict:
 
 
 def compute_next_state_and_due(
-    current_stability: Optional[float],
-    current_difficulty: Optional[float],
+    current_stability: float | None,
+    current_difficulty: float | None,
     rating: int,
     delta_days: float,
-    weights: Optional[list[float]],
+    weights: list[float] | None,
     desired_retention: float,
     reviewed_at: datetime,
-) -> Tuple[float, float, datetime, float]:
+) -> tuple[float, float, datetime, float]:
     """
     Compute next FSRS state and due date after a review.
 
@@ -145,7 +144,7 @@ def create_review_log_from_state(
     rating: int,
     reviewed_at: datetime,
     delta_days: float,
-    predicted_retrievability: Optional[float] = None,
+    predicted_retrievability: float | None = None,
 ) -> ReviewLog:
     """
     Create an FSRS ReviewLog object for training.
@@ -176,7 +175,7 @@ def create_review_log_from_state(
     )
 
 
-def validate_weights(weights: list[float]) -> Tuple[bool, str]:
+def validate_weights(weights: list[float]) -> tuple[bool, str]:
     """
     Validate FSRS weights.
 
@@ -204,8 +203,8 @@ def validate_weights(weights: list[float]) -> Tuple[bool, str]:
 def compute_optimal_retention(
     review_logs: list[ReviewLog],
     weights: list[float],
-    max_retention: Optional[float] = None,
-    min_retention: Optional[float] = None,
+    max_retention: float | None = None,
+    min_retention: float | None = None,
 ) -> float:
     """
     Compute optimal retention target for a user.
@@ -249,7 +248,7 @@ def compute_optimal_retention(
 
     total = sum(rating_counts.values())
     if total == 0:
-        return DEFAULT_DESIRED_RETENTION
+        return FSRS_DESIRED_RETENTION
 
     # If user is struggling (many Again/Hard), lower retention target
     struggle_rate = (rating_counts[1] + rating_counts[2]) / total

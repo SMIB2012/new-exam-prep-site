@@ -18,7 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { adminImportApi } from "@/lib/admin/importApi";
 import type { ImportSchemaListItem } from "@/lib/types/import";
 import { notify } from "@/lib/notify";
-import { Upload, FileText, AlertCircle, CheckCircle, Info } from "lucide-react";
+import { Upload, FileText, AlertCircle, Info } from "lucide-react";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 

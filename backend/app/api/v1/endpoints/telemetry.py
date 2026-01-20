@@ -4,12 +4,11 @@ import logging
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user, get_db
-from app.models.question_cms import Question
 from app.models.session import SessionQuestion, TestSession
 from app.models.user import User
 from app.schemas.telemetry import TelemetryBatchResponse, TelemetryBatchSubmit

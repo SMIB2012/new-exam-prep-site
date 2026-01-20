@@ -9,19 +9,18 @@ Computes calibration quality from update logs:
 
 import math
 from datetime import UTC, datetime, timedelta
-from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.difficulty import DifficultyUpdateLog, RatingScope
+from app.models.difficulty import DifficultyUpdateLog
 
 
 async def compute_logloss(
     db: AsyncSession,
-    user_id: Optional[UUID] = None,
-    theme_id: Optional[UUID] = None,
+    user_id: UUID | None = None,
+    theme_id: UUID | None = None,
     days: int = 30,
 ) -> float:
     """
@@ -78,8 +77,8 @@ async def compute_logloss(
 
 async def compute_brier_score(
     db: AsyncSession,
-    user_id: Optional[UUID] = None,
-    theme_id: Optional[UUID] = None,
+    user_id: UUID | None = None,
+    theme_id: UUID | None = None,
     days: int = 30,
 ) -> float:
     """
@@ -133,8 +132,8 @@ async def compute_brier_score(
 
 async def compute_calibration_curve(
     db: AsyncSession,
-    user_id: Optional[UUID] = None,
-    theme_id: Optional[UUID] = None,
+    user_id: UUID | None = None,
+    theme_id: UUID | None = None,
     days: int = 30,
     n_bins: int = 10,
 ) -> dict:
@@ -222,8 +221,8 @@ async def compute_calibration_curve(
 
 async def compute_all_metrics(
     db: AsyncSession,
-    user_id: Optional[UUID] = None,
-    theme_id: Optional[UUID] = None,
+    user_id: UUID | None = None,
+    theme_id: UUID | None = None,
     days: int = 30,
 ) -> dict:
     """

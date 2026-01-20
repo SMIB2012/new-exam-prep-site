@@ -6,7 +6,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_current_user, require_roles
+from app.core.dependencies import require_roles
 from app.db.session import get_db
 from app.models.question_cms import Question, QuestionVersion
 from app.models.user import User, UserRole
@@ -77,7 +77,7 @@ async def list_questions(
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Invalid status: {status}",
-            )
+            ) from None
     if year_id:
         query = query.filter(Question.year_id == year_id)
     if block_id:
@@ -221,7 +221,7 @@ async def submit_question_endpoint(
             new_status=question.status,
         )
     except QuestionWorkflowError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail) from e
     except HTTPException:
         raise
     except Exception as e:
@@ -245,7 +245,6 @@ async def approve_question_endpoint(
 ) -> WorkflowActionOut:
     """Approve question."""
     try:
-        from app.models.question_cms import QuestionStatus
 
         # Get current status before approval
         question_before = db.query(Question).filter(Question.id == question_id).first()
@@ -261,7 +260,7 @@ async def approve_question_endpoint(
             new_status=question.status,
         )
     except QuestionWorkflowError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail) from e
     except HTTPException:
         raise
     except Exception as e:
@@ -286,7 +285,6 @@ async def reject_question_endpoint(
 ) -> WorkflowActionOut:
     """Reject question."""
     try:
-        from app.models.question_cms import QuestionStatus
 
         # Get current status before rejection
         question_before = db.query(Question).filter(Question.id == question_id).first()
@@ -302,7 +300,7 @@ async def reject_question_endpoint(
             new_status=question.status,
         )
     except QuestionWorkflowError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail) from e
     except HTTPException:
         raise
     except Exception as e:
@@ -326,7 +324,6 @@ async def publish_question_endpoint(
 ) -> WorkflowActionOut:
     """Publish question."""
     try:
-        from app.models.question_cms import QuestionStatus
 
         # Get current status before publish
         question_before = db.query(Question).filter(Question.id == question_id).first()
@@ -342,7 +339,7 @@ async def publish_question_endpoint(
             new_status=question.status,
         )
     except QuestionWorkflowError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail) from e
     except HTTPException:
         raise
     except Exception as e:
@@ -366,7 +363,6 @@ async def unpublish_question_endpoint(
 ) -> WorkflowActionOut:
     """Unpublish question."""
     try:
-        from app.models.question_cms import QuestionStatus
 
         # Get current status before unpublish
         question_before = db.query(Question).filter(Question.id == question_id).first()
@@ -382,7 +378,7 @@ async def unpublish_question_endpoint(
             new_status=question.status,
         )
     except QuestionWorkflowError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.detail) from e
     except HTTPException:
         raise
     except Exception as e:

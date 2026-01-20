@@ -3,7 +3,6 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { backendFetch } from "@/lib/server/backendClient";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -38,7 +37,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         "Content-Disposition": contentDisposition,
       },
     });
-  } catch (error: unknown) {
+  } catch {
     return NextResponse.json(
       { error: { code: "INTERNAL_ERROR", message: "Failed to download template" } },
       { status: 500 },

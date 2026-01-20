@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """CMS Question Bank Smoke Test Script (Python version for Docker)."""
 
+import json
 import os
 import sys
-import json
-from typing import Dict, Any
-from uuid import UUID
 
 # Add app to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -42,7 +40,7 @@ def check_response(
         print(f"{RED}✗ {error_msg} (status: {response.status_code}){NC}")
         try:
             print(json.dumps(response.json(), indent=2))
-        except:
+        except Exception:
             print(response.text)
         sys.exit(1)
     return response.json()

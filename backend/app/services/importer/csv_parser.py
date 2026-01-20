@@ -2,7 +2,7 @@
 
 import csv
 import io
-from typing import Iterator
+from collections.abc import Iterator
 
 from app.models.import_schema import ImportSchema
 
@@ -46,7 +46,7 @@ class CSVParser:
             # Decode content
             text_content = file_content.decode(self.encoding)
         except UnicodeDecodeError as e:
-            raise CSVParseError(f"Failed to decode file with encoding {self.encoding}: {e}")
+            raise CSVParseError(f"Failed to decode file with encoding {self.encoding}: {e}") from e
 
         try:
             # Create CSV reader
@@ -67,6 +67,6 @@ class CSVParser:
                 yield row_number, cleaned_row
 
         except csv.Error as e:
-            raise CSVParseError(f"CSV parsing error: {e}")
+            raise CSVParseError(f"CSV parsing error: {e}") from e
         except Exception as e:
-            raise CSVParseError(f"Unexpected error parsing CSV: {e}")
+            raise CSVParseError(f"Unexpected error parsing CSV: {e}") from e

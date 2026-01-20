@@ -11,16 +11,16 @@ from app.db.engine import engine
 
 # Import all models so Alembic can detect them
 from app.models import (  # noqa: F401
-    AuditLog,
-    ChangeKind,
-    CMSQuestion,
     MFATOTP,
     AcademicBlock,
     AcademicSubject,
     AcademicYear,
     AttemptAnswer,
     AttemptSession,
+    AuditLog,
     Block,
+    ChangeKind,
+    CMSQuestion,
     MediaAsset,
     MFABackupCode,
     Notification,

@@ -1,6 +1,5 @@
 """Assemble learning engine information for API responses."""
 
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.learning_engine.constants import AlgoKey

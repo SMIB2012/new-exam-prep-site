@@ -62,7 +62,6 @@ export default function ReviewQueuePage() {
   };
 
   const getCompletenessIndicator = (question: QuestionListItem) => {
-    const hasAllOptions = true; // We can't check this from list view
     const hasTags = question.year_id && question.block_id && question.theme_id;
     const hasSource = question.source_book && question.source_page;
     const hasCognitive = question.cognitive_level;

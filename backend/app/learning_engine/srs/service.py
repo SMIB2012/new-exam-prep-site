@@ -9,16 +9,13 @@ Main responsibilities:
 """
 
 import logging
-from datetime import datetime, timedelta, UTC
-from typing import List, Optional
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
-from sqlalchemy import select, and_, func
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import and_, func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.srs import SRSConceptState, SRSReviewLog, SRSUserParams
-from app.models.learning_revision import RevisionQueue
 from app.learning_engine.srs.fsrs_adapter import (
     compute_next_state_and_due,
     get_default_parameters,
@@ -27,6 +24,7 @@ from app.learning_engine.srs.rating_mapper import (
     map_attempt_to_rating,
     validate_telemetry,
 )
+from app.models.srs import SRSConceptState, SRSReviewLog, SRSUserParams
 
 logger = logging.getLogger(__name__)
 
@@ -68,13 +66,13 @@ async def get_user_params(db: AsyncSession, user_id: UUID) -> SRSUserParams:
 async def update_from_attempt(
     db: AsyncSession,
     user_id: UUID,
-    concept_ids: List[UUID],
+    concept_ids: list[UUID],
     correct: bool,
     occurred_at: datetime,
-    telemetry: Optional[dict] = None,
-    raw_attempt_id: Optional[UUID] = None,
-    session_id: Optional[UUID] = None,
-) -> List[dict]:
+    telemetry: dict | None = None,
+    raw_attempt_id: UUID | None = None,
+    session_id: UUID | None = None,
+) -> list[dict]:
     """
     Update SRS state from an MCQ attempt.
 
@@ -289,7 +287,7 @@ async def get_due_concepts(
     user_id: UUID,
     scope: str = "today",
     limit: int = 100,
-) -> List[dict]:
+) -> list[dict]:
     """
     Get concepts due for review.
 

@@ -1,7 +1,6 @@
 """Pydantic schemas for BKT API."""
 
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -14,8 +13,8 @@ class BKTParamsResponse(BaseModel):
     p_T: float = Field(..., description="Probability of learning (transition)")
     p_S: float = Field(..., description="Probability of slip")
     p_G: float = Field(..., description="Probability of guess")
-    concept_id: Optional[str] = None
-    algo_version_id: Optional[str] = None
+    concept_id: str | None = None
+    algo_version_id: str | None = None
     is_default: bool = Field(False, description="Whether these are default fallback params")
 
 
@@ -25,7 +24,7 @@ class MasteryStateResponse(BaseModel):
     concept_id: str
     p_mastery: float = Field(..., ge=0.0, le=1.0, description="Current mastery probability")
     n_attempts: int = Field(..., ge=0)
-    last_attempt_at: Optional[str] = None
+    last_attempt_at: str | None = None
     is_mastered: bool = Field(..., description="Whether mastery threshold is met")
     updated_at: str
 
@@ -33,14 +32,14 @@ class MasteryStateResponse(BaseModel):
 class UpdateFromAttemptRequest(BaseModel):
     """Request to update mastery from an attempt."""
 
-    user_id: Optional[UUID] = Field(
+    user_id: UUID | None = Field(
         None, description="User ID (admin only, otherwise current user)"
     )
     question_id: UUID
     concept_id: UUID
     correct: bool
     create_snapshot: bool = Field(False, description="Whether to create historical snapshot")
-    meta: Optional[dict] = Field(None, description="Optional metadata")
+    meta: dict | None = Field(None, description="Optional metadata")
 
 
 class UpdateFromAttemptResponse(BaseModel):
@@ -62,8 +61,8 @@ class UpdateFromAttemptResponse(BaseModel):
 class GetMasteryRequest(BaseModel):
     """Request to get user mastery states."""
 
-    user_id: Optional[UUID] = Field(None, description="User ID (admin only)")
-    concept_ids: Optional[list[UUID]] = Field(None, description="Optional concept filter")
+    user_id: UUID | None = Field(None, description="User ID (admin only)")
+    concept_ids: list[UUID] | None = Field(None, description="Optional concept filter")
 
 
 class GetMasteryResponse(BaseModel):
@@ -77,9 +76,9 @@ class GetMasteryResponse(BaseModel):
 class RecomputeMasteryRequest(BaseModel):
     """Request to recompute/retrain BKT parameters."""
 
-    concept_ids: Optional[list[UUID]] = Field(None, description="Concepts to retrain (None = all)")
-    from_date: Optional[datetime] = Field(None, description="Start of training data window")
-    to_date: Optional[datetime] = Field(None, description="End of training data window")
+    concept_ids: list[UUID] | None = Field(None, description="Concepts to retrain (None = all)")
+    from_date: datetime | None = Field(None, description="Start of training data window")
+    to_date: datetime | None = Field(None, description="End of training data window")
     min_attempts: int = Field(10, ge=1, description="Minimum attempts required to fit")
     activate: bool = Field(False, description="Whether to activate fitted params")
     dry_run: bool = Field(False, description="If true, fit but don't persist")

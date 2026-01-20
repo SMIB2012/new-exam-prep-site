@@ -31,7 +31,6 @@ from app.schemas.session import (
     SessionProgress,
     SessionQuestionSummary,
     SessionReviewOut,
-    SessionStateOut,
     SessionStateWithCurrentOut,
     SessionSubmitResponse,
 )
@@ -324,6 +323,7 @@ async def submit_test_session(
     # For now, this is a placeholder - full integration requires concept mapping
     try:
         from datetime import datetime
+
         from app.learning_engine.bkt.service import update_bkt_from_attempt
 
         # Get all answers for this session
@@ -366,7 +366,7 @@ async def submit_test_session(
                     current_time=answer.answered_at or datetime.now(),
                     snapshot_mastery=False,  # Don't create snapshots on every submit
                 )
-            except (ValueError, KeyError) as e:
+            except (ValueError, KeyError):
                 # Invalid concept_id or BKT update failed for this question
                 pass
 
@@ -385,11 +385,12 @@ async def submit_test_session(
     # Note: Similar to BKT, requires concept_id extraction from session questions
     try:
         from datetime import datetime
-        from app.learning_engine.srs.service import update_from_attempt
+
         from app.learning_engine.mistakes.features import (
-            compute_time_spent_by_question,
             compute_change_count,
+            compute_time_spent_by_question,
         )
+        from app.learning_engine.srs.service import update_from_attempt
 
         # Get all answers and questions (reuse if already loaded)
         if not answers:

@@ -1,20 +1,18 @@
 """Tests for Learning Engine API endpoints."""
 
-import pytest
 from datetime import datetime
 from uuid import uuid4
 
+import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.learning_mastery import UserThemeMastery
-from app.models.learning_revision import RevisionQueue
 from app.models.mistakes import MistakeLog
 from app.models.question_cms import Question
 from app.models.session import SessionAnswer, SessionQuestion, TestSession
 from app.models.syllabus import AcademicYear, Block, Theme
 from app.models.user import User
-
 
 # ============================================================================
 # RBAC & OWNERSHIP TESTS
@@ -478,7 +476,7 @@ async def test_mastery_recompute_dry_run(db: AsyncSession):
     # Call with dry_run=True
     from app.learning_engine.mastery.service import recompute_mastery_v0_for_user
 
-    result = await recompute_mastery_v0_for_user(
+    await recompute_mastery_v0_for_user(
         db,
         user_id=user.id,
         dry_run=True,

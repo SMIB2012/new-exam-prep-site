@@ -1,9 +1,9 @@
 """Tests for Revision and Mistakes API endpoints."""
 
-import pytest
-from datetime import date, datetime, timedelta
+from datetime import date
 from uuid import uuid4
 
+import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,7 +12,6 @@ from app.models.mistakes import MistakeLog
 from app.models.question_cms import Question
 from app.models.syllabus import AcademicYear, Block, Theme
 from app.models.user import User
-
 
 # ============================================================================
 # REVISION QUEUE TESTS
@@ -87,7 +86,6 @@ async def test_revision_queue_returns_only_user_items(db: AsyncSession):
     await db.commit()
 
     # Query for user1
-    from app.api.v1.endpoints.revision import get_revision_queue
 
     # Simulate request (would normally use TestClient)
     # For now, just verify database query logic

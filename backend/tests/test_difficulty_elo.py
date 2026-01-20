@@ -34,10 +34,8 @@ from app.learning_engine.difficulty.service import (
 from app.models.difficulty import (
     DifficultyQuestionRating,
     DifficultyUpdateLog,
-    DifficultyUserRating,
     RatingScope,
 )
-
 
 # === Core Math Tests ===
 
@@ -352,7 +350,7 @@ async def test_update_difficulty_idempotent(
         occurred_at=datetime.now(UTC),
     )
 
-    assert result2.get("duplicate") == True
+    assert result2.get("duplicate")
     assert result2["p_pred"] == result1["p_pred"]
 
 
@@ -376,7 +374,7 @@ async def test_update_difficulty_logs_update(
     result = await db_session.execute(stmt)
     log = result.scalar_one()
 
-    assert log.score == True
+    assert log.score
     assert log.p_pred > 0
     assert math.isfinite(log.user_rating_pre)
     assert math.isfinite(log.user_rating_post)
@@ -425,8 +423,9 @@ async def test_recenter_preserves_differences(
 @pytest.mark.asyncio
 async def test_recenter_zeros_mean(db_session, test_question, active_difficulty_algo):
     """Recentering brings mean question rating to ~0."""
-    from app.models.syllabus import Theme
     from sqlalchemy import func
+
+    from app.models.syllabus import Theme
 
     # Create multiple questions with various ratings
     theme_stmt = select(Theme).limit(1)
@@ -435,7 +434,8 @@ async def test_recenter_zeros_mean(db_session, test_question, active_difficulty_
 
     question_ids = []
     for i in range(5):
-        from app.models.question_cms import Question as CMSQuestion, QuestionStatus
+        from app.models.question_cms import Question as CMSQuestion
+        from app.models.question_cms import QuestionStatus
 
         q = CMSQuestion(
             year=2024,

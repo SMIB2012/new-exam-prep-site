@@ -1,24 +1,22 @@
 """SRS (Spaced Repetition System) API endpoints."""
 
 import logging
-from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user, get_db
-from app.models.user import User
-from app.schemas.srs import (
-    SRSQueueResponse,
-    SRSQueueItemResponse,
-    SRSUserStatsResponse,
-    SRSConceptStateResponse,
-)
 from app.learning_engine.srs.service import (
     get_due_concepts,
     get_user_stats,
-    get_user_params,
+)
+from app.models.user import User
+from app.schemas.srs import (
+    SRSConceptStateResponse,
+    SRSQueueItemResponse,
+    SRSQueueResponse,
+    SRSUserStatsResponse,
 )
 
 router = APIRouter()
@@ -73,13 +71,13 @@ async def get_srs_queue(
         )
 
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
     except Exception as e:
         logger.error(f"Failed to get SRS queue: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get SRS queue: {str(e)}",
-        )
+        ) from e
 
 
 @router.get("/stats", response_model=SRSUserStatsResponse)
@@ -110,7 +108,7 @@ async def get_srs_stats(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get SRS stats: {str(e)}",
-        )
+        ) from e
 
 
 @router.get("/concepts/{concept_id}", response_model=SRSConceptStateResponse)
@@ -124,7 +122,8 @@ async def get_concept_state(
 
     Returns current stability, difficulty, due date, and retrievability.
     """
-    from sqlalchemy import select, and_
+    from sqlalchemy import and_, select
+
     from app.models.srs import SRSConceptState
 
     try:
@@ -153,4 +152,4 @@ async def get_concept_state(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get concept state: {str(e)}",
-        )
+        ) from e

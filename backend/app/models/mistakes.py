@@ -1,9 +1,9 @@
 """Mistake classification database models."""
 
 import uuid
-from datetime import datetime
 
 from sqlalchemy import (
+    Boolean,
     Column,
     DateTime,
     ForeignKey,
@@ -11,7 +11,6 @@ from sqlalchemy import (
     Integer,
     SmallInteger,
     String,
-    Boolean,
     UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import JSONB, UUID

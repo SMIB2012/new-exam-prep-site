@@ -1,7 +1,6 @@
 """Test Session models for the test engine."""
 
 import uuid
-from datetime import datetime
 from enum import Enum as PyEnum
 
 from sqlalchemy import (
@@ -15,7 +14,6 @@ from sqlalchemy import (
     Numeric,
     SmallInteger,
     String,
-    Text,
     UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import JSONB, UUID

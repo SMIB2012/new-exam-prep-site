@@ -66,7 +66,7 @@ def upgrade() -> None:
         sa.text(
             """
         SELECT EXISTS (
-            SELECT 1 FROM information_schema.tables 
+            SELECT 1 FROM information_schema.tables
             WHERE table_name = 'questions'
         )
     """
@@ -79,7 +79,7 @@ def upgrade() -> None:
         result = connection.execute(
             sa.text(
                 """
-            SELECT data_type FROM information_schema.columns 
+            SELECT data_type FROM information_schema.columns
             WHERE table_name = 'questions' AND column_name = 'id'
         """
             )

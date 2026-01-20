@@ -1,6 +1,6 @@
 """CMS Question service with workflow, validation, and versioning."""
 
-from typing import Any
+from datetime import UTC
 from uuid import UUID
 
 from fastapi import HTTPException, Request, status
@@ -24,11 +24,11 @@ class QuestionWorkflowError(Exception):
 def validate_options(question: Question | QuestionCreate | QuestionUpdate) -> None:
     """Validate that exactly 5 non-empty options are present."""
     options = [
-        getattr(question, "option_a"),
-        getattr(question, "option_b"),
-        getattr(question, "option_c"),
-        getattr(question, "option_d"),
-        getattr(question, "option_e"),
+        question.option_a,
+        question.option_b,
+        question.option_c,
+        question.option_d,
+        question.option_e,
     ]
 
     # Check all options are present and non-empty
@@ -308,9 +308,9 @@ def approve_question(
     before_snapshot = snapshot_question(question)
     question.status = QuestionStatus.APPROVED
     question.approved_by = user.id
-    from datetime import datetime, timezone
+    from datetime import datetime
 
-    question.approved_at = datetime.now(timezone.utc)
+    question.approved_at = datetime.now(UTC)
     question.updated_by = user.id
     db.flush()
 
@@ -418,9 +418,9 @@ def publish_question(
 
     before_snapshot = snapshot_question(question)
     question.status = QuestionStatus.PUBLISHED
-    from datetime import datetime, timezone
+    from datetime import datetime
 
-    question.published_at = datetime.now(timezone.utc)
+    question.published_at = datetime.now(UTC)
     question.updated_by = user.id
     db.flush()
 

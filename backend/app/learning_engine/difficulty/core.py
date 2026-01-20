@@ -11,18 +11,7 @@ All functions are numerically stable and return finite values.
 """
 
 import math
-from datetime import datetime, timedelta
-from typing import Tuple
-
-from app.learning_engine.config import (
-    ELO_GUESS_FLOOR,
-    ELO_K_MAX,
-    ELO_K_MIN,
-    ELO_SCALE,
-    ELO_UNC_AGE_INCREASE_PER_DAY,
-    ELO_UNC_DECAY_PER_ATTEMPT,
-    ELO_UNC_FLOOR,
-)
+from datetime import datetime
 
 
 def sigmoid(x: float) -> float:
@@ -190,7 +179,7 @@ def update_uncertainty(
 
 def apply_update(
     theta: float, b: float, k_u: float, k_q: float, delta: float
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """
     Apply Elo rating updates.
 

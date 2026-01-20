@@ -11,7 +11,7 @@ Provides:
 """
 
 import logging
-from typing import Annotated, Optional
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -290,7 +290,7 @@ async def get_health_metrics(
 @router.post("/admin/recenter", response_model=RecenterResponse)
 async def recenter_ratings(
     scope_type: Annotated[str, Query()] = "GLOBAL",
-    scope_id: Annotated[Optional[UUID], Query()] = None,
+    scope_id: Annotated[UUID | None, Query()] = None,
     db: Annotated[AsyncSession, Depends(get_db)] = None,
     current_user: Annotated[User, Depends(get_current_user)] = None,
 ):
@@ -306,7 +306,7 @@ async def recenter_ratings(
     try:
         scope_enum = RatingScope(scope_type)
     except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid scope_type (must be GLOBAL or THEME)")
+        raise HTTPException(status_code=400, detail="Invalid scope_type (must be GLOBAL or THEME)") from None
 
     result = await recenter_question_ratings(db, scope_enum, scope_id)
 
@@ -322,8 +322,8 @@ async def recenter_ratings(
 @router.get("/admin/metrics", response_model=MetricsResponse)
 async def get_detailed_metrics(
     days: Annotated[int, Query()] = 30,
-    user_id: Annotated[Optional[UUID], Query()] = None,
-    theme_id: Annotated[Optional[UUID], Query()] = None,
+    user_id: Annotated[UUID | None, Query()] = None,
+    theme_id: Annotated[UUID | None, Query()] = None,
     db: Annotated[AsyncSession, Depends(get_db)] = None,
     current_user: Annotated[User, Depends(get_current_user)] = None,
 ):

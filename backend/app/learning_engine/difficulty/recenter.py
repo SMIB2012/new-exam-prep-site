@@ -7,13 +7,12 @@ while preserving relative differences (θ - b).
 
 import logging
 from datetime import UTC, datetime
-from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.learning_engine.constants import AlgoKey, RunStatus, RunTrigger
+from app.learning_engine.constants import AlgoKey, RunTrigger
 from app.learning_engine.registry import log_run_start, log_run_success, resolve_active
 from app.learning_engine.runs import log_run_failure
 from app.models.difficulty import DifficultyQuestionRating, DifficultyUserRating, RatingScope
@@ -24,7 +23,7 @@ logger = logging.getLogger(__name__)
 async def recenter_question_ratings(
     db: AsyncSession,
     scope_type: RatingScope = RatingScope.GLOBAL,
-    scope_id: Optional[UUID] = None,
+    scope_id: UUID | None = None,
 ) -> dict:
     """
     Recenter question ratings to mean=0 and adjust user ratings accordingly.

@@ -1,7 +1,6 @@
 """Revision scheduler database models."""
 
 import uuid
-from datetime import date, datetime
 
 from sqlalchemy import (
     Column,

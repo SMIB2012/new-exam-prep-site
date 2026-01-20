@@ -5,40 +5,41 @@ Ensures all constants have proper documentation and source attribution.
 """
 
 import pytest
+
 from app.learning_engine.config import (
+    BKT_G_MAX,
+    BKT_G_MIN,
+    BKT_L0_MAX,
+    # BKT constants
+    BKT_L0_MIN,
+    BKT_MAX_PROB,
+    BKT_MIN_PROB,
+    BKT_S_MAX,
+    BKT_S_MIN,
+    BKT_STABILITY_EPSILON,
+    BKT_T_MAX,
+    BKT_T_MIN,
     # FSRS constants
     FSRS_DEFAULT_WEIGHTS,
     FSRS_DESIRED_RETENTION,
-    FSRS_RETENTION_MIN,
     FSRS_RETENTION_MAX,
+    FSRS_RETENTION_MIN,
     FSRS_SHRINKAGE_MIN_LOGS,
     FSRS_SHRINKAGE_TARGET_LOGS,
     FSRS_TRAINING_MIN_LOGS,
     FSRS_TRAINING_VAL_RATIO,
-    # BKT constants
-    BKT_L0_MIN,
-    BKT_L0_MAX,
-    BKT_T_MIN,
-    BKT_T_MAX,
-    BKT_S_MIN,
-    BKT_S_MAX,
-    BKT_G_MIN,
-    BKT_G_MAX,
-    BKT_STABILITY_EPSILON,
-    BKT_MIN_PROB,
-    BKT_MAX_PROB,
-    # Rating mapper constants
-    RATING_FAST_ANSWER_MS,
-    RATING_SLOW_ANSWER_MS,
-    RATING_MAX_CHANGES_FOR_CONFIDENT,
-    # Telemetry validation
-    TELEMETRY_MIN_TIME_MS,
-    TELEMETRY_MAX_TIME_MS,
-    TELEMETRY_MAX_CHANGES,
+    MASTERY_DIFFICULTY_WEIGHTS,
     # Mastery constants
     MASTERY_LOOKBACK_DAYS,
     MASTERY_MIN_ATTEMPTS,
-    MASTERY_DIFFICULTY_WEIGHTS,
+    # Rating mapper constants
+    RATING_FAST_ANSWER_MS,
+    RATING_MAX_CHANGES_FOR_CONFIDENT,
+    RATING_SLOW_ANSWER_MS,
+    TELEMETRY_MAX_CHANGES,
+    TELEMETRY_MAX_TIME_MS,
+    # Telemetry validation
+    TELEMETRY_MIN_TIME_MS,
     # Training pipeline constants
     TRAINING_BKT_MIN_ATTEMPTS,
     TRAINING_DIFFICULTY_MIN_ATTEMPTS,

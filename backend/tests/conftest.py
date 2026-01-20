@@ -1,17 +1,12 @@
 """Pytest configuration and shared fixtures."""
 
 import os
-from typing import Generator
+from collections.abc import Generator
 
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
-from sqlalchemy.pool import StaticPool
+from sqlalchemy.orm import Session
 
-from app.db.base import Base
-from app.models.question_cms import Question as CMSQuestion
 from app.models.syllabus import Block, Theme, Year
-from app.models.user import User
 
 # Use test database URL if available, otherwise use PostgreSQL from env
 TEST_DATABASE_URL = os.environ.get(

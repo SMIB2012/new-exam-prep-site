@@ -10,9 +10,10 @@ Adds tables for production-grade Elo difficulty calibration:
 - difficulty_update_log: Append-only audit log of all updates
 """
 
-from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "016"

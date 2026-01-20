@@ -12,7 +12,6 @@ from fastapi import (
     Form,
     HTTPException,
     Query,
-    Request,
     Response,
     UploadFile,
     status,
@@ -205,7 +204,7 @@ async def download_template(
 
     # Generate header row from mapping
     headers = []
-    for canonical_field, config in schema.mapping_json.items():
+    for _canonical_field, config in schema.mapping_json.items():
         column_name = config.get("column")
         if column_name:
             headers.append(column_name)
@@ -254,7 +253,7 @@ async def import_questions(
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Schema not found")
     else:
         # Use active schema
-        schema = db.query(ImportSchema).filter(ImportSchema.is_active == True).first()
+        schema = db.query(ImportSchema).filter(ImportSchema.is_active).first()
         if not schema:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -321,9 +320,9 @@ async def import_questions(
 
         # Insert accepted questions (unless dry run)
         if not dry_run and accepted:
-            inserted_count = writer.bulk_insert(accepted)
+            writer.bulk_insert(accepted)
         else:
-            inserted_count = 0
+            pass
 
         # Update job stats
         job.total_rows = len(accepted) + len(rejected)
@@ -353,7 +352,7 @@ async def import_questions(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Import failed: {str(e)}",
-        )
+        ) from e
 
 
 @router.get("/jobs", response_model=list[ImportJobListOut])

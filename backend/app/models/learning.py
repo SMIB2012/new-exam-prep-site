@@ -1,7 +1,6 @@
 """Learning engine database models."""
 
 import uuid
-from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Index, String, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB, UUID

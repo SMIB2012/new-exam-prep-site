@@ -10,19 +10,16 @@ Responsibilities:
 """
 
 import logging
-from datetime import datetime, timedelta
-from typing import Optional
+from datetime import datetime
 from uuid import UUID
 
 import numpy as np
-from sqlalchemy import select, and_, func
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.session import SessionAnswer, SessionQuestion, SessionStatus, TestSession
+from app.learning_engine.bkt.core import check_degeneracy, validate_bkt_params
 from app.models.bkt import BKTSkillParams
-from app.models.learning import AlgoVersion, AlgoParams
-from app.learning_engine.bkt.core import validate_bkt_params, check_degeneracy
-from app.learning_engine.constants import AlgoKey
+from app.models.session import SessionAnswer, SessionQuestion, SessionStatus, TestSession
 
 logger = logging.getLogger(__name__)
 
@@ -104,8 +101,8 @@ class TrainingDataset:
 async def build_training_dataset(
     db: AsyncSession,
     concept_id: UUID,
-    from_date: Optional[datetime] = None,
-    to_date: Optional[datetime] = None,
+    from_date: datetime | None = None,
+    to_date: datetime | None = None,
     min_attempts_per_user: int = 1,
 ) -> TrainingDataset:
     """
@@ -281,7 +278,7 @@ def apply_parameter_constraints(
 
 async def fit_bkt_parameters(
     dataset: TrainingDataset,
-    constraints: Optional[dict] = None,
+    constraints: dict | None = None,
     use_cross_validation: bool = False,
     n_folds: int = 5,
 ) -> tuple[dict, dict, bool, str]:
@@ -383,8 +380,8 @@ async def persist_fitted_params(
     params: dict,
     metrics: dict,
     algo_version_id: UUID,
-    from_date: Optional[datetime],
-    to_date: Optional[datetime],
+    from_date: datetime | None,
+    to_date: datetime | None,
     constraints_applied: dict,
     activate: bool = False,
 ) -> BKTSkillParams:
@@ -409,7 +406,7 @@ async def persist_fitted_params(
     if activate:
         result = await db.execute(
             select(BKTSkillParams).where(
-                and_(BKTSkillParams.concept_id == concept_id, BKTSkillParams.is_active == True)
+                and_(BKTSkillParams.concept_id == concept_id, BKTSkillParams.is_active)
             )
         )
 

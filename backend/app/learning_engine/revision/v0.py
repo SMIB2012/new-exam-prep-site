@@ -30,7 +30,7 @@ async def compute_revision_v0(
     Returns:
         Revision schedule output with due questions
     """
-    result = await generate_revision_queue_v0(
+    await generate_revision_queue_v0(
         db,
         user_id=input_data.user_id,
         trigger="api",

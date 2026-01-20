@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import and_, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.learning_engine.constants import AlgoKey
 from app.learning_engine.registry import resolve_active
@@ -193,7 +193,7 @@ async def collect_theme_attempts(
         return []
 
     # Get answers
-    question_keys = [(sq.session_id, sq.question_id) for sq in theme_questions]
+    [(sq.session_id, sq.question_id) for sq in theme_questions]
     answers_stmt = select(SessionAnswer).where(SessionAnswer.session_id.in_(session_ids))
     answers_result = await db.execute(answers_stmt)
     answers = answers_result.scalars().all()

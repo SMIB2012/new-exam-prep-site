@@ -1,11 +1,9 @@
 """Pydantic schemas for SRS (Spaced Repetition System)."""
 
 from datetime import datetime
-from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
-
 
 # ============================================================================
 # SRS Queue Schemas
@@ -19,18 +17,18 @@ class SRSQueueItemResponse(BaseModel):
     due_at: datetime
     stability: float
     difficulty: float
-    retrievability: Optional[float]
+    retrievability: float | None
     priority_score: float = Field(..., description="Priority (0-1, higher = more urgent)")
     is_overdue: bool
-    days_overdue: Optional[float]
+    days_overdue: float | None
     bucket: str = Field(..., description="Time bucket: overdue, today, tomorrow, day_N, later")
 
     # Optional joined data (if available)
-    concept_name: Optional[str] = None
-    theme_id: Optional[UUID] = None
-    theme_name: Optional[str] = None
-    block_id: Optional[UUID] = None
-    block_name: Optional[str] = None
+    concept_name: str | None = None
+    theme_id: UUID | None = None
+    theme_name: str | None = None
+    block_id: UUID | None = None
+    block_name: str | None = None
 
 
 class SRSQueueResponse(BaseModel):
@@ -38,7 +36,7 @@ class SRSQueueResponse(BaseModel):
 
     scope: str  # "today" or "week"
     total_due: int
-    items: List[SRSQueueItemResponse]
+    items: list[SRSQueueItemResponse]
 
 
 class SRSUserStatsResponse(BaseModel):
@@ -49,7 +47,7 @@ class SRSUserStatsResponse(BaseModel):
     due_this_week: int
     total_reviews: int
     has_personalized_weights: bool
-    last_trained_at: Optional[datetime]
+    last_trained_at: datetime | None
 
 
 # ============================================================================
@@ -61,12 +59,12 @@ class SRSUpdateRequest(BaseModel):
     """Request to update SRS state from an attempt (internal use)."""
 
     user_id: UUID
-    concept_ids: List[UUID]
+    concept_ids: list[UUID]
     correct: bool
     occurred_at: datetime
-    telemetry: Optional[dict] = None
-    raw_attempt_id: Optional[UUID] = None
-    session_id: Optional[UUID] = None
+    telemetry: dict | None = None
+    raw_attempt_id: UUID | None = None
+    session_id: UUID | None = None
 
 
 class SRSUpdateResponse(BaseModel):
@@ -88,12 +86,12 @@ class SRSUpdateResponse(BaseModel):
 class SRSTrainUserRequest(BaseModel):
     """Request to train user-specific FSRS weights."""
 
-    user_id: Optional[UUID] = Field(
+    user_id: UUID | None = Field(
         None, description="User ID (admin only, defaults to current user for students)"
     )
     min_logs: int = Field(300, ge=50, description="Minimum review logs required")
     val_split: float = Field(0.2, ge=0.1, le=0.4, description="Validation split ratio")
-    shrinkage_alpha: Optional[float] = Field(
+    shrinkage_alpha: float | None = Field(
         None, ge=0.0, le=1.0, description="Shrinkage factor (auto-computed if None)"
     )
 
@@ -101,7 +99,7 @@ class SRSTrainUserRequest(BaseModel):
 class SRSTrainBatchRequest(BaseModel):
     """Request to train multiple users (admin only)."""
 
-    user_ids: Optional[List[UUID]] = Field(
+    user_ids: list[UUID] | None = Field(
         None, description="Specific user IDs, or None for top N active users"
     )
     top_n: int = Field(
@@ -118,12 +116,12 @@ class SRSTrainingSummary(BaseModel):
     success: bool
     message: str
     n_logs: int
-    val_logloss: Optional[float] = None
-    val_brier: Optional[float] = None
-    baseline_logloss: Optional[float] = None
-    improvement: Optional[float] = None  # Percentage improvement over baseline
-    shrinkage_alpha: Optional[float] = None
-    optimal_retention: Optional[float] = None
+    val_logloss: float | None = None
+    val_brier: float | None = None
+    baseline_logloss: float | None = None
+    improvement: float | None = None  # Percentage improvement over baseline
+    shrinkage_alpha: float | None = None
+    optimal_retention: float | None = None
 
 
 class SRSTrainUserResponse(BaseModel):
@@ -143,7 +141,7 @@ class SRSTrainBatchResponse(BaseModel):
     total_users: int
     successful: int
     failed: int
-    summaries: List[SRSTrainingSummary]
+    summaries: list[SRSTrainingSummary]
 
 
 # ============================================================================
@@ -158,9 +156,9 @@ class SRSConceptStateResponse(BaseModel):
     concept_id: UUID
     stability: float
     difficulty: float
-    last_reviewed_at: Optional[datetime]
-    due_at: Optional[datetime]
-    last_retrievability: Optional[float]
+    last_reviewed_at: datetime | None
+    due_at: datetime | None
+    last_retrievability: float | None
     updated_at: datetime
 
     class Config:
@@ -177,10 +175,10 @@ class SRSReviewLogResponse(BaseModel):
     rating: int = Field(..., ge=1, le=4)
     correct: bool
     delta_days: float
-    time_spent_ms: Optional[int]
-    change_count: Optional[int]
-    predicted_retrievability: Optional[float]
-    session_id: Optional[UUID]
+    time_spent_ms: int | None
+    change_count: int | None
+    predicted_retrievability: float | None
+    session_id: UUID | None
 
     class Config:
         from_attributes = True

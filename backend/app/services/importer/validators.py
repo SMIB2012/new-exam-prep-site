@@ -79,7 +79,7 @@ class QuestionValidator:
                     errors.append(
                         ValidationError(
                             self.MISSING_REQUIRED,
-                            f"Required field 'correct' is missing",
+                            "Required field 'correct' is missing",
                             "correct",
                         )
                     )

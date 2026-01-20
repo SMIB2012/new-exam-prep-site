@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.learning_difficulty import QuestionDifficulty
@@ -14,7 +14,7 @@ from app.models.learning_mastery import UserThemeMastery
 from app.models.learning_revision import RevisionQueue
 from app.models.question_cms import Question
 from app.models.session import SessionAnswer, SessionQuestion
-from app.models.syllabus import Block, Theme
+from app.models.syllabus import Theme
 
 logger = logging.getLogger(__name__)
 
@@ -284,8 +284,8 @@ async def select_questions_v0(
     difficulty_counts = {"easy": 0, "medium": 0, "hard": 0}
 
     # Calculate target counts
-    target_theme_weak = int(count * theme_mix.get("weak", 0.5))
-    target_theme_medium = int(count * theme_mix.get("medium", 0.3))
+    int(count * theme_mix.get("weak", 0.5))
+    int(count * theme_mix.get("medium", 0.3))
 
     target_easy = int(count * difficulty_mix.get("easy", 0.2))
     target_medium = int(count * difficulty_mix.get("medium", 0.6))

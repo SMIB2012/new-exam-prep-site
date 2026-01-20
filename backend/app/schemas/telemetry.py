@@ -7,7 +7,6 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, validator
 
-
 # ============================================================================
 # Event Types Enum
 # ============================================================================
@@ -53,7 +52,7 @@ class TelemetryEventSubmit(BaseModel):
     payload: dict[str, Any] = Field(default_factory=dict, description="Event-specific payload")
 
     @validator("payload")
-    def validate_payload_size(cls, v):
+    def validate_payload_size(self, v):
         """Ensure payload is not too large."""
         import json
 
@@ -70,7 +69,7 @@ class TelemetryBatchSubmit(BaseModel):
     events: list[TelemetryEventSubmit] = Field(..., description="List of events", max_length=50)
 
     @validator("events")
-    def validate_batch_size(cls, v):
+    def validate_batch_size(self, v):
         """Ensure batch is not too large."""
         if len(v) > 50:
             raise ValueError("Batch size exceeds 50 events")

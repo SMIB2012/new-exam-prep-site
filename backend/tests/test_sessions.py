@@ -4,7 +4,6 @@ import uuid
 from datetime import datetime, timedelta
 
 import pytest
-from sqlalchemy import select
 
 from app.models.question_cms import Question, QuestionStatus
 from app.models.session import (
@@ -16,7 +15,6 @@ from app.models.session import (
 )
 from app.models.syllabus import Block, Theme, Year
 from app.models.user import User, UserRole
-from app.schemas.session import SessionCreate
 
 
 @pytest.fixture
@@ -41,9 +39,9 @@ def test_user(db):
 def published_questions(db):
     """Create published test questions."""
     # Ensure year/block/theme exist
-    year = db.query(Year).filter(Year.id == 1).first()
-    block = db.query(Block).filter(Block.id == 1).first()
-    theme = db.query(Theme).filter(Theme.id == 1).first()
+    db.query(Year).filter(Year.id == 1).first()
+    db.query(Block).filter(Block.id == 1).first()
+    db.query(Theme).filter(Theme.id == 1).first()
 
     questions = []
     for i in range(30):
@@ -269,7 +267,7 @@ def test_session_submit_computes_score(db, test_user, published_questions):
     # Compute score (simulate submit)
     score_correct = (
         db.query(SessionAnswer)
-        .filter(SessionAnswer.session_id == session.id, SessionAnswer.is_correct == True)
+        .filter(SessionAnswer.session_id == session.id, SessionAnswer.is_correct)
         .count()
     )
     score_total = session.total_questions

@@ -11,9 +11,9 @@ Each constant includes:
 - validated: Whether the value has been validated against source
 """
 
-from dataclasses import dataclass, field
-from typing import Any, List
 import math
+from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -399,7 +399,7 @@ def validate_all_constants():
         errors.append(f"BKT: S + G must be < 1, got {BKT_DEFAULT_S.value} + {BKT_DEFAULT_G.value}")
 
     if not ((1.0 - BKT_DEFAULT_S.value) > BKT_DEFAULT_G.value):
-        errors.append(f"BKT: (1-S) must be > G for distinguishability")
+        errors.append("BKT: (1-S) must be > G for distinguishability")
 
     # Timings must be positive
     if RATING_FAST_ANSWER_MS.value <= 0:
@@ -410,7 +410,7 @@ def validate_all_constants():
         errors.append("RATING_FAST_ANSWER_MS must be < RATING_SLOW_ANSWER_MS")
 
     if errors:
-        raise ValueError(f"Constant validation failed:\n" + "\n".join(f"  - {e}" for e in errors))
+        raise ValueError("Constant validation failed:\n" + "\n".join(f"  - {e}" for e in errors))
 
 
 # Validate on import

@@ -2,8 +2,10 @@
 Tests for learning engine versioning and run logging.
 """
 
-import pytest
 from uuid import uuid4
+
+import pytest
+from sqlalchemy import select
 
 from app.learning_engine import (
     AlgoKey,
@@ -21,7 +23,6 @@ from app.learning_engine.info import get_learning_engine_info
 from app.learning_engine.registry import activate_algo_version, activate_params
 from app.models.learning import AlgoParams, AlgoRun, AlgoVersion
 from app.models.user import User, UserRole
-from sqlalchemy import select
 
 
 class TestAlgoVersionSeeding:
@@ -369,7 +370,7 @@ class TestRunLoggingIndexes:
         version, params = await resolve_active(db, AlgoKey.MASTERY.value)
 
         # Create multiple runs
-        for i in range(3):
+        for _i in range(3):
             await log_run_start(
                 db,
                 algo_version_id=version.id,

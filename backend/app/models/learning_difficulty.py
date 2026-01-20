@@ -1,9 +1,8 @@
 """Question difficulty calibration database models."""
 
 import uuid
-from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, Numeric, UniqueConstraint
+from sqlalchemy import Column, DateTime, ForeignKey, Index, Integer, Numeric
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func

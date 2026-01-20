@@ -1,20 +1,20 @@
 """Tests for Difficulty Calibration v0 and Adaptive Selection v0."""
 
-import pytest
 from datetime import date, datetime, timedelta
 from uuid import uuid4
 
+import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.learning_engine.adaptive.service import adaptive_select_v0
+from app.learning_engine.adaptive.v0 import select_questions_v0
 from app.learning_engine.difficulty.service import (
     compute_elo_update,
     compute_student_rating,
     update_question_difficulty_v0_for_session,
 )
-from app.learning_engine.adaptive.v0 import select_questions_v0
-from app.learning_engine.adaptive.service import adaptive_select_v0
-from app.models.learning import AlgoRun, AlgoVersion, AlgoParams
+from app.models.learning import AlgoRun
 from app.models.learning_difficulty import QuestionDifficulty
 from app.models.learning_mastery import UserThemeMastery
 from app.models.learning_revision import RevisionQueue
@@ -22,7 +22,6 @@ from app.models.question_cms import Question
 from app.models.session import SessionAnswer, SessionQuestion, TestSession
 from app.models.syllabus import AcademicYear, Block, Theme
 from app.models.user import User
-
 
 # ============================================================================
 # DIFFICULTY CALIBRATION v0 TESTS

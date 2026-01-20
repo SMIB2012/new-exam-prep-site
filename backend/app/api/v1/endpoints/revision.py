@@ -12,7 +12,6 @@ from sqlalchemy.orm import selectinload
 
 from app.api.deps import get_current_user, get_db
 from app.models.learning_revision import RevisionQueue
-from app.models.syllabus import Block, Theme
 from app.models.user import User
 from app.schemas.revision import (
     BlockInfo,
@@ -131,7 +130,7 @@ async def update_revision_queue_item(
     try:
         request.validate_snooze()
     except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+        raise HTTPException(status_code=422, detail=str(e)) from e
 
     # Get item with ownership check
     stmt = (

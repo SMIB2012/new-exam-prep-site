@@ -2,9 +2,11 @@
 Tests for Revision Scheduler v0.
 """
 
-import pytest
 from datetime import date, datetime, timedelta
 from uuid import uuid4
+
+import pytest
+from sqlalchemy import select
 
 from app.learning_engine.revision.service import (
     compute_priority_score,
@@ -18,7 +20,6 @@ from app.models.learning_mastery import UserThemeMastery
 from app.models.learning_revision import RevisionQueue
 from app.models.syllabus import Block, Theme
 from app.models.user import User, UserRole
-from sqlalchemy import select
 
 
 @pytest.fixture

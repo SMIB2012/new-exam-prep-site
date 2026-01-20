@@ -3,7 +3,6 @@ Pydantic schemas for difficulty calibration API.
 """
 
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -12,17 +11,17 @@ from pydantic import BaseModel, Field
 class AttemptUpdate(BaseModel):
     """Single attempt for difficulty update."""
 
-    attempt_id: Optional[UUID] = None
+    attempt_id: UUID | None = None
     question_id: UUID
-    theme_id: Optional[UUID] = None
+    theme_id: UUID | None = None
     score: bool
-    occurred_at: Optional[datetime] = None
+    occurred_at: datetime | None = None
 
 
 class UpdateDifficultyRequest(BaseModel):
     """Request to update difficulty from attempts."""
 
-    session_id: Optional[UUID] = None
+    session_id: UUID | None = None
     attempts: list[AttemptUpdate]
 
 
@@ -42,7 +41,7 @@ class RatingInfo(BaseModel):
     rating: float
     uncertainty: float
     n_attempts: int
-    last_seen_at: Optional[datetime]
+    last_seen_at: datetime | None
 
 
 class QuestionDifficultyResponse(BaseModel):

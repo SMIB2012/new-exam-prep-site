@@ -12,7 +12,6 @@ import { ErrorState } from "@/components/status/ErrorState";
 import { adminQuestionsApi } from "@/lib/admin/questionsApi";
 import type { QuestionListItem, QuestionListQuery } from "@/lib/types/question-cms";
 import { FileQuestion, Plus } from "lucide-react";
-import { notify } from "@/lib/notify";
 
 export default function QuestionsPage() {
   const router = useRouter();

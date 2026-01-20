@@ -2,22 +2,12 @@
 
 import logging
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user, get_db
-from app.models.user import User
-from app.schemas.bkt import (
-    BKTRecomputeRequest,
-    BKTRecomputeResponse,
-    BKTRecomputeSummary,
-    BKTUpdateInput,
-    BKTUpdateResult,
-    BKTUserSkillStateResponse,
-)
 from app.learning_engine.bkt.service import (
     get_user_mastery_state,
     update_bkt_from_attempt,
@@ -27,9 +17,18 @@ from app.learning_engine.bkt.training import (
     fit_bkt_parameters,
     persist_fitted_params,
 )
-from app.learning_engine.registry import resolve_active
 from app.learning_engine.constants import AlgoKey
-from app.learning_engine.runs import log_run_start, log_run_success, log_run_failure
+from app.learning_engine.registry import resolve_active
+from app.learning_engine.runs import log_run_failure, log_run_start, log_run_success
+from app.models.user import User
+from app.schemas.bkt import (
+    BKTRecomputeRequest,
+    BKTRecomputeResponse,
+    BKTRecomputeSummary,
+    BKTUpdateInput,
+    BKTUpdateResult,
+    BKTUserSkillStateResponse,
+)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -187,7 +186,7 @@ async def recompute_bkt_params(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"BKT recompute failed: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/update", response_model=BKTUpdateResult)
@@ -231,18 +230,18 @@ async def update_bkt_mastery(
         return result
 
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
     except Exception as e:
         logger.error(f"BKT update failed: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"BKT update failed: {str(e)}"
-        )
+        ) from e
 
 
 @router.get("/mastery", response_model=list[BKTUserSkillStateResponse])
 async def get_bkt_mastery(
-    user_id: Optional[UUID] = None,
-    concept_id: Optional[UUID] = None,
+    user_id: UUID | None = None,
+    concept_id: UUID | None = None,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -274,4 +273,4 @@ async def get_bkt_mastery(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get mastery: {str(e)}",
-        )
+        ) from e

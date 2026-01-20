@@ -5,8 +5,8 @@ from collections import defaultdict
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.learning_engine.constants import AlgoKey
 from app.learning_engine.mistakes.features import build_features_for_session

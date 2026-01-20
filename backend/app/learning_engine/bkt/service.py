@@ -10,16 +10,15 @@ Handles:
 
 import logging
 from datetime import UTC, datetime
-from typing import Optional
 from uuid import UUID
 
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_
 
-from app.models.bkt import BKTSkillParams, BKTUserSkillState, MasterySnapshot
-from app.models.learning import AlgoVersion, AlgoParams
-from app.learning_engine.bkt.core import update_mastery, clamp_probability
+from app.learning_engine.bkt.core import update_mastery
 from app.learning_engine.constants import AlgoKey
+from app.models.bkt import BKTSkillParams, BKTUserSkillState, MasterySnapshot
+from app.models.learning import AlgoParams, AlgoVersion
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +40,8 @@ class BKTParams:
         p_T: float,
         p_S: float,
         p_G: float,
-        concept_id: Optional[UUID] = None,
-        algo_version_id: Optional[UUID] = None,
+        concept_id: UUID | None = None,
+        algo_version_id: UUID | None = None,
         is_default: bool = False,
     ):
         self.p_L0 = p_L0
@@ -81,7 +80,7 @@ async def get_active_params(db: AsyncSession, concept_id: UUID) -> BKTParams:
     # Try to get concept-specific parameters
     result = await db.execute(
         select(BKTSkillParams)
-        .where(and_(BKTSkillParams.concept_id == concept_id, BKTSkillParams.is_active == True))
+        .where(and_(BKTSkillParams.concept_id == concept_id, BKTSkillParams.is_active))
         .order_by(BKTSkillParams.fitted_at.desc())
         .limit(1)
     )
@@ -117,7 +116,7 @@ async def get_active_params(db: AsyncSession, concept_id: UUID) -> BKTParams:
         result = await db.execute(
             select(AlgoParams)
             .where(
-                and_(AlgoParams.algo_version_id == algo_version.id, AlgoParams.is_active == True)
+                and_(AlgoParams.algo_version_id == algo_version.id, AlgoParams.is_active)
             )
             .limit(1)
         )
@@ -148,7 +147,7 @@ async def get_active_params(db: AsyncSession, concept_id: UUID) -> BKTParams:
 
 
 async def get_or_create_user_state(
-    db: AsyncSession, user_id: UUID, concept_id: UUID, default_from_L0: Optional[float] = None
+    db: AsyncSession, user_id: UUID, concept_id: UUID, default_from_L0: float | None = None
 ) -> BKTUserSkillState:
     """
     Get or create user skill state for a concept.
@@ -207,7 +206,7 @@ async def update_from_attempt(
     concept_id: UUID,
     correct: bool,
     create_snapshot: bool = False,
-    meta: Optional[dict] = None,
+    meta: dict | None = None,
 ) -> dict:
     """
     Update user mastery from a single attempt.
@@ -297,7 +296,7 @@ async def update_from_attempt(
 
 
 async def get_user_mastery(
-    db: AsyncSession, user_id: UUID, concept_ids: Optional[list[UUID]] = None
+    db: AsyncSession, user_id: UUID, concept_ids: list[UUID] | None = None
 ) -> list[dict]:
     """
     Get current mastery states for a user.
