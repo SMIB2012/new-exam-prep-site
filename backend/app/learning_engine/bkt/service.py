@@ -115,9 +115,7 @@ async def get_active_params(db: AsyncSession, concept_id: UUID) -> BKTParams:
         # Get default params from algo_params
         result = await db.execute(
             select(AlgoParams)
-            .where(
-                and_(AlgoParams.algo_version_id == algo_version.id, AlgoParams.is_active)
-            )
+            .where(and_(AlgoParams.algo_version_id == algo_version.id, AlgoParams.is_active))
             .limit(1)
         )
 

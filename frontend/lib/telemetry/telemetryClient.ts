@@ -29,7 +29,7 @@ export interface TelemetryEvent {
   seq?: number;
   session_id: string;
   question_id?: string | null;
-  payload?: Record<string, any>;
+  payload?: Record<string, unknown>;
 }
 
 export interface TelemetryBatch {
@@ -68,7 +68,7 @@ export class TelemetryClient {
    */
   track(
     eventType: EventType,
-    payload?: Record<string, any>,
+    payload?: Record<string, unknown>,
     questionId?: string | null
   ): void {
     try {

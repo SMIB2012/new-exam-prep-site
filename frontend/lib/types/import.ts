@@ -22,8 +22,8 @@ export interface ImportSchemaBase {
   quote_char: string;
   has_header: boolean;
   encoding: string;
-  mapping_json: Record<string, any>;
-  rules_json: Record<string, any>;
+  mapping_json: Record<string, unknown>;
+  rules_json: Record<string, unknown>;
 }
 
 export type ImportSchemaCreate = ImportSchemaBase;
@@ -35,8 +35,8 @@ export interface ImportSchemaUpdate {
   quote_char?: string;
   has_header?: boolean;
   encoding?: string;
-  mapping_json?: Record<string, any>;
-  rules_json?: Record<string, any>;
+  mapping_json?: Record<string, unknown>;
+  rules_json?: Record<string, unknown>;
 }
 
 export interface ImportSchemaOut extends ImportSchemaBase {
@@ -75,7 +75,7 @@ export interface ImportJobOut {
   total_rows: number;
   accepted_rows: number;
   rejected_rows: number;
-  summary_json: Record<string, any> | null;
+  summary_json: Record<string, unknown> | null;
   error_message: string | null;
   started_at: string | null;
   completed_at: string | null;
@@ -102,7 +102,7 @@ export interface ImportJobResultOut {
   total_rows: number;
   accepted_rows: number;
   rejected_rows: number;
-  summary_json: Record<string, any> | null;
+  summary_json: Record<string, unknown> | null;
 }
 
 export interface ImportJobRowOut {
@@ -110,7 +110,7 @@ export interface ImportJobRowOut {
   job_id: string;
   row_number: number;
   external_id: string | null;
-  raw_row_json: Record<string, any>;
+  raw_row_json: Record<string, unknown>;
   errors_json: Array<{
     code: string;
     message: string;

@@ -11,7 +11,6 @@ All functions include numerical stability guards to prevent NaN/Inf and
 ensure probabilities remain in valid range [0, 1].
 """
 
-
 from app.learning_engine.config import (
     BKT_G_MAX,
     BKT_G_MIN,

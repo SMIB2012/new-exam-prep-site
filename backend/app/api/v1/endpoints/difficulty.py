@@ -306,7 +306,9 @@ async def recenter_ratings(
     try:
         scope_enum = RatingScope(scope_type)
     except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid scope_type (must be GLOBAL or THEME)") from None
+        raise HTTPException(
+            status_code=400, detail="Invalid scope_type (must be GLOBAL or THEME)"
+        ) from None
 
     result = await recenter_question_ratings(db, scope_enum, scope_id)
 

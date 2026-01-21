@@ -32,9 +32,7 @@ class MasteryStateResponse(BaseModel):
 class UpdateFromAttemptRequest(BaseModel):
     """Request to update mastery from an attempt."""
 
-    user_id: UUID | None = Field(
-        None, description="User ID (admin only, otherwise current user)"
-    )
+    user_id: UUID | None = Field(None, description="User ID (admin only, otherwise current user)")
     question_id: UUID
     concept_id: UUID
     correct: bool
