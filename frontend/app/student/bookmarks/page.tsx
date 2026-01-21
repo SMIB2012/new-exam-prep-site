@@ -31,7 +31,7 @@ export default function BookmarksPage() {
     try {
       const data = await listBookmarks();
       setBookmarks(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to load bookmarks:", err);
       setError(err?.message || "Failed to load bookmarks");
     } finally {
@@ -46,7 +46,7 @@ export default function BookmarksPage() {
       await deleteBookmark(bookmarkId);
       setBookmarks((prev) => prev.filter((b) => b.id !== bookmarkId));
       notify.success("Bookmark removed", "Question removed from bookmarks");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to delete bookmark:", err);
       notify.error("Failed to remove bookmark", err?.message || "Please try again");
     } finally {

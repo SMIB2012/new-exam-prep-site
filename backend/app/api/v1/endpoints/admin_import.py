@@ -73,7 +73,10 @@ async def create_schema(
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Schema with name '{schema_data.name}' already exists. Use clone or new-version instead.",
+            detail=(
+                f"Schema with name '{schema_data.name}' already exists. "
+                "Use clone or new-version instead."
+            ),
         )
 
     schema = ImportSchema(
@@ -212,12 +215,11 @@ async def download_template(
     # Create CSV content
     csv_content = schema.delimiter.join(headers) + "\n"
 
+    filename = f"{schema.name}_v{schema.version}_template.csv"
     return Response(
         content=csv_content,
         media_type="text/csv",
-        headers={
-            "Content-Disposition": f'attachment; filename="{schema.name}_v{schema.version}_template.csv"'
-        },
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
 
 

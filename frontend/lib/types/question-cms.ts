@@ -49,9 +49,9 @@ export interface QuestionBase {
   source_ref: string | null;
 }
 
-export interface QuestionCreate extends Partial<QuestionBase> {}
+export type QuestionCreate = Partial<QuestionBase>;
 
-export interface QuestionUpdate extends Partial<QuestionBase> {}
+export type QuestionUpdate = Partial<QuestionBase>;
 
 export interface QuestionOut extends QuestionBase {
   id: string; // UUID

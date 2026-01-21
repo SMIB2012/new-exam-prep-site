@@ -273,7 +273,10 @@ def check_degeneracy(
     if performance_gap < 0.1:
         return (
             False,
-            f"Performance gap too small: (1-S)-G={performance_gap:.3f} < 0.1 (indistinguishable states)",
+            (
+                f"Performance gap too small: (1-S)-G={performance_gap:.3f} < 0.1 "
+                "(indistinguishable states)"
+            ),
         )
 
     # Check expected learning gain on correct answer
