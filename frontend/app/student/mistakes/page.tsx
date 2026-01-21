@@ -213,9 +213,12 @@ export default function MistakesPage() {
         pageSize: 20,
       });
 
-      setMistakes((prev) => [...prev, ...mistakesData.items]);
+      setMistakes((prev) => {
+        const newMistakes = [...prev, ...mistakesData.items];
+        setHasMore(newMistakes.length < mistakesData.total);
+        return newMistakes;
+      });
       setPage(nextPage);
-      setHasMore((prev) => prev.length + mistakesData.items.length < mistakesData.total);
     } catch (err: unknown) {
       console.error("Failed to load more mistakes:", err);
       const error = err as { message?: string };
